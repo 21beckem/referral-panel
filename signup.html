@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Referral Panel | Sign Up</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <style>
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Roboto;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+    overflow: hidden;
+}
+.center {
+    position: absolute;
+    padding: 25px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 29vw;
+    min-width: 300px;
+    background-color: white;
+    box-shadow: 2px 4px 14px -10px black;
+    border-radius: 10px;
+}
+input[type="text"],
+input[type="password"] {
+    border: none;
+    background-color: #f1f1f1;
+    width: 100%;
+    padding: 5px;
+}
+input[type="submit"] {
+    font-size: 20px;
+    margin: 20px;
+    background: linear-gradient(140deg, rgba(232, 133, 208, 1) -20%, rgb(196 167 217) 100%);
+    background-color: #BBA7DA;
+    border: none;
+    cursor: pointer;
+    padding: 10px 30px;
+    border-radius: 3px;
+    color: #fff;
+    box-shadow: 1px 2px 10px -7px rgba(0, 0, 0, 0.5);
+}
+    </style>
+    <link rel="stylesheet" href="admin-template.css">
+</head>
+<body>
+    <div class="container">
+        <div class="center">
+            <center>
+                <h1>Referral Panel</h1>
+                <h4>Add new Mission</h4>
+            </center>
+            <br>
+            <form action="add_account.php" method="POST" onsubmit="return validatePassword()">
+                <div class="txt_field">
+                    <label>Your Missions Acronym</label><br>
+                    <input type="text" name="username" id="username" pattern="[A-Za-z]{3,}" title="Only letters, no spaces or numbers. At least 3 chars long" required>
+                </div>
+                <br>
+                <div class="txt_field">
+                    <label>Create Password</label><br>
+                    <input type="password" name="password" id="password" pattern=".{8,}" title="Eight or more characters" required>
+                </div>
+                <br>
+                <div class="txt_field">
+                    <label>Retype Password</label><br>
+                    <input type="password" name="doublePassword" id="doublePassword" pattern=".{8,}" title="Eight or more characters" required>
+                </div>
+                <br>
+                <center><input name="submit" type="Submit" value="Create Account"></center>
+            </form>
+        </div>
+    </div>
+    <script>
+let usernameEl = document.getElementById('username');
+let pass1El = document.getElementById('password');
+let pass2El = document.getElementById('doublePassword');
+function validatePassword(){
+    if(pass1El.value != pass2El.value) {
+        pass2El.setCustomValidity("Passwords Don't Match");
+        return false;
+    } else {
+        pass2El.setCustomValidity('');
+        return true;
+    }
+}
+pass1El.onchange = validatePassword;
+pass2El.onkeyup = validatePassword;
+    </script>
+</body>
+</html>

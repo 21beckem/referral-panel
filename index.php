@@ -1,11 +1,7 @@
 <?php
     session_start();
-    if ($_POST['username'] && $_POST['password']) {
-
-    } else {
-        if (!$_SESSION['missionSignedIn']) {
-            header('location: login.html');
-        }
+    if (!$_SESSION['missionSignedIn']) {
+        header('location: login.php');
     }
 ?>
 
@@ -37,27 +33,20 @@
                     <span class="link-name">Inboxers</span>
                 </a></li>
                 <li><a href="#">
+                    <i class="fa-regular fa-paste"></i>
+                    <span class="link-name">Templates</span>
+                </a></li>
+                <li><a href="#">
                     <i class="fa-solid fa-gears"></i>
                     <span class="link-name">Config</span>
                 </a></li>
             </ul>
             
             <ul class="logout-mode">
-                <li><a href="#">
+                <li><a href="logout.php">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
                     <span class="link-name">Logout</span>
                 </a></li>
-
-                <li class="mode">
-                    <a href="#">
-                        <i class="fa-solid fa-moon"></i>
-                        <span class="link-name">Dark Mode</span>
-                    </a>
-
-                    <div class="mode-toggle">
-                    <span class="switch"></span>
-                    </div>
-                </li>
             </ul>
         </div>
     </nav>
