@@ -23,9 +23,13 @@
 
         <div class="menu-items">
             <ul class="nav-links">
-                <li class="active"><a href="#">
+                <li class="active"><a href="index.php">
                     <i class="fa-solid fa-house"></i>
                     <span class="link-name">Dashboard</span>
+                </a></li>
+                <li><a href="#">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span class="link-name">Referrals</span>
                 </a></li>
                 <li><a href="#">
                     <i class="fa-regular fa-calendar"></i>
@@ -38,6 +42,10 @@
                 <li><a href="#">
                     <i class="fa-regular fa-paste"></i>
                     <span class="link-name">Templates</span>
+                </a></li>
+                <li><a href="#">
+                    <i class="fa-solid fa-link"></i>
+                    <span class="link-name">Integrate</span>
                 </a></li>
                 <li><a href="#">
                     <i class="fa-solid fa-gears"></i>
