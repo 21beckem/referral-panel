@@ -17,6 +17,9 @@
 </head>
 <body>
     <nav>
+        <div class="logo-name">
+            <span class="logo_name"><?php echo($_SESSION['missionInfo']->name) ?></span>
+        </div>
 
         <div class="menu-items">
             <ul class="nav-links">
@@ -54,10 +57,12 @@
     <section class="dashboard">
         <div class="top">
             <i class="fa-solid fa-bars sidebar-toggle"></i>
+            <h2>Referral Panel</h2>
             <img src="img/logo.png" alt="">
         </div>
 
         <div class="dash-content">
+            <h3>Welcome, <?php echo($_SESSION['missionInfo']->name) ?></h3>
             <div class="overview">
                 <div class="title">
                     <i class="fa-solid fa-gauge-simple-high"></i>
