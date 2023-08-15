@@ -4,7 +4,19 @@
         header('location: login.php');
     }
     require_once('panel_maker.php');
+    require_once('sql_tools.php');
     makeHTMLtop('Schedule');
+
+    // get schedule
+    $rawSQLread = readSQL($_SESSION['missionInfo']->mykey, "SELECT * FROM `schedule` WHERE 1")[0][0];
+    $schedArr = json_decode($rawSQLread);
+    if ($schedArr == NULL) {
+        $schedArr = json_decode('[["", "", "2002-10-22"], ["10:00", "11:00", ""]]');
+    }
+    //var_dump($schedArr);
+
+    // get teams info
+    $teamInfos = readSQL($_SESSION['missionInfo']->mykey, 'SELECT * FROM `teams` WHERE 1');
 ?>
 <link rel="stylesheet" href="schedule.css">
 <div class="top">
@@ -75,6 +87,37 @@
         </div>
     </div>
     <button id="saveBtn" class="purpleBtn">Save to Referral Suite</button>
+    <script>
+function _(x) { return document.getElementById(x); }
+let strtDateInEl = _('strtDateIn');
+let shftsInDayEl = _('shftsInDay');
+let timesColEl = _('timesCol');
+let schTbleEl = _('schTble');
+
+let schedArr = <?php echo(json_encode($schedArr)); ?>;
+let teamInfos = <?php echo(json_encode($teamInfos)); ?>;
+
+// set first date
+strtDateInEl.value = schedArr[0][2];
+
+// set shifts in day
+shftsInDayEl.value = schedArr.length - 1;
+
+// make times cols
+let timesColOutput = '<tr></tr>';
+for (let i = 1; i < schedArr.length; i++) {
+    timesColOutput += '<tr><td><input type="time" value="' + schedArr[i][0] + '"></td><td><input type="time" value="' + schedArr[i][1] + '"></td></tr>'
+}
+timesColEl.innerHTML = timesColOutput;
+
+
+// make HTML table
+for (let i = 0; i < schedArr[0].length-2; i++) {
+    
+}
+
+
+    </script>
 </div>
 
 <!-- </div><div style="width: 10000px; height: 100px; background-color: black"> -->

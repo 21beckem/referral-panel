@@ -91,7 +91,7 @@ carefulWriteSQL($mykey, "CREATE TABLE `".$mykey."`.`teams` (`id` INT NOT NULL AU
 
 // create schedule
 carefulWriteSQL($mykey, 'CREATE TABLE `'.$mykey.'`.`schedule` (`json` TEXT NULL DEFAULT NULL ) ENGINE = InnoDB;');
-carefulWriteSQL($mykey, "INSERT INTO `schedule`(`json`) VALUES ('[\"\",\"\",\"\",\"\"]')");
+carefulWriteSQL($mykey, 'INSERT INTO `schedule`(`json`) VALUES (\'[["", "", "2002-10-22"], ["10:00", "11:00", ""]]\')');
 
 // redirect
 header('location: index.php');
