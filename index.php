@@ -4,7 +4,7 @@
         header('location: login.php');
     }
     require_once('panel_maker.php');
-    makeHTMLtop();
+    makeHTMLtop('Dashboard');
 ?>
 
 <div class="top">

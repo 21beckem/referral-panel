@@ -6,41 +6,7 @@
     require_once('panel_maker.php');
     makeHTMLtop('Schedule');
 ?>
-<style>
-table, tr {
-    width: 100%;
-    height: 100%;
-}
-td {
-    width: 50%;
-    height: 100%;
-}
-td div {
-    width: 60%;
-    margin-left: 20%;
-    text-align: right;
-    height: 100%;
-}
-td div input {
-    background-color: #ededed;
-    border: none;
-    padding: 5px;
-    margin-left: 10px;
-    width: 150px;
-    text-align: center;
-}
-td div button {
-    background: linear-gradient(140deg, rgba(232,133,208,1) -20%, rgb(196 167 217) 100%);
-    background-color: #BBA7DA;
-    border: none;
-    cursor: pointer;
-    padding: 3px;
-    border-radius: 3px;
-    margin-left: 10px;
-    color: #fff;
-    box-shadow: 1px 2px 10px -7px rgba(0, 0, 0, 0.5);
-}
-</style>
+<link rel="stylesheet" href="schedule.css">
 <div class="top">
     <i class="fa-solid fa-bars sidebar-toggle"></i>
     <h2>Referral Panel</h2>
@@ -48,18 +14,69 @@ td div button {
 </div>
 
 <div class="dash-content">
-    <table>
+    <table id="topBtns">
         <tr>
             <td><div>
-                <label for="strtDateIn">Transfer Start Date</label> <input name="strtDateIn" id="strtDateIn" type="date"> <button>GO</button>
+                <label for="strtDateIn">Transfer Start Date</label> <input name="strtDateIn" id="strtDateIn" type="date"> <button class="purpleBtn">GO</button>
                 <br><br>
-                <label for="shftsInDay">Shifts In A Day</label> <input name="shftsInDay" id="shftsInDay" type="number"> <button>GO</button>
+                <label for="shftsInDay">Shifts In A Day</label> <input name="shftsInDay" id="shftsInDay" type="number"> <button class="purpleBtn">GO</button>
             </div></td>
             <td><div>
-                <label>Copy First Week Onward</label> <button>GO</button>
+                <label>Copy First Week Onward</label> <button class="purpleBtn">GO</button>
             </div></td>
         </tr>
     </table>
+    <div id="FullTableParent">
+        <table id="timesCol">
+            <tr></tr>
+            <tr>
+                <td><input type="time"></td><td><input type="time"></td>
+            </tr>
+            <tr>
+                <td><input type="time"></td><td><input type="time"></td>
+            </tr>
+            <tr>
+                <td><input type="time"></td><td><input type="time"></td>
+            </tr>
+            <tr>
+                <td><input type="time"></td><td><input type="time"></td>
+            </tr>
+            <tr>
+                <td><input type="time"></td><td><input type="time"></td>
+            </tr>
+            <tr>
+                <td><input type="time"></td><td><input type="time"></td>
+            </tr>
+        </table>
+        <div id="tbleWin">
+            <table id="schTble">
+                <tr>
+                    <td><button>v</button>Tuesday,<br>Augest 15</td><td><button>v</button>Wednesday,<br>Augest 16</td><td><button>v</button>Thursday,<br>Augest 17</td><td><button>v</button>Tuesday,<br>Augest 15</td><td><button>v</button>Wednesday,<br>Augest 16</td><td><button>v</button>Thursday,<br>Augest 17</td><td><button>v</button>Tuesday,<br>Augest 15</td><td><button>v</button>Wednesday,<br>Augest 16</td><td><button>v</button>Thursday,<br>Augest 17</td><td><button>v</button>Tuesday,<br>Augest 15</td><td><button>v</button>Wednesday,<br>Augest 16</td><td><button>v</button>Thursday,<br>Augest 17</td><td><button>v</button>Tuesday,<br>Augest 15</td><td><button>v</button>Wednesday,<br>Augest 16</td><td><button>v</button>Thursday,<br>Augest 17</td><td><button>v</button>Tuesday,<br>Augest 15</td><td><button>v</button>Wednesday,<br>Augest 16</td><td><button>v</button>Thursday,<br>Augest 17</td><td><button>v</button>Tuesday,<br>Augest 15</td><td><button>v</button>Wednesday,<br>Augest 16</td><td><button>v</button>Thursday,<br>Augest 17</td><td><button>v</button>Tuesday,<br>Augest 15</td><td><button>v</button>Wednesday,<br>Augest 16</td><td><button>v</button>Thursday,<br>Augest 17</td>
+                </tr>
+                <tr>
+                    <td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td>
+                </tr>
+                <tr>
+                    <td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td>
+                </tr>
+                <tr>
+                    <td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td>
+                </tr>
+                <tr>
+                    <td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td>
+                </tr>
+                <tr>
+                    <td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td>
+                </tr>
+                <tr>
+                    <td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <button id="saveBtn" class="purpleBtn">Save to Referral Suite</button>
 </div>
+
+<!-- </div><div style="width: 10000px; height: 100px; background-color: black"> -->
 
 <?php makeHTMLbottom() ?>
