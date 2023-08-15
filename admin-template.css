@@ -15,8 +15,8 @@
     --black-light-color: #707070;
     --border-color: #e6e5e5;
     --toggle-color: #DDD;
-    --box1-color: #4DA3FF;
-    --box2-color: #FFE6AC;
+    --box1-color: #c393ff;
+    --box2-color: #ff9bfa;
     --box3-color: #E7D1FC;
     --title-icon-color: #fff;
     
@@ -120,6 +120,7 @@ nav .menu-items{
     height: 50px;
     text-decoration: none;
     position: relative;
+    -webkit-tap-highlight-color: transparent;
 }
 .nav-links li a:hover:before{
     content: "";
@@ -144,12 +145,14 @@ body.dark li a:hover:before{
     align-items: center;
     justify-content: center;
     color: var(--black-light-color);
+    -webkit-tap-highlight-color: transparent;
 }
 .menu-items li a .link-name{
     font-size: 18px;
     font-weight: 400;
     color: var(--black-light-color);    
     transition: var(--tran-05);
+    -webkit-tap-highlight-color: transparent;
 }
 nav.close li a .link-name{
     opacity: 0;
