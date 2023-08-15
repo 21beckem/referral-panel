@@ -47,7 +47,7 @@ carefulWriteSQL('Referral_Suite_General', 'CREATE DATABASE '.$mykey.';');
 $makeLargeTableSQL = <<<HEREA
 CREATE TABLE `all_referrals` (
 `Referral Type` text NOT NULL DEFAULT '',
-`id` int(11) NOT NULL,
+`id` INT NOT NULL AUTO_INCREMENT,
 `Date and Time` datetime DEFAULT NULL,
 `Referral Sent` text NOT NULL DEFAULT 'Not sent',
 `Claimed` text NOT NULL DEFAULT 'Unclaimed',
@@ -61,7 +61,7 @@ CREATE TABLE `all_referrals` (
 `Street` text NOT NULL DEFAULT '',
 `City` text NOT NULL DEFAULT '',
 `Zip` text NOT NULL DEFAULT '',
-`Språk` text NOT NULL DEFAULT '',
+`Lang` text NOT NULL DEFAULT '',
 `Platform` text NOT NULL DEFAULT '',
 `Ad Name` text NOT NULL DEFAULT '',
 `Next Follow Up` datetime DEFAULT NULL,
@@ -73,7 +73,8 @@ CREATE TABLE `all_referrals` (
 `Help Request` text NOT NULL DEFAULT '',
 `Level of Knowledge` text NOT NULL DEFAULT '',
 `Ad ID` text NOT NULL DEFAULT '',
-`Form ID` text NOT NULL DEFAULT ''
+`Form ID` text NOT NULL DEFAULT '',
+PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 HEREA;
 carefulWriteSQL($mykey, $makeLargeTableSQL);
