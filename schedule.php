@@ -103,7 +103,10 @@ const InboxColors = {
     'green' : '#B5D7A8',
     'light-green' : '#C5FF8A',
     'pink' : '#D5A6BD',
-    'yellow' : '#FFE599'
+    'yellow' : '#FFE599',
+    'orange-yellow' : '#d0a600',
+    'light-blue' : '#3a77ff',
+    'forest' : '#137832'
 }
 let currentCopiedDay = null;
 
