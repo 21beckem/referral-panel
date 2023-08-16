@@ -116,6 +116,12 @@ table#topBtns tr td div input {
     width: calc(100% - 4px);
     height: 35px;
     text-align: center;
+    cursor: pointer;
+}
+#schTble tr:first-child td clipbox button.pst.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+    cursor: auto;
 }
 #schTble tr {
     height: 50px;

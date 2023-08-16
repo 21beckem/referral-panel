@@ -89,6 +89,7 @@
     <button id="saveBtn" class="purpleBtn">Save to Referral Suite</button>
     <script>
 function _(x) { return document.getElementById(x); }
+HTMLCollection.prototype.forEach = function (x) { return Array.from(this).forEach(x); }
 let strtDateInEl = _('strtDateIn');
 let shftsInDayEl = _('shftsInDay');
 let timesColEl = _('timesCol');
@@ -104,6 +105,7 @@ const InboxColors = {
     'pink' : '#D5A6BD',
     'yellow' : '#FFE599'
 }
+let currentCopiedDay = null;
 
 let schedArr = <?php echo(json_encode($schedArr)); ?>;
 let teamInfos = <?php echo(json_encode($teamInfos)); ?>;
@@ -136,8 +138,8 @@ function setAllValuesAndTables() {
     for (let i = 2; i < schedArr[0].length; i++) {
         const thisDate = new Date(schedArr[0][i]);
         const niceDate = dayNames[thisDate.getDay()] + '\n' + monthNames[thisDate.getMonth()] + ' ' + String(thisDate.getDate());
-        mainTbOut += '<td><button onclick="this.nextElementSibling.classList.toggle(\'open\')">v</button>' + niceDate;
-        mainTbOut += '<clipbox><button>Copy Day</button><button>Paste Day</button></clipbox></td>';
+        mainTbOut += '<td><button onclick="openCpyDropdown(this)">v</button>' + niceDate;
+        mainTbOut += '<clipbox><button class="cpy" onclick="cpyBtn(this, '+i+')">Copy Day</button><button class="pst disabled" onclick="pstBtn(this, '+i+')">Paste Day</button></clipbox></td>';
     }
     mainTbOut += '</tr>';
 
@@ -155,7 +157,7 @@ function setAllValuesAndTables() {
                 inboxersOptions += '<option'+( (cell==team[1]) ? ' selected' : '' )+'>' + team[1] + '</option>';
             }
 
-            mainTbOut += '<td><select onchange="dropdownOnChange(this)" style="background-color: '+colorForTeam(cell)+';">' + inboxersOptions + '</select></td>';
+            mainTbOut += '<td><select onchange="dropdownOnChange(this, '+i+', '+j+')" style="background-color: '+colorForTeam(cell)+';">' + inboxersOptions + '</select></td>';
         }
         mainTbOut += '</tr>';
     }
@@ -165,14 +167,31 @@ function setAllValuesAndTables() {
 function colorForTeam(team) {
     if (teamColorLookup.hasOwnProperty(team)) {
         return InboxColors[ teamColorLookup[team] ];
-    } else {
-        return '';
-    }
+    } else { return ''; }
+}
+function openCpyDropdown(el) {
+    document.querySelectorAll('clipbox').forEach(x => {
+        if (el.nextElementSibling != x) {
+            x.classList.remove('open');
+        }
+    });
+    el.nextElementSibling.classList.toggle('open');
 }
 
-function dropdownOnChange(el) {
-    //alert(el.value);
+function dropdownOnChange(el, row, col) {
+    schedArr[row][col] = el.value;
     el.style.backgroundColor = colorForTeam(el.value);
+}
+
+function cpyBtn(el, id) {
+    el.parentElement.classList.remove('open');
+    currentCopiedDay = [];
+    console.log('copied day: ');
+}
+function pstBtn(el, id) {
+    el.parentElement.classList.remove('open');
+    // something with currentCopiedDay;
+    console.log('pasted');
 }
 
 setAllValuesAndTables();
