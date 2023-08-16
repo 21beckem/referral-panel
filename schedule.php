@@ -63,7 +63,7 @@
         <div id="tbleWin">
             <table id="schTble">
                 <tr>
-                    <td><button>v</button>Tuesday,<br>Augest 15</td><td><button>v</button>Wednesday,<br>Augest 16</td><td><button>v</button>Thursday,<br>Augest 17</td><td><button>v</button>Tuesday,<br>Augest 15</td><td><button>v</button>Wednesday,<br>Augest 16</td><td><button>v</button>Thursday,<br>Augest 17</td><td><button>v</button>Tuesday,<br>Augest 15</td><td><button>v</button>Wednesday,<br>Augest 16</td><td><button>v</button>Thursday,<br>Augest 17</td><td><button>v</button>Tuesday,<br>Augest 15</td><td><button>v</button>Wednesday,<br>Augest 16</td><td><button>v</button>Thursday,<br>Augest 17</td><td><button>v</button>Tuesday,<br>Augest 15</td><td><button>v</button>Wednesday,<br>Augest 16</td><td><button>v</button>Thursday,<br>Augest 17</td><td><button>v</button>Tuesday,<br>Augest 15</td><td><button>v</button>Wednesday,<br>Augest 16</td><td><button>v</button>Thursday,<br>Augest 17</td><td><button>v</button>Tuesday,<br>Augest 15</td><td><button>v</button>Wednesday,<br>Augest 16</td><td><button>v</button>Thursday,<br>Augest 17</td><td><button>v</button>Tuesday,<br>Augest 15</td><td><button>v</button>Wednesday,<br>Augest 16</td><td><button>v</button>Thursday,<br>Augest 17</td>
+                    <td><button onclick="this.nextElementSibling.classList.toggle('open')">v</button>Tuesday, Augest 15<clipbox><button>Copy Day</button><button>Paste Day</button></clipbox></td><td><button>v</button>Wednesday, Augest 16</td><td><button>v</button>Thursday, Augest 17</td><td><button>v</button>Tuesday, Augest 15</td><td><button>v</button>Wednesday, Augest 16</td><td><button>v</button>Thursday, Augest 17</td><td><button>v</button>Tuesday, Augest 15</td><td><button>v</button>Wednesday, Augest 16</td><td><button>v</button>Thursday, Augest 17</td><td><button>v</button>Tuesday, Augest 15</td><td><button>v</button>Wednesday, Augest 16</td><td><button>v</button>Thursday, Augest 17</td><td><button>v</button>Tuesday, Augest 15</td><td><button>v</button>Wednesday, Augest 16</td><td><button>v</button>Thursday, Augest 17</td><td><button>v</button>Tuesday, Augest 15</td><td><button>v</button>Wednesday, Augest 16</td><td><button>v</button>Thursday, Augest 17</td><td><button>v</button>Tuesday, Augest 15</td><td><button>v</button>Wednesday, Augest 16</td><td><button>v</button>Thursday, Augest 17</td><td><button>v</button>Tuesday, Augest 15</td><td><button>v</button>Wednesday, Augest 16</td><td><button>v</button>Thursday, Augest 17</td>
                 </tr>
                 <tr>
                     <td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td><td><select><option>Hägersten</option></select></td><td><select><option>SMOEs</option></select></td><td><select><option>Gävle</option></select></td>
@@ -93,30 +93,89 @@ let strtDateInEl = _('strtDateIn');
 let shftsInDayEl = _('shftsInDay');
 let timesColEl = _('timesCol');
 let schTbleEl = _('schTble');
+const InboxColors = {
+    'teal' : '#00FFFF',
+    'orange' : '#F6B26B',
+    'lavender' : '#CAB7FC',
+    'red' : '#E06666',
+    'purple' : '#BF60FF',
+    'green' : '#B5D7A8',
+    'light-green' : '#C5FF8A',
+    'pink' : '#D5A6BD',
+    'yellow' : '#FFE599'
+}
 
 let schedArr = <?php echo(json_encode($schedArr)); ?>;
 let teamInfos = <?php echo(json_encode($teamInfos)); ?>;
 
-// set first date
-strtDateInEl.value = schedArr[0][2];
-
-// set shifts in day
-shftsInDayEl.value = schedArr.length - 1;
-
-// make times cols
-let timesColOutput = '<tr></tr>';
-for (let i = 1; i < schedArr.length; i++) {
-    timesColOutput += '<tr><td><input type="time" value="' + schedArr[i][0] + '"></td><td><input type="time" value="' + schedArr[i][1] + '"></td></tr>'
+// make team color lookup
+let teamColorLookup = {};
+for (let i = 0; i < teamInfos.length; i++) {
+    teamColorLookup[ teamInfos[i][1] ] = teamInfos[i][3];
 }
-timesColEl.innerHTML = timesColOutput;
 
-
-// make HTML table
-for (let i = 0; i < schedArr[0].length-2; i++) {
+function setAllValuesAndTables() {
+    // set first date
+    strtDateInEl.value = schedArr[0][2];
     
+    // set shifts in day
+    shftsInDayEl.value = schedArr.length - 1;
+
+    // make times cols
+    let timesColOutput = '<tr></tr>';
+    for (let i = 1; i < schedArr.length; i++) {
+        timesColOutput += '<tr><td><input type="time" value="' + schedArr[i][0] + '"></td><td><input type="time" value="' + schedArr[i][1] + '"></td></tr>'
+    }
+    timesColEl.innerHTML = timesColOutput;
+    
+    
+    // make HTML table (first row)
+    const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    const dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    let mainTbOut = '<tr>';
+    for (let i = 2; i < schedArr[0].length; i++) {
+        const thisDate = new Date(schedArr[0][i]);
+        const niceDate = dayNames[thisDate.getDay()] + '\n' + monthNames[thisDate.getMonth()] + ' ' + String(thisDate.getDate());
+        mainTbOut += '<td><button onclick="this.nextElementSibling.classList.toggle(\'open\')">v</button>' + niceDate;
+        mainTbOut += '<clipbox><button>Copy Day</button><button>Paste Day</button></clipbox></td>';
+    }
+    mainTbOut += '</tr>';
+
+
+    // make HTML table (main table)
+    for (let i = 1; i < schedArr.length; i++) {
+        const row = schedArr[i];
+        mainTbOut += '<tr>';
+        for (let j = 2; j < row.length; j++) {
+            const cell = row[j];
+            // make dropdown list of all inboxers
+            let inboxersOptions = '<option></option>';
+            for (let k = 0; k < teamInfos.length; k++) {
+                const team = teamInfos[k];
+                inboxersOptions += '<option'+( (cell==team[1]) ? ' selected' : '' )+'>' + team[1] + '</option>';
+            }
+
+            mainTbOut += '<td><select onchange="dropdownOnChange(this)" style="background-color: '+colorForTeam(cell)+';">' + inboxersOptions + '</select></td>';
+        }
+        mainTbOut += '</tr>';
+    }
+
+    schTbleEl.innerHTML = mainTbOut;
+}
+function colorForTeam(team) {
+    if (teamColorLookup.hasOwnProperty(team)) {
+        return InboxColors[ teamColorLookup[team] ];
+    } else {
+        return '';
+    }
 }
 
+function dropdownOnChange(el) {
+    //alert(el.value);
+    el.style.backgroundColor = colorForTeam(el.value);
+}
 
+setAllValuesAndTables();
     </script>
 </div>
 
