@@ -16,3 +16,13 @@ sidebarToggle.addEventListener("click", () => {
         localStorage.setItem("status", "open");
     }
 });
+
+function setDontRefresh(trueOrfalse) {
+    if (trueOrfalse) {
+        window.onbeforeunload = function() {
+            return "Data will be lost if you leave the page, are you sure?";
+        };
+    } else {
+        window.onbeforeunload = undefined;
+    }
+}
