@@ -143,7 +143,7 @@ function makeInboxersList() {
             <tr style="background-color: `+colorForTeam(tm[1])+`;">
                 <td><input type="text" value="`+tm[1]+`"></td>
                 <td><input type="text" value="`+tm[2]+`"></td>
-                <td><select>`+clrList+`</select></td>
+                <td><select onchange="updateTeamColorBackground(this.parentElement.parentElement, this.value)">`+clrList+`</select></td>
                 <td><select>`+rolList+`</select></td>
                 <td>
                     <button class="editBtn" onclick="enableEdits(this.parentElement.parentElement)"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -153,6 +153,9 @@ function makeInboxersList() {
             </tr>`;
     }
     inboxersParent.innerHTML = toPaste;
+}
+function updateTeamColorBackground(tr, col) {
+    tr.style.backgroundColor = InboxColors[col];
 }
 function enableEdits(tr) {
     document.querySelectorAll('#inboxersParent tr').forEach(x => {
