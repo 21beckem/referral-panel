@@ -9,9 +9,13 @@
     if (!isset($_POST['saveIt'])) {
         header('location: ../index.php');
     }
+    $arr = json_decode($_POST['saveIt']);
+    //var_dump($arr);
+    //echo('<br>');
     
-    if(writeSQL($_SESSION['missionInfo']->mykey, 'UPDATE `schedule` SET `json`="'.addslashes($_POST['saveIt']).'" WHERE 1')) {
-        header('location: ../schedule.php');
+
+    if(updateTableRowFromArray($_SESSION['missionInfo']->mykey, 'teams', '`id`='.$arr[0], $arr, true)) {
+        header('location: ../inboxers.php');
     } else {
         echo('Oj! Something went wrong. Click <a href="../schedule.php">here</a> to go back.');
         echo('<br><br>');

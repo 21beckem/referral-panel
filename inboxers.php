@@ -25,6 +25,7 @@
     border-spacing: 0 10px;
 }
 #inboxersParent tr.editing input, #inboxersParent tr.editing select {
+    background-color: #f9f9f9;
     cursor: auto;
     pointer-events: auto;
 }
@@ -60,7 +61,8 @@
 }
 input[type=text], select {
     pointer-events: none;
-    background-color: #f9f9f9;
+    background-color: transparent;
+    border-radius: 3px;
     border: none;
     padding: 5px;
     width: 100%;
@@ -108,6 +110,7 @@ let teamInfos = <?php echo(json_encode($teamInfos)) ?>;
 
 let inboxersParent = _('inboxersParent');
 let hiddenForm = _('hiddenForm');
+let hiddenSavingEl = _('hiddenSavingEl');
 
 // make team color lookup
 let teamColorLookup = {};
@@ -147,7 +150,7 @@ function makeInboxersList() {
                 <td><select>`+rolList+`</select></td>
                 <td>
                     <button class="editBtn" onclick="enableEdits(this.parentElement.parentElement)"><i class="fa-solid fa-pen-to-square"></i></button>
-                    <button class="saveBtn" onclick="saveEdits(`+i+`)"><i class="fa-solid fa-floppy-disk"></i></button>
+                    <button class="saveBtn" onclick="saveEdits(this.parentElement.parentElement,`+tm[0]+`)"><i class="fa-solid fa-floppy-disk"></i></button>
                 </td>
                 <td><button class="delBtn"><i class="fa-solid fa-trash-can"></i></button></td>
             </tr>`;
@@ -168,7 +171,16 @@ function enableEdits(tr) {
     console.log(tr);
 }
 function saveEdits(tr, tmId) {
-
+    let saveVals = Array();
+    tr.children.forEach(x=>{
+        let input = x.querySelector('input, select');
+        if (input != null) {
+            saveVals.push( input.value );
+        }
+    });
+    saveVals.unshift(tmId);
+    hiddenSavingEl.value = JSON.stringify(saveVals);
+    hiddenForm.submit();
 }
 makeInboxersList();
     </script>

@@ -42,13 +42,13 @@ function writeSQL($YOUR_DATABASE_NAME, $sqlStr) {
 
 function updateTableRowFromArray($YOUR_DATABASE_NAME, $tableName, $rowSelector, $arr, $debug=false) {
 	// get a list of the names of each column
-	$tableHeaders = readSQL("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '".$YOUR_DATABASE_NAME."' AND TABLE_NAME = '".$tableName."'");
+	$tableHeaders = readSQL($YOUR_DATABASE_NAME, "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '".$YOUR_DATABASE_NAME."' AND TABLE_NAME = '".$tableName."'");
 	
 	// create a sql writing string
 	$dontUpdateTheseCols = ['Referral Type', 'id', 'Date and Time']; // list of column names that you do not want to allow access to edit (for security reasons)
 	$writeThis = array();
 	for ($i = 0; $i < count($tableHeaders); $i++) {
-    	if (in_array($tableHeaders[$i][0], $dontUpdateTheseCols)) {
+    	if (in_array($tableHeaders[$i][0], $dontUpdateTheseCols) || $arr[$i]==NULL) {
         	continue;
         }
  		array_push($writeThis, "`".addslashes($tableHeaders[$i][0])."`=".addQuotes($arr[$i]));
@@ -60,7 +60,7 @@ function updateTableRowFromArray($YOUR_DATABASE_NAME, $tableName, $rowSelector, 
     	echo($updateStr);
     	echo('<br>');
     }
-	return writeSQL($updateStr);
+	return writeSQL($YOUR_DATABASE_NAME, $updateStr);
 }
 function addQuotes($str) {
 	if (gettype($str) == 'string') {
