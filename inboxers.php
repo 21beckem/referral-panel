@@ -5,6 +5,7 @@
     }
     require_once('panel_maker.php');
     require_once('sql_tools.php');
+    require_once('overall_vars.php');
     makeHTMLtop('Inboxers');
 
     // get teams info
@@ -12,10 +13,13 @@
 ?>
 <style>
 #inboxersParent {
+    position: relative;
+    min-width: 600px;
     width: 100%;
+    max-width: 900px;
     border-spacing: 0 10px;
 }
-#inboxersParent tr:not(:first-child) {
+#inboxersParent tr:not(:first-child):not(:last-child) {
     box-shadow: 2px 5px 10px -7px rgba(0, 0, 0, 0.5);
 }
 #inboxersParent tr:first-child td {
@@ -26,7 +30,7 @@
 }
 #addNewTeam {
     position: absolute;
-    right: 25px;
+    right: 10px;
     padding: 5px 10px;
 }
 input[type=text], select {
@@ -43,33 +47,86 @@ input[type=text], select {
 </div>
 
 <div class="dash-content">
-    <table id="inboxersParent">
-        <tr>
-            <td>Area Name</td><td>Email</td><td>Color</td><td>Role</td><td></td>
-        </tr>
-        <tr style="background-color: cyan;">
-            <td><input type="text" value="Hägersten"></td>
-            <td><input type="text" value="1234567@missionary.org"></td>
-            <td><select><option>Red</option></select></td>
-            <td><select><option>Standard</option></select></td>
-            <td><i class="fa-solid fa-trash-can"></i></td>
-        </tr>
-        <tr style="background-color: red;">
-            <td><input type="text" value="Hägersten"></td>
-            <td><input type="text" value="1234567@missionary.org"></td>
-            <td><select><option>Red</option></select></td>
-            <td><select><option>Standard</option></select></td>
-            <td><i class="fa-solid fa-trash-can"></i></td>
-        </tr>
-    </table>
-    <button id="addNewTeam" class="purpleBtn">Add New Team</button>
+    <center>
+        <table id="inboxersParent">
+            <tr>
+                <td>Area Name</td><td>Email</td><td>Color</td><td>Role</td><td></td>
+            </tr>
+            <tr style="background-color: cyan;">
+                <td><input type="text" value="Hägersten"></td>
+                <td><input type="text" value="1234567@missionary.org"></td>
+                <td><select><option>Red</option></select></td>
+                <td><select><option>Standard</option></select></td>
+                <td><i class="fa-solid fa-trash-can"></i></td>
+            </tr>
+            <tr style="background-color: red;">
+                <td><input type="text" value="Hägersten"></td>
+                <td><input type="text" value="1234567@missionary.org"></td>
+                <td><select><option>Red</option></select></td>
+                <td><select><option>Standard</option></select></td>
+                <td><i class="fa-solid fa-trash-can"></i></td>
+            </tr>
+            <tr>
+                <td colspan="999">
+                    <button id="addNewTeam" class="purpleBtn">Add New Team</button>
+                </td>
+            </tr>
+        </table>
+    </center>
     <form action="saving_functions/schedule_save.php" method="POST">
         <input type="hidden" id="hiddenSavingEl" name="saveIt">
         <input type="submit" id="saveBtn" class="purpleBtn" onclick="bigSaveBtn()" value="Save to Referral Suite">
     </form>
     <script>
+function _(x) { return document.getElementById(x); }
+const InboxColors = <?php echo(json_encode($InboxColors)); ?>;
 let teamInfos = <?php echo(json_encode($teamInfos)) ?>;
 
+let inboxersParent = _('inboxersParent');
+
+// make team color lookup
+let teamColorLookup = {};
+for (let i = 0; i < teamInfos.length; i++) {
+    teamColorLookup[ teamInfos[i][1] ] = teamInfos[i][3];
+}
+function colorForTeam(team) {
+    if (teamColorLookup.hasOwnProperty(team)) {
+        return InboxColors[ teamColorLookup[team] ];
+    } else { return ''; }
+}
+
+function makeInboxersList() {
+    let toPaste = '<tr><td>Area Name</td><td>Email</td><td>Color</td><td>Role</td><td></td></tr>';
+    for (let i = 0; i < teamInfos.length; i++) {
+        const tm = teamInfos[i];
+
+        // make colors list
+        let clrList = '';
+        for (let i = 0; i < Object.keys(InboxColors).length; i++) {
+            const clr = Object.keys(InboxColors)[i];
+            clrList += '<option'+ ((tm[3] == clr) ? ' selected>':'>') +clr+'</option>';
+        }
+        // make role list
+        let rolList = '';
+        const roles = ['Standard', 'Leader', 'Follow-up Saver'];
+        for (let i = 0; i < roles.length; i++) {
+            const rol = roles[i];
+            rolList += '<option'+ ((tm[4] == rol) ? ' selected>':'>') +rol+'</option>';
+        }
+
+        toPaste += `
+            <tr style="background-color: `+colorForTeam(tm[1])+`;">
+                <td><input type="text" value="`+tm[1]+`"></td>
+                <td><input type="text" value="`+tm[2]+`"></td>
+                <td><select>`+clrList+`</select></td>
+                <td><select>`+rolList+`</select></td>
+                <td><i class="fa-solid fa-trash-can"></i></td>
+            </tr>`;
+    }
+    toPaste += '<tr><td colspan="999"><button id="addNewTeam" class="purpleBtn">Add New Team</button></td></tr>';
+    inboxersParent.innerHTML = toPaste;
+}
+makeInboxersList();
     </script>
 </div>
 
