@@ -44,7 +44,7 @@ function makeHTMLtop($name="") {
                         <i class="fa-regular fa-calendar"></i>
                         <span class="link-name">Schedule</span>
                     </a></li>
-                    <li class="{$activeTab[3]}"><a href="#">
+                    <li class="{$activeTab[3]}"><a href="inboxers.php">
                         <i class="fa-solid fa-users"></i>
                         <span class="link-name">Inboxers</span>
                     </a></li>
