@@ -40,22 +40,35 @@ function writeSQL($YOUR_DATABASE_NAME, $sqlStr) {
 	return $out;
 }
 
-function updateTableRowFromArray($YOUR_DATABASE_NAME, $tableName, $rowSelector, $arr, $debug=false) {
+function updateTableRowFromArray($YOUR_DATABASE_NAME, $tableName, $rowSelector, $arr, $addIfRowSelectorDoesntExist=false, $debug=false) {
 	// get a list of the names of each column
 	$tableHeaders = readSQL($YOUR_DATABASE_NAME, "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '".$YOUR_DATABASE_NAME."' AND TABLE_NAME = '".$tableName."'");
+
+    // check if this rowSelector exists
+    $makeNewRow = ( count(readSQL($YOUR_DATABASE_NAME, 'SELECT * FROM `'.$tableName.'` WHERE '.$rowSelector)) == 0 && $addIfRowSelectorDoesntExist );
 	
 	// create a sql writing string
 	$dontUpdateTheseCols = ['Referral Type', 'id', 'Date and Time']; // list of column names that you do not want to allow access to edit (for security reasons)
 	$writeThis = array();
+    $writeThis2 = array();
 	for ($i = 0; $i < count($tableHeaders); $i++) {
-    	if (in_array($tableHeaders[$i][0], $dontUpdateTheseCols) || $arr[$i]==NULL) {
-        	continue;
+        if (in_array($tableHeaders[$i][0], $dontUpdateTheseCols) || $arr[$i]==NULL) {
+            continue;
         }
- 		array_push($writeThis, "`".addslashes($tableHeaders[$i][0])."`=".addQuotes($arr[$i]));
+        if ($makeNewRow) {
+            array_push($writeThis, "`".addslashes($tableHeaders[$i][0])."`");
+            array_push($writeThis2, addQuotes($arr[$i]));
+        } else {
+            array_push($writeThis, "`".addslashes($tableHeaders[$i][0])."`=".addQuotes($arr[$i]));
+        }
 	}
-
+    
+    if ($makeNewRow) {
+        $updateStr = 'INSERT INTO `'.$tableName.'` ('.join(", ",$writeThis).') VALUES ('.join(", ",$writeThis2).')';
+    } else {
+        $updateStr = 'UPDATE `'.$tableName.'` SET '.join(", ",$writeThis).' WHERE '.$rowSelector;
+    }
 	// run it
-	$updateStr = 'UPDATE `'.$tableName.'` SET '.join(", ",$writeThis).' WHERE '.$rowSelector;
 	if ($debug) {
     	echo($updateStr);
     	echo('<br>');

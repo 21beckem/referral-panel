@@ -54,6 +54,11 @@
     right: 10px;
     padding: 5px 10px;
 }
+#addNewTeam.disabled {
+    cursor: default;
+    pointer-events: none;
+    opacity: 0.5;
+}
 .editBtn, .saveBtn, .delBtn {
     border: none;
     background-color: transparent;
@@ -96,17 +101,18 @@ input[type=text], select {
                 </tr>
             </table>
             <br>
-            <button id="addNewTeam" class="purpleBtn">Add New Team</button>
+            <button id="addNewTeam" class="purpleBtn" onclick="addNewTeam()">Add New Team</button>
             <br>
             <form id="hiddenForm" action="saving_functions/inboxers_save.php" method="POST">
                 <input type="hidden" id="hiddenSavingEl" name="saveIt">
             </form>
         </div>
-    <script>
+        <script>
 function _(x) { return document.getElementById(x); }
 HTMLCollection.prototype.forEach = function (x) { return Array.from(this).forEach(x); }
 const InboxColors = <?php echo(json_encode($InboxColors)); ?>;
 let teamInfos = <?php echo(json_encode($teamInfos)) ?>;
+const roleOptions = ['Standard', 'Leader', 'Follow-up Saver'];
 
 let inboxersParent = _('inboxersParent');
 let hiddenForm = _('hiddenForm');
@@ -136,14 +142,13 @@ function makeInboxersList() {
         }
         // make role list
         let rolList = '';
-        const roles = ['Standard', 'Leader', 'Follow-up Saver'];
-        for (let i = 0; i < roles.length; i++) {
-            const rol = roles[i];
+        for (let i = 0; i < roleOptions.length; i++) {
+            const rol = roleOptions[i];
             rolList += '<option'+ ((tm[4] == rol) ? ' selected>':'>') +rol+'</option>';
         }
 
         toPaste += `
-            <tr style="background-color: `+colorForTeam(tm[1])+`;">
+            <tr style="background-color: `+InboxColors[tm[3]]+`;">
                 <td><input type="text" value="`+tm[1]+`"></td>
                 <td><input type="text" value="`+tm[2]+`"></td>
                 <td><select onchange="updateTeamColorBackground(this.parentElement.parentElement, this.value)">`+clrList+`</select></td>
@@ -152,7 +157,7 @@ function makeInboxersList() {
                     <button class="editBtn" onclick="enableEdits(this.parentElement.parentElement)"><i class="fa-solid fa-pen-to-square"></i></button>
                     <button class="saveBtn" onclick="saveEdits(this.parentElement.parentElement,`+tm[0]+`)"><i class="fa-solid fa-floppy-disk"></i></button>
                 </td>
-                <td><button class="delBtn"><i class="fa-solid fa-trash-can"></i></button></td>
+                <td><button class="delBtn" onclick="deleteTeam('`+tm[1]+`', `+tm[0]+`)"><i class="fa-solid fa-trash-can"></i></button></td>
             </tr>`;
     }
     inboxersParent.innerHTML = toPaste;
@@ -167,6 +172,7 @@ function enableEdits(tr) {
             x.classList.add('disabled');
         }
     });
+    _('addNewTeam').classList.add('disabled');
     tr.classList.add('editing');
     console.log(tr);
 }
@@ -181,6 +187,18 @@ function saveEdits(tr, tmId) {
     saveVals.unshift(tmId);
     hiddenSavingEl.value = JSON.stringify(saveVals);
     hiddenForm.submit();
+}
+function addNewTeam() {
+    teamInfos.push( [0, '', '', Object.keys(InboxColors)[0], roleOptions[0]] );
+    makeInboxersList();
+    enableEdits( inboxersParent.querySelector('tr:last-child') );
+}
+function deleteTeam(nm, tmId) {
+    if (confirm("Are you sure you want to delete "+nm+' from Referral Suite? This action cannot be undone!')) {
+        hiddenSavingEl.value = tmId;
+        hiddenForm.action = 'saving_functions/inboxers_delete.php';
+        hiddenForm.submit();
+    }
 }
 makeInboxersList();
     </script>
