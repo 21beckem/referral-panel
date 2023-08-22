@@ -29,6 +29,12 @@
     cursor: auto;
     pointer-events: auto;
 }
+#inboxersParent tr.editing .delBtn {
+    display: none;
+}
+#inboxersParent tr:not(.editing) .escBtn {
+    display: none;
+}
 #inboxersParent tr.editing .editBtn {
     display: none;
 }
@@ -42,6 +48,9 @@
 }
 #inboxersParent tr:not(:first-child) {
     box-shadow: 2px 5px 10px -7px rgba(0, 0, 0, 0.5);
+}
+#inboxersParent td:first-child {
+    width: 50px;
 }
 #inboxersParent tr:first-child td {
     padding: 0px 10px;
@@ -59,7 +68,7 @@
     pointer-events: none;
     opacity: 0.5;
 }
-.editBtn, .saveBtn, .delBtn {
+.editBtn, .saveBtn, .delBtn, .escBtn {
     border: none;
     background-color: transparent;
     cursor: pointer;
@@ -71,6 +80,12 @@ input[type=text], select {
     border: none;
     padding: 5px;
     width: 100%;
+}
+#inboxersParent tr:not(.editing) select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: '';
 }
 </style>
 <div class="top">
@@ -130,7 +145,7 @@ function colorForTeam(team) {
 }
 
 function makeInboxersList() {
-    let toPaste = '<tr><td>Area Name</td><td>Email</td><td>Color</td><td>Role</td><td></td></tr>';
+    let toPaste = '<tr><td>Id</td><td>Area Name</td><td>Email</td><td>Color</td><td>Role</td><td></td></tr>';
     for (let i = 0; i < teamInfos.length; i++) {
         const tm = teamInfos[i];
 
@@ -149,15 +164,19 @@ function makeInboxersList() {
 
         toPaste += `
             <tr style="background-color: `+InboxColors[tm[3]]+`;">
+                <td>`+tm[0]+`</td>
                 <td><input type="text" value="`+tm[1]+`"></td>
                 <td><input type="text" value="`+tm[2]+`"></td>
                 <td><select onchange="updateTeamColorBackground(this.parentElement.parentElement, this.value)">`+clrList+`</select></td>
                 <td><select>`+rolList+`</select></td>
                 <td>
-                    <button class="editBtn" onclick="enableEdits(this.parentElement.parentElement)"><i class="fa-solid fa-pen-to-square"></i></button>
-                    <button class="saveBtn" onclick="saveEdits(this.parentElement.parentElement,`+tm[0]+`)"><i class="fa-solid fa-floppy-disk"></i></button>
+                    <button class="editBtn" onclick="enableEdits(this.parentElement.parentElement)" title="Edit Team"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button class="saveBtn" onclick="saveEdits(this.parentElement.parentElement,`+tm[0]+`)" title="Save Edits"><i class="fa-solid fa-floppy-disk"></i></button>
                 </td>
-                <td><button class="delBtn" onclick="deleteTeam('`+tm[1]+`', `+tm[0]+`)"><i class="fa-solid fa-trash-can"></i></button></td>
+                <td>
+                    <button class="delBtn" onclick="deleteTeam('`+tm[1]+`', `+tm[0]+`)" title="Delete Team"><i class="fa-solid fa-trash-can"></i></button>
+                    <button class="escBtn" onclick="discardChanges()" title="Undo Changes"><i class="fa-solid fa-rotate-left"></i></button>
+                </td>
             </tr>`;
     }
     inboxersParent.innerHTML = toPaste;
@@ -199,6 +218,10 @@ function deleteTeam(nm, tmId) {
         hiddenForm.action = 'saving_functions/inboxers_delete.php';
         hiddenForm.submit();
     }
+}
+function discardChanges() {
+    _('addNewTeam').classList.remove('disabled');
+    makeInboxersList();
 }
 makeInboxersList();
     </script>
