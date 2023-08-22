@@ -36,7 +36,7 @@ function makeHTMLtop($name="") {
                         <i class="fa-solid fa-house"></i>
                         <span class="link-name">Dashboard</span>
                     </a></li>
-                    <li class="{$activeTab[1]}"><a href="#">
+                    <li class="{$activeTab[1]}"><a href="referrals.php">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <span class="link-name">Referrals</span>
                     </a></li>

@@ -81,6 +81,7 @@ body.dark .activity-data::-webkit-scrollbar-thumb:hover{
 }
 
 nav{
+    z-index: 99;
     position: fixed;
     top: 0;
     left: 0;

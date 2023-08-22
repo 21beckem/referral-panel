@@ -53,7 +53,6 @@ CREATE TABLE `all_referrals` (
 `Claimed` text NOT NULL DEFAULT 'Unclaimed',
 `Teaching Area` text NOT NULL DEFAULT '',
 `AB Status` text NOT NULL DEFAULT 'Yellow',
-`Full Name` text NOT NULL DEFAULT '',
 `First Name` text NOT NULL DEFAULT '',
 `Last Name` text NOT NULL DEFAULT '',
 `Phonenumber` text NOT NULL DEFAULT '',
