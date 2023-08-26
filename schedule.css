@@ -33,7 +33,7 @@ table#topBtns tr td div input {
 #FullTableParent #timesCol {
     position: relative;
     margin: 0;
-    width: 150px;
+    width: 200px;
     height: 100%;
     background-color: white;
     z-index: 5;
@@ -52,7 +52,7 @@ table#topBtns tr td div input {
 }
 #FullTableParent #tbleWin {
     margin: 0;
-    width: calc(100% - 150px);
+    width: calc(100% - 200px);
     height: 100%;
     overflow-y: hidden;
     overflow-x: scroll;
@@ -60,7 +60,7 @@ table#topBtns tr td div input {
     position: absolute;
     padding-bottom: 8px;
     top: 0;
-    left: 150px;
+    left: 200px;
 }
 #schTble tr:first-child {
     text-align: center;
