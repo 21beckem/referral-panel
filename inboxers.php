@@ -56,12 +56,11 @@
 }
 #infoForm {
     width: 70%;
-    background-color: aqua;
     padding: 15px;
 }
 #foxDataParent {
+    position: relative;
     width: 30%;
-    background-color: seagreen;
 }
 #profilePic {
     background-image: url('img/logo.png');
@@ -78,6 +77,32 @@
     border: 1px solid gray;
     margin-top: 3px;
     margin-bottom: 20px;
+}
+#streakNum {
+    position: absolute;
+    top: 10px;
+    width: 100%;
+    font-size: 50px;
+    color: #f203ff;
+    font-weight: bold;
+    text-align: center;
+}
+#inbucksNum {
+    width: 100%;
+    font-size: 50px;
+    color: #156f2b;
+    font-weight: bold;
+    text-align: center;
+}
+#inbucksImg {
+    width: 100%;
+    height: 70px;
+    margin-top: 30px;
+    background-repeat: no-repeat;
+    background-position: center;
+    transform: TranslateY(-40px);
+    background-size: contain;
+    background-image: url('https://ssmission.github.io/referral-suite/img/inbucks1.png')
 }
 </style>
 <div class="top">
@@ -109,7 +134,11 @@
             <input type="text" name="email">
         </form>
         <div id="foxDataParent">
-            hi
+            <div id="streakNum">43</div>
+            <img style="width: 100%; margin-top: 30px;" src="https://ssmission.github.io/referral-suite/img/streak1.png">
+            <br><br>
+            <div id="inbucksNum">43</div>
+            <div id="inbucksImg"></div>
         </div>
     </div>
 </div>
