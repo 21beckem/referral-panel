@@ -12,6 +12,9 @@
     // get teams info
     $teamInfos = readSQL($_SESSION['missionInfo']->mykey, 'SELECT * FROM `teams` WHERE 1');
 
+    // get table cols
+    $tableCols = readTableColumns($_SESSION['missionInfo']->mykey, 'all_referrals');
+
     // get referrals list
     $referralList = readSQL($_SESSION['missionInfo']->mykey, 'SELECT * FROM `all_referrals` LIMIT 5');
 ?>
@@ -37,68 +40,23 @@ table tr:nth-child(even) {
 <div class="dash-content">
 <table id="data_table">
     <tr>
-        <td>Type</td>
-        <td>Id</td>
-        <td>Date</td>
-        <td>Referral Sent</td>
-        <td>Claimed</td>
-        <td>Teaching Area</td>
-        <td>AB Status</td>
-        <td>First Name</td>
-        <td>Last Name</td>
-        <td>Number</td>
-        <td>Email</td>
-        <td>Street</td>
-        <td>City</td>
-        <td>Zip</td>
-        <td>Lang</td>
-        <td>Platform</td>
-        <td>Ad Name</td>
-        <td>Next Follow Up</td>
-        <td>Follow Up Status</td>
-        <td>Follow Up Count</td>
-        <td>Sent Date</td>
-        <td>NI Reason</td>
-        <td>Attempt Log</td>
-        <td>Help Request</td>
-        <td>Level of Knowledge</td>
-        <td>Ad ID</td>
-        <td>Form ID</td>
+        <?php
+            foreach ($tableCols as $key => $value) {
+                echo('<td>'.$value.'</td>');
+            }
+        ?>
     </tr>
 <?php
 for ($i=0; $i < count($referralList); $i++) { 
     $ref = $referralList[$i];
+    echo('<tr id="tableRowId_'.$ref[1].'">');
+    for ($j=0; $j < count($ref); $j++) { 
+        $refVal = $ref[$j];
+        echo('<td>'.$refVal.'</td>');
+    }
+    echo('</tr>');
+}
 ?>
-    <tr id="<?php echo $ref[1]; ?>">
-        <td><?php echo $ref[0]; ?></td>
-        <td><?php echo $ref[1]; ?></td>
-        <td><?php echo $ref[2]; ?></td>
-        <td><?php echo $ref[3]; ?></td>
-        <td><?php echo $ref[4]; ?></td>
-        <td><?php echo $ref[5]; ?></td>
-        <td><?php echo $ref[6]; ?></td>
-        <td><?php echo $ref[7]; ?></td>
-        <td><?php echo $ref[8]; ?></td>
-        <td><?php echo $ref[9]; ?></td>
-        <td><?php echo $ref[10]; ?></td>
-        <td><?php echo $ref[11]; ?></td>
-        <td><?php echo $ref[12]; ?></td>
-        <td><?php echo $ref[13]; ?></td>
-        <td><?php echo $ref[14]; ?></td>
-        <td><?php echo $ref[15]; ?></td>
-        <td><?php echo $ref[16]; ?></td>
-        <td><?php echo $ref[17]; ?></td>
-        <td><?php echo $ref[18]; ?></td>
-        <td><?php echo $ref[19]; ?></td>
-        <td><?php echo $ref[20]; ?></td>
-        <td><?php echo $ref[21]; ?></td>
-        <td><?php echo $ref[22]; ?></td>
-        <td><?php echo $ref[23]; ?></td>
-        <td><?php echo $ref[24]; ?></td>
-        <td><?php echo $ref[25]; ?></td>
-        <td><?php echo $ref[26]; ?></td>
-    </tr>
-<?php } ?>
 </table>
 </div>
 <script>

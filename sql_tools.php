@@ -40,9 +40,16 @@ function writeSQL($YOUR_DATABASE_NAME, $sqlStr) {
 	return $out;
 }
 
+function readTableColumns($YOUR_DATABASE_NAME, $tableName) {
+    $raw =  readSQL($YOUR_DATABASE_NAME, "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '".$YOUR_DATABASE_NAME."' AND TABLE_NAME = '".$tableName."'");
+    for ($i=0; $i < count($raw); $i++) { 
+        $raw[$i] = $raw[$i][0];
+    }
+    return $raw;
+}
 function updateTableRowFromArray($YOUR_DATABASE_NAME, $tableName, $rowSelector, $arr, $addIfRowSelectorDoesntExist=false, $debug=false) {
 	// get a list of the names of each column
-	$tableHeaders = readSQL($YOUR_DATABASE_NAME, "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '".$YOUR_DATABASE_NAME."' AND TABLE_NAME = '".$tableName."'");
+	$tableHeaders = readTableColumns($YOUR_DATABASE_NAME, $tableName);
 
     // check if this rowSelector exists
     $makeNewRow = ( count(readSQL($YOUR_DATABASE_NAME, 'SELECT * FROM `'.$tableName.'` WHERE '.$rowSelector)) == 0 && $addIfRowSelectorDoesntExist );
@@ -52,14 +59,14 @@ function updateTableRowFromArray($YOUR_DATABASE_NAME, $tableName, $rowSelector, 
 	$writeThis = array();
     $writeThis2 = array();
 	for ($i = 0; $i < count($tableHeaders); $i++) {
-        if (in_array($tableHeaders[$i][0], $dontUpdateTheseCols) || $arr[$i]==NULL) {
+        if (in_array($tableHeaders[$i], $dontUpdateTheseCols) || $arr[$i]==NULL) {
             continue;
         }
         if ($makeNewRow) {
-            array_push($writeThis, "`".addslashes($tableHeaders[$i][0])."`");
+            array_push($writeThis, "`".addslashes($tableHeaders[$i])."`");
             array_push($writeThis2, addQuotes($arr[$i]));
         } else {
-            array_push($writeThis, "`".addslashes($tableHeaders[$i][0])."`=".addQuotes($arr[$i]));
+            array_push($writeThis, "`".addslashes($tableHeaders[$i])."`=".addQuotes($arr[$i]));
         }
 	}
     
