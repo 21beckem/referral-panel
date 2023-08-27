@@ -52,6 +52,7 @@
     overflow-y: scroll;
 }
 #topHalfPage {
+    box-shadow: 1px 2px 12px -7px rgba(0, 0, 0, 0.5);
     display: flex;
 }
 #infoForm {
@@ -63,12 +64,47 @@
     width: 30%;
 }
 #profilePic {
-    background-image: url('img/logo.png');
+    position: relative;
+    background-image: url('https://ssmission.github.io/referral-suite/img/fox_profile_pics/teal.svg');
     background-size: contain;
     margin: 20px auto 30px auto;
     border-radius: 50%;
     width: 80px;
     height: 80px;
+}
+#profilePic select {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border-radius: 50%;
+    color: transparent;
+    border: none;
+    cursor: pointer;
+}
+#profilePic select option {
+    color: black;
+}
+#profilePic:hover i {
+    opacity: 0.4;
+}
+#profilePic i {
+    pointer-events: none;
+    text-align: center;
+    color: white;
+    width: 100%;
+    height: 80px;
+    font-size: 25px;
+    padding: 37% 0px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: none;
+    background-color: black;
+    opacity: 0;
+    border-radius: 50%;
 }
 #infoForm input {
     width: 70%;
@@ -146,7 +182,14 @@
 <div id="teamInfoMainParent">
     <div id="topHalfPage">
         <form id="infoForm">
-            <div id="profilePic"></div>
+            <div id="profilePic">
+                <select name="profilePicColor" id="profilePicColor">
+                    <option>purple</option>
+                    <option>brown</option>
+                    <option>green</option>
+                </select>
+                <i class="fa-solid fa-pencil"></i>
+            </div>
 
             <label for="uniqueId">Unique Id: </label>
             <input type="text" name="uniqueId" id="uniqueId" disabled value="3" style="background-color: #e2e2e2; text-align: center">
@@ -171,7 +214,7 @@
         </div>
     </div>
 
-    <div id="statsBoxes" class="boxes">
+    <div id="statsBoxes" class="boxes" style="padding-top: 50px;">
         <div class="box box1">
             <span class="text">Currently Claimed</span>
             <span class="number">0</span>
