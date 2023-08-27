@@ -94,6 +94,26 @@
     font-weight: bold;
     text-align: center;
 }
+#inbucksNum::before {
+    font-size: 20px;
+    content: "$";
+    color: #508d009c;
+}
+#inbucksNum::after {
+    font-size: 20px;
+    content: "$";
+    color: transparent;
+}
+#streakImg {
+    width: 100%;
+    height: 70px;
+    margin-top: 80px;
+    background-repeat: no-repeat;
+    background-position: center;
+    transform: TranslateY(-40px);
+    background-size: contain;
+    background-image: url('https://ssmission.github.io/referral-suite/img/streak1.png')
+}
 #inbucksImg {
     width: 100%;
     height: 70px;
@@ -103,6 +123,9 @@
     transform: TranslateY(-40px);
     background-size: contain;
     background-image: url('https://ssmission.github.io/referral-suite/img/inbucks1.png')
+}
+.box {
+    margin-bottom: 20px !important;
 }
 </style>
 <div class="top">
@@ -125,22 +148,62 @@
         <form id="infoForm">
             <div id="profilePic"></div>
 
-            <label>Unique Id: 3</label><br><br>
-
+            <label for="uniqueId">Unique Id: </label>
+            <input type="text" name="uniqueId" id="uniqueId" disabled value="3" style="background-color: #e2e2e2; text-align: center">
+            <br><br>
             <label for="name">Name:</label><br>
             <input type="text" name="name">
             <br>
             <label for="email">Email:</label><br>
             <input type="text" name="email">
+            <br>
+            <button class="purpleBtn" style="padding: 5px 15px; font-size: 17px">Save</button>
         </form>
         <div id="foxDataParent">
             <div id="streakNum">43</div>
-            <img style="width: 100%; margin-top: 30px;" src="https://ssmission.github.io/referral-suite/img/streak1.png">
-            <br><br>
-            <div id="inbucksNum">43</div>
+            <div id="streakImg"></div>
+
+            <div id="inbucksNum">926</div>
             <div id="inbucksImg"></div>
+            <center>
+                <button class="purpleBtn" style="padding: 5px 15px; font-size: 17px; margin: auto">Clear Fox Data</button>
+            </center>
+        </div>
+    </div>
+
+    <div id="statsBoxes" class="boxes">
+        <div class="box box1">
+            <span class="text">Currently Claimed</span>
+            <span class="number">0</span>
+        </div>
+        <div class="box box2">
+            <span class="text">Avg Contact Time</span>
+            <span class="number">0 min</span>
+        </div>
+        <div class="box box1">
+            <span class="text">Percent Sent</span>
+            <span class="number">0%</span>
+        </div>
+        <div class="box box2">
+            <span class="text">Total Ever Claimed</span>
+            <span class="number">0</span>
+        </div>
+        <div class="box box1">
+            <span class="text">Avg Send Time</span>
+            <span class="number">0 days</span>
+        </div>
+        <div class="box box2">
+            <span class="text">Percent Deceased</span>
+            <span class="number">0%</span>
         </div>
     </div>
 </div>
+<script>
+function _(x) { return document.getElementById(x); }
+HTMLCollection.prototype.forEach = function (x) { return Array.from(this).forEach(x); }
+
+
+_('uniqueId').style.width = ((_('uniqueId').value.length * 8)+20) + 'px';
+</script>
 
 <?php makeHTMLbottom() ?>

@@ -336,6 +336,7 @@ nav.close ~ .dashboard .top{
     padding: 15px 20px;
     background-color: var(--box1-color);
     transition: var(--tran-05);
+    margin: 5px;
 }
 .boxes .box i{
     font-size: 35px;
