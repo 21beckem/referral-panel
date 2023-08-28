@@ -86,7 +86,7 @@ echo('<br>'.'INSERT INTO `config`(`json`) VALUES ("'.addslashes($json_str).'")')
 carefulWriteSQL($mykey, 'INSERT INTO `config`(`json`) VALUES ("'.addslashes($json_str).'")');
 
 // create teams
-carefulWriteSQL($mykey, "CREATE TABLE `".$mykey."`.`teams` (`id` INT NOT NULL AUTO_INCREMENT , `name` TEXT NOT NULL DEFAULT '' , `email` TEXT NOT NULL DEFAULT '' , `color` TEXT NOT NULL DEFAULT '' , `role` TEXT NOT NULL DEFAULT '' , `fox_data` TEXT DEFAULT '' , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
+carefulWriteSQL($mykey, "CREATE TABLE `".$mykey."`.`teams` (`id` INT NOT NULL AUTO_INCREMENT , `name` TEXT NOT NULL DEFAULT '' , `email` TEXT NOT NULL DEFAULT '' , `color` TEXT NOT NULL DEFAULT '' , `role` TEXT NOT NULL DEFAULT '' , `fox_streak` TEXT DEFAULT '', `fox_inbucks` INT NOT NULL DEFAULT '0' , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
 
 // create schedule
 carefulWriteSQL($mykey, 'CREATE TABLE `'.$mykey.'`.`schedule` (`json` TEXT NULL DEFAULT NULL ) ENGINE = InnoDB;');

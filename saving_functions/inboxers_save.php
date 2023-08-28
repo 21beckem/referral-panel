@@ -6,15 +6,11 @@
     }
     require_once('../sql_tools.php');
 
-    if (!isset($_POST['saveIt'])) {
+    if (!isset($_POST)) {
         header('location: ../index.php');
     }
-    $arr = json_decode($_POST['saveIt']);
-    //var_dump($arr);
-    //echo('<br>');
-    
 
-    if(updateTableRowFromArray($_SESSION['missionInfo']->mykey, 'teams', '`id`='.$arr[0], $arr, true)) {
+    if(updateTableRowFromObject($_SESSION['missionInfo']->mykey, 'teams', '`id`='.$_POST['id'], $_POST, true)) {
         header('location: ../inboxers.php');
     } else {
         echo('Oj! Something went wrong. Click <a href="../schedule.php">here</a> to go back.');

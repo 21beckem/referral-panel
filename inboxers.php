@@ -16,7 +16,6 @@
     width: 170px;
     position: absolute;
     z-index: 1;
-    top: 0px;
     left: 0px;
     overflow-x: hidden;
     padding: 8px 0;
@@ -103,7 +102,7 @@
     opacity: 0;
     border-radius: 50%;
 }
-#infoForm input[type=text] {
+#infoForm .niceInput {
     width: 70%;
     padding: 3px;
     border-radius: 5px;
@@ -160,6 +159,16 @@
 .box {
     margin-bottom: 20px !important;
 }
+#delBtn {
+    right: 40px;
+    margin: 10px;
+    padding: 5px 20px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    background-color: #ff4c4c;
+    cursor: pointer;
+}
 </style>
 <div class="top">
     <i class="fa-solid fa-bars sidebar-toggle"></i>
@@ -168,20 +177,20 @@
 </div>
 
 <div class="dash-content">
-    <div class="sidenav">
+    <div id="teamBtns" class="sidenav">
         <?php
         foreach ($teamInfos as $i => $row) {
-            echo('<div onclick="" style="background-color: '.$InboxColors[$row[3]].'">'.$row[1].'</div>');
+            echo('<div id="teamSelectBtn_'.$row[0].'" onclick="openThisTeam('.$row[0].')" style="background-color: '.$InboxColors[$row[3]].'">'.$row[1].'</div>');
         }
         ?>
-        <button class="purpleBtn">Add Team</button>
+        <button onclick="openThisTeam('new')" class="purpleBtn">Add Team</button>
     </div>
 
-<div id="teamInfoMainParent">
+<div id="teamInfoMainParent" style="opacity:0">
     <div id="topHalfPage">
-        <form id="infoForm">
+        <form id="infoForm" method="POST" action="saving_functions/inboxers_save.php">
             <div id="profilePic">
-                <select onchange="updateProfileColor()" name="profilePicColor" id="profilePicColor">
+                <select onchange="updateProfileColor()" name="color" id="profilePicColor">
                     <?php
                     foreach ($InboxColors as $col => $hex) {
                         echo('<option>'.$col.'</option>');
@@ -191,14 +200,19 @@
                 <i class="fa-solid fa-pencil"></i>
             </div>
 
-            <label for="uniqueId">Unique Id: </label>
-            <input type="text" name="uniqueId" id="uniqueIdIn" disabled value="3" style="background-color: #e2e2e2; text-align: center">
+            <label for="id">Unique Id: </label>
+            <input class="niceInput" type="text" name="id" id="uniqueIdIn" value="3" style="background-color: #e2e2e2; text-align: center; pointer-events: none;">
             <br><br>
             <label for="name">Name:</label><br>
-            <input type="text" name="name" id="nameIn">
+            <input class="niceInput" type="text" name="name" id="nameIn">
             <br>
             <label for="email">Email:</label><br>
-            <input type="text" name="email" id="emailIn">
+            <input class="niceInput" type="text" name="email" id="emailIn">
+            <br>
+            <label for="role">Role:</label><br>
+            <select class="niceInput" name="role" id="roleIn">
+                <?php echo('<option>'.join('</option><option>',$TeamRoles).'</option>'); ?>
+            </select>
             <br>
             <input type="submit" class="purpleBtn" style="padding: 5px 15px; font-size: 17px" value="Save">
         </form>
@@ -213,8 +227,9 @@
             </center>
         </div>
     </div>
+    <button id="delBtn">Delete Team</button><br>
 
-    <div id="statsBoxes" class="boxes" style="padding-top: 50px;">
+    <div id="statsBoxes" class="boxes" style="padding-top: 30px;">
         <div class="box box1">
             <span class="text">Currently Claimed</span>
             <span class="number">0</span>
@@ -244,24 +259,49 @@
 <script>
 function _(x) { return document.getElementById(x); }
 HTMLCollection.prototype.forEach = function (x) { return Array.from(this).forEach(x); }
+let teamBtnsEl = _('teamBtns');
 let teamInfoMainParent = _('teamInfoMainParent');
 let profilePicEl = _('profilePic');
 let profilePicColor = _('profilePicColor');
 let uniqueIdIn = _('uniqueIdIn');
 let nameIn = _('nameIn');
 let emailIn = _('emailIn');
+let roleIn = _('roleIn');
 
 let streakNum = _('streakNum');
 let inbucksNum = _('inbucksNum');
 
+const TeamRoles = <?php echo(json_encode($TeamRoles)); ?>;
 const InboxColors = <?php echo(json_encode($InboxColors)); ?>;
 const teamInfos = <?php echo(json_encode($teamInfos)); ?>;
+const teamBtnsHTML = teamBtnsEl.innerHTML;
+
+
+function openThisTeam(tmId) {
+    let thisTeam = teamInfos.filter(x => x[0]==parseInt(tmId))[0];
+    if (tmId=='new') {
+        thisTeam = ['auto-generated', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
+    }
+    teamBtnsEl.innerHTML = teamBtnsHTML;
+    teamInfoMainParent.style.opacity = 1;
+    
+    uniqueIdIn.value = thisTeam[0];
+    uniqueIdIn.style.width = ((uniqueIdIn.value.length * 8)+20) + 'px';
+    profilePicColor.value = thisTeam[3];
+    updateProfileColor();
+    nameIn.value = thisTeam[1];
+    emailIn.value = thisTeam[2];
+    roleIn.value = (thisTeam[4]=='') ? TeamRoles[0] : thisTeam[4];
+}
 
 function updateProfileColor() {
     profilePicEl.style.backgroundImage = 'url("https://ssmission.github.io/referral-suite/img/fox_profile_pics/'+profilePicColor.value+'.svg")';
+    try {
+        _('teamSelectBtn_'+uniqueIdIn.value).style.backgroundColor = InboxColors[ profilePicColor.value ];
+    } catch (e) {}
+        
 }
 
-uniqueIdIn.style.width = ((uniqueIdIn.value.length * 8)+20) + 'px';
 </script>
 
 <?php makeHTMLbottom() ?>
