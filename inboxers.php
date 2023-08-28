@@ -31,12 +31,6 @@
     font-size: 23px;
     display: block;
 }
-.sidenav div:nth-child(even) {
-    background: #eee;
-}
-.sidenav div:nth-child(odd) {
-    background: #f2ddf0;
-}
 .sidenav button {
     border: none;
     padding: 6px 8px;
@@ -65,7 +59,7 @@
 }
 #profilePic {
     position: relative;
-    background-image: url('https://ssmission.github.io/referral-suite/img/fox_profile_pics/teal.svg');
+    background-color: #f3f3f3;
     background-size: contain;
     margin: 20px auto 30px auto;
     border-radius: 50%;
@@ -83,6 +77,9 @@
     color: transparent;
     border: none;
     cursor: pointer;
+}
+#profilePic select:focus {
+    outline: none;
 }
 #profilePic select option {
     color: black;
@@ -106,7 +103,7 @@
     opacity: 0;
     border-radius: 50%;
 }
-#infoForm input {
+#infoForm input[type=text] {
     width: 70%;
     padding: 3px;
     border-radius: 5px;
@@ -172,10 +169,11 @@
 
 <div class="dash-content">
     <div class="sidenav">
-        <div>Hägersten</div>
-        <div>Karlstad</div>
-        <div>Jönköping</div>
-        <div>Kristianstad</div>
+        <?php
+        foreach ($teamInfos as $i => $row) {
+            echo('<div onclick="" style="background-color: '.$InboxColors[$row[3]].'">'.$row[1].'</div>');
+        }
+        ?>
         <button class="purpleBtn">Add Team</button>
     </div>
 
@@ -183,24 +181,26 @@
     <div id="topHalfPage">
         <form id="infoForm">
             <div id="profilePic">
-                <select name="profilePicColor" id="profilePicColor">
-                    <option>purple</option>
-                    <option>brown</option>
-                    <option>green</option>
+                <select onchange="updateProfileColor()" name="profilePicColor" id="profilePicColor">
+                    <?php
+                    foreach ($InboxColors as $col => $hex) {
+                        echo('<option>'.$col.'</option>');
+                    }
+                    ?>
                 </select>
                 <i class="fa-solid fa-pencil"></i>
             </div>
 
             <label for="uniqueId">Unique Id: </label>
-            <input type="text" name="uniqueId" id="uniqueId" disabled value="3" style="background-color: #e2e2e2; text-align: center">
+            <input type="text" name="uniqueId" id="uniqueIdIn" disabled value="3" style="background-color: #e2e2e2; text-align: center">
             <br><br>
             <label for="name">Name:</label><br>
-            <input type="text" name="name">
+            <input type="text" name="name" id="nameIn">
             <br>
             <label for="email">Email:</label><br>
-            <input type="text" name="email">
+            <input type="text" name="email" id="emailIn">
             <br>
-            <button class="purpleBtn" style="padding: 5px 15px; font-size: 17px">Save</button>
+            <input type="submit" class="purpleBtn" style="padding: 5px 15px; font-size: 17px" value="Save">
         </form>
         <div id="foxDataParent">
             <div id="streakNum">43</div>
@@ -244,9 +244,24 @@
 <script>
 function _(x) { return document.getElementById(x); }
 HTMLCollection.prototype.forEach = function (x) { return Array.from(this).forEach(x); }
+let teamInfoMainParent = _('teamInfoMainParent');
+let profilePicEl = _('profilePic');
+let profilePicColor = _('profilePicColor');
+let uniqueIdIn = _('uniqueIdIn');
+let nameIn = _('nameIn');
+let emailIn = _('emailIn');
 
+let streakNum = _('streakNum');
+let inbucksNum = _('inbucksNum');
 
-_('uniqueId').style.width = ((_('uniqueId').value.length * 8)+20) + 'px';
+const InboxColors = <?php echo(json_encode($InboxColors)); ?>;
+const teamInfos = <?php echo(json_encode($teamInfos)); ?>;
+
+function updateProfileColor() {
+    profilePicEl.style.backgroundImage = 'url("https://ssmission.github.io/referral-suite/img/fox_profile_pics/'+profilePicColor.value+'.svg")';
+}
+
+uniqueIdIn.style.width = ((uniqueIdIn.value.length * 8)+20) + 'px';
 </script>
 
 <?php makeHTMLbottom() ?>
