@@ -17,6 +17,16 @@ function makeHTMLtop($name="") {
     for ($i=0; $i < count($tabs); $i++) { 
         array_push($activeTab, acivateThisTab($name, $tabs[$i]));
     }
+
+    $successToAlert = '';
+    if (isset($_SESSION['sucess_status'])) {
+        if ($_SESSION['sucess_status']) {
+            $successToAlert = "let successToAlert = JSAlert.alert('Changes Saved', '', JSAlert.Icons.Success);  successToAlert.dismissIn(1500);";
+        } else {
+            $successToAlert = "JSAlert.alert('Oops! Something went wrong.<br>Please try again', '', JSAlert.Icons.Failed);";
+        }
+        unset($_SESSION['sucess_status']);
+    }
     echo(<<<HERA
     <!DOCTYPE html>
     <html lang="en">
@@ -31,7 +41,9 @@ function makeHTMLtop($name="") {
     </head>
     <body>
         <nav>
-    
+            <script>
+            window.onload = () => { {$successToAlert} }
+            </script>
             <div class="menu-items">
                 <ul class="nav-links">
                     <li class="{$activeTab[0]}"><a href="index.php">
