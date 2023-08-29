@@ -18,8 +18,11 @@
     // get referrals list
     $referralList = readSQL($_SESSION['missionInfo']->mykey, 'SELECT * FROM `all_referrals` LIMIT 5');
 ?>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script type="text/javascript" src="saving_functions/jquery.tabledit.min.js"></script>
+<link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script> 
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.js"></script>
 <style>
 table {
     width: 100%;
@@ -38,7 +41,7 @@ table tr:nth-child(even) {
     <img src="img/logo.png" alt="">
 </div>
 <div class="dash-content">
-<table id="data_table">
+<table id="data_table" class="table table-bordered table-striped">
     <tr>
         <?php
             foreach ($tableCols as $key => $value) {
@@ -46,8 +49,10 @@ table tr:nth-child(even) {
             }
         ?>
     </tr>
+    <tbody id="employee_data">
+    </tbody>
 <?php
-for ($i=0; $i < count($referralList); $i++) { 
+/*for ($i=0; $i < count($referralList); $i++) { 
     $ref = $referralList[$i];
     echo('<tr id="tableRowId_'.$ref[1].'">');
     for ($j=0; $j < count($ref); $j++) { 
@@ -55,49 +60,51 @@ for ($i=0; $i < count($referralList); $i++) {
         echo('<td>'.$refVal.'</td>');
     }
     echo('</tr>');
-}
+}*/
 ?>
 </table>
 </div>
 <script>
     
-$('#data_table').Tabledit({
-    url: 'example.php',
-    eventType: 'dblclick',
-    editButton: false,
-    columns: {
-        identifier: [0, 'id'],
-        editable: [
-            [0, 'Type']
-            [1, 'Id']
-            [2, 'Date']
-            [3, 'Referral Sent']
-            [4, 'Claimed']
-            [5, 'Teaching Area']
-            [6, 'AB Status']
-            [7, 'First Name']
-            [8, 'Last Name']
-            [9, 'Number']
-            [10, 'Email']
-            [11, 'Street']
-            [12, 'City']
-            [13, 'Zip']
-            [14, 'Lang']
-            [15, 'Platform']
-            [16, 'Ad Name']
-            [17, 'Next Follow Up']
-            [18, 'Follow Up Status']
-            [19, 'Follow Up Count']
-            [20, 'Sent Date']
-            [21, 'NI Reason']
-            [22, 'Attempt Log']
-            [23, 'Help Request']
-            [24, 'Level of Knowledge']
-            [25, 'Ad ID']
-            [26, 'Form ID']
-        ]
+function fetch_employee_data()
+ {
+  $.ajax({
+   url:"referrals_table/fetch.php",
+   method:"POST",
+   dataType:"json",
+   success:function(data)
+   {
+    for(var count=0; count<data.length; count++)
+    {
+     var html_data = '<tr>';
+     html_data += '<td data-name="name" class="name" data-type="text" data-pk="'+data[count][1]+'">'+data[count][0]+'</td>';
+     html_data += '<td>'+data[count][1]+'</td>';
+     html_data += '<td data-name="gender" class="gender" data-type="select" data-pk="'+data[count][1]+'">'+data[count][2]+'</td>';
+     html_data += '<td data-name="designation" class="designation" data-type="text" data-pk="'+data[count][1]+'">'+data[count][3]+'</td>';
+     html_data += '<td data-name="age" class="age" data-type="text" data-pk="'+data[count][1]+'">'+data[count][4]+'</td>';
+     html_data += '</tr>';
+     $('#employee_data').append(html_data);
     }
-});
+   }
+  })
+ }
+ $('#employee_data').editable({
+  container: 'body',
+  selector: 'td.name',
+  url: "update.php",
+  title: 'Gender',
+  type: "POST",
+  dataType: 'json',
+  source: [{value: "Male", text: "Male"}, {value: "Female", text: "Female"}],
+  validate: function(value){
+   if($.trim(value) == '')
+   {
+    return 'This field is required';
+   }
+  }
+ });
+
+ fetch_employee_data();
 
 </script>
 </div>
