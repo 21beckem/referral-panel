@@ -26,3 +26,8 @@ function setDontRefresh(trueOrfalse) {
         window.onbeforeunload = undefined;
     }
 }
+function setLastUrl(u) {
+    let url = 'setLastUrl.php?url='+encodeURI(u);
+    fetch(url);
+    return url;
+}

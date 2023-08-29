@@ -11,9 +11,9 @@
     }
 
     if(updateTableRowFromObject($_SESSION['missionInfo']->mykey, 'teams', '`id`='.$_POST['id'], $_POST, true)) {
-        header('location: ../inboxers.php');
+        header('location: '.$_SESSION['lastURL']);
     } else {
-        echo('Oj! Something went wrong. Click <a href="../schedule.php">here</a> to go back.');
+        echo('Oj! Something went wrong. Click <a href="'.$_SESSION['lastURL'].'">here</a> to go back.');
         echo('<br><br>');
         echo('Your supplied data: '.$_POST['saveIt']);
     }

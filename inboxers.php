@@ -160,7 +160,7 @@
     margin-bottom: 20px !important;
 }
 #delBtn {
-    right: 40px;
+    float: right;
     margin: 10px;
     padding: 5px 20px;
     color: white;
@@ -180,7 +180,7 @@
     <div id="teamBtns" class="sidenav">
         <?php
         foreach ($teamInfos as $i => $row) {
-            echo('<div id="teamSelectBtn_'.$row[0].'" onclick="openThisTeam('.$row[0].')" style="background-color: '.$InboxColors[$row[3]].'">'.$row[1].'</div>');
+            echo('<div id="teamSelectBtn_'.$row[0].'" href="inboxers.php?id='.$row[0].'" onclick="location.href=this.getAttribute(\'href\')" style="background-color: '.$InboxColors[$row[3]].'">'.$row[1].'</div>');
         }
         ?>
         <button onclick="openThisTeam('new')" class="purpleBtn">Add Team</button>
@@ -207,7 +207,7 @@
             <input class="niceInput" type="text" name="name" id="nameIn">
             <br>
             <label for="email">Email:</label><br>
-            <input class="niceInput" type="text" name="email" id="emailIn">
+            <input class="niceInput" type="email" name="email" id="emailIn">
             <br>
             <label for="role">Role:</label><br>
             <select class="niceInput" name="role" id="roleIn">
@@ -227,7 +227,6 @@
             </center>
         </div>
     </div>
-    <button id="delBtn">Delete Team</button><br>
 
     <div id="statsBoxes" class="boxes" style="padding-top: 30px;">
         <div class="box box1">
@@ -255,6 +254,10 @@
             <span class="number">0%</span>
         </div>
     </div>
+    <form action="saving_functions/inboxers_delete.php" method="POST" onsubmit="return deleteThisTeam(event)" id="hiddenDeleteForm">
+        <input type="hidden" name="id" id="deleteIdEl">
+        <input type="submit" id="delBtn" value="Delete Team"><br>
+    </form>
 </div>
 <script>
 function _(x) { return document.getElementById(x); }
@@ -287,11 +290,13 @@ function openThisTeam(tmId) {
     
     uniqueIdIn.value = thisTeam[0];
     uniqueIdIn.style.width = ((uniqueIdIn.value.length * 8)+20) + 'px';
-    profilePicColor.value = thisTeam[3];
+    profilePicColor.value = (thisTeam[3]=='') ? profilePicColor.options[0].value : thisTeam[3];
     updateProfileColor();
     nameIn.value = thisTeam[1];
     emailIn.value = thisTeam[2];
     roleIn.value = (thisTeam[4]=='') ? TeamRoles[0] : thisTeam[4];
+
+    _('deleteIdEl').value = thisTeam[0];
 }
 
 function updateProfileColor() {
@@ -301,6 +306,23 @@ function updateProfileColor() {
     } catch (e) {}
         
 }
+
+function deleteThisTeam(e) {
+    e.preventDefault();
+    let customAlert = new JSAlert("Are you sure you want to delete this team? All "+'num'+" referrals that this team has claimed will be lost!");
+    customAlert.addButton("Yes").then(function() {
+        _('hiddenDeleteForm').submit();
+    });
+    customAlert.addButton("No");
+    customAlert.show();
+    return false;
+}
+
+<?php
+if (isset($_GET['id'])) {
+    echo('openThisTeam('.$_GET['id'].');');
+}
+?>
 
 </script>
 
