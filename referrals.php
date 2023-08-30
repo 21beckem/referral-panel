@@ -14,12 +14,66 @@
 
     // get table cols
     $tableCols = readTableColumns($_SESSION['missionInfo']->mykey, 'all_referrals');
+
+
+    ///////////////////////////////////////////////////
+    //                  Make Query                   //
+    ///////////////////////////////////////////////////
+    $operatorLookup = array(
+        'eq' => ['="', '"'], // equals
+        'ne' => ['!="', '"'], // not equals
+        'sw' => ['like "', '%"'], // starts with
+        'ct' => ['like "%', '%"'], // contains
+        'nct' => ['not like "', '%"'], // doesn't contain
+        'fw' => ['like "%', '"'], // finishes with
+        'null' => 'is empty', // is empty
+        'nn' => 'not empty', // not empty
+        'gt' => 'greater than', // greater than
+        'lt' => 'less than', // less than
+
+        'in' => 'matches one of the following (separated by cammas stored in value)',
+        
+        'bw' => 'between value and value2',
+        'nbw' => 'NOT between value and value2',
+    );
+    $MAIN_QUERY = 'SELECT * FROM `all_referrals` WHERE 1 ORDER BY `all_referrals`.`id` DESC LIMIT 10';
+
+    if (isset($_GET['filters'])) {
+        $filtersCount = intval($_GET['filters']);
+        $MAIN_QUERY = '';
+        for ($i=0; $i < $filtersCount; $i++) { 
+            $MAIN_QUERY .= '(';
+            $field = $_GET['field-'.$i]; 
+            $op = $_GET['operator-'.$i]; 
+            $value = $_GET['value-'.$i]; 
+            $value2 = $_GET['value2-'.$i];
+
+            if ($op == 'in') { // spacial case for matches
+                $MAIN_QUERY .= '';
+            } else if ($op == 'bw') { // spacial case for between
+                $MAIN_QUERY .= '';
+            } else if ($op == 'nbw') { // spacial case for not between
+                $MAIN_QUERY .= '';
+            } else { // otherwise, handle normally
+
+                $MAIN_QUERY .= '`'.$field.'`'.' '.$operatorLookup[$op][0].$value.$operatorLookup[$op][1];
+                
+            }
+            $MAIN_QUERY .= ') AND';
+        }
+        $MAIN_QUERY = substr($MAIN_QUERY, 0, -4);
+    }
+    echo('mainQ: '.$MAIN_QUERY);
 ?>
 <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
-<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script> 
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
 <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.js"></script>
+<script src="structured_filter/script.js"></script>
+<link rel="stylesheet" href="structured_filter/style.css">
+<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css">
 <style>
 #data_table {
     border-spacing: 0 0px;
@@ -51,6 +105,7 @@
     <img src="img/logo.png" alt="">
 </div>
 <div class="dash-content">
+<div id="myFilter"></div>
 <table id="data_table" class="table table-bordered table-striped">
     <tr class="header">
         <?php
@@ -103,36 +158,29 @@ function getEditableClassAndType(colName) {
     }
 }
 
-function fetch_employee_data() {
-    $.ajax({
-        url:"referrals_table/fetch.php",
-        method:"POST",
-        data: {'q' : 'SELECT * FROM `all_referrals` WHERE 1 ORDER BY `all_referrals`.`id` DESC LIMIT 10'},
-        dataType:"json",
-        success: function(data) {
-            let html_data = '';
-            for (let i=0; i<data.length; i++) {
-                const row = data[i];
+function make_table(data) {
+    let html_data = '';
+    for (let i=0; i<data.length; i++) {
+        const row = data[i];
 
-                html_data += '<tr>'
-                for (let j = 0; j < row.length; j++) {
-                    const cell = row[j];
-                    const col = tableCols[j];
-                    const cls = getEditableClassAndType(col)[0];
-                    const typ = getEditableClassAndType(col)[1];
-                    
-                    if (typ == 'select') {
-                        html_data += '<td data-name="'+col+'" class="'+cls+'" data-type="'+typ+'" data-pk="'+row[1]+'">'+getTeamFromId(cell)+'</td>';
-                    } else {
-                        html_data += '<td data-name="'+col+'" class="'+cls+'" data-type="'+typ+'" data-pk="'+row[1]+'">'+cell+'</td>';
-                    }
-                }
-                html_data += '</tr>';
+        html_data += '<tr>'
+        for (let j = 0; j < row.length; j++) {
+            const cell = row[j];
+            const col = tableCols[j];
+            const cls = getEditableClassAndType(col)[0];
+            const typ = getEditableClassAndType(col)[1];
+            
+            if (typ == 'select') {
+                html_data += '<td data-name="'+col+'" class="'+cls+'" data-type="'+typ+'" data-pk="'+row[1]+'">'+getTeamFromId(cell)+'</td>';
+            } else {
+                html_data += '<td data-name="'+col+'" class="'+cls+'" data-type="'+typ+'" data-pk="'+row[1]+'">'+cell+'</td>';
             }
-            $('#employee_data').append(html_data);
         }
-    });
+        html_data += '</tr>';
+    }
+    $('#employee_data').append(html_data);
 }
+make_table(<?php echo(json_encode( readSQL($_SESSION['missionInfo']->mykey, $MAIN_QUERY) )); ?>);
 $('#employee_data').editable({ // textEditable class is now editable
     container: 'body',
     selector: 'td.textEditable',
@@ -154,7 +202,27 @@ $('#employee_data').editable({ // claimedCol class is now editable with select
     }
 });
 
-fetch_employee_data();
+$(document).ready(function() { // create filter box
+    $("#myFilter").structFilter({
+        submitButton: true,
+        fields: [
+            {id:"lastname", type:"text", label:"Lastname"},
+            {id:"firstname", type:"text", label:"Firstname"},
+            {id:"active", type:"boolean", label:"Is active"},
+            {id:"age", type:"number", label:"Age"},
+            {id:"bday", type:"date", label:"Birthday"},
+            {id:"category", type:"list", label:"Category",
+                list:[
+                    {id:"1", label:"Family"},
+                    {id:"2", label:"Friends"},
+                    {id:"3", label:"Business"},
+                    {id:"4", label:"Acquaintances"},
+                    {id:"5", label:"Other"}
+                ]
+            }
+        ]
+    });
+});
 
 </script>
 </div>
