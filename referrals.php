@@ -21,20 +21,28 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.js"></script>
 <style>
-table {
-    width: 100%;
+#data_table {
     border-spacing: 0 0px;
 }
-table td {
-    padding: 0px 10px;
+#data_table td {
+    text-wrap: nowrap;
 }
-table tr:nth-child(even) {
+#data_table tr:nth-child(even) {
     background-color: #fee4ff;
 }
-table tr.header {
+#data_table tr.header {
     position: sticky;
     top: 80px;
     box-shadow: 1px 2px 10px -7px rgba(0, 0, 0, 0.5);
+}
+.btn-primary {
+    color: #fff;
+    background-color: #ca43ff;
+    border-color: transparent;
+}
+.btn-primary:hover {
+    background-color: #b037df;
+    border-color: transparent;
 }
 </style>
 <div class="top">
@@ -99,7 +107,7 @@ function fetch_employee_data() {
     $.ajax({
         url:"referrals_table/fetch.php",
         method:"POST",
-        data: {'q' : 'SELECT * FROM `all_referrals` WHERE 1 ORDER BY `all_referrals`.`id` DESC LIMIT 5'},
+        data: {'q' : 'SELECT * FROM `all_referrals` WHERE 1 ORDER BY `all_referrals`.`id` DESC LIMIT 10'},
         dataType:"json",
         success: function(data) {
             let html_data = '';
