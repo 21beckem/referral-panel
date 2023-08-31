@@ -26,15 +26,15 @@
         'ct' => ['like "%', '%"'], // contains
         'nct' => ['not like "', '%"'], // doesn't contain
         'fw' => ['like "%', '"'], // finishes with
-        'null' => 'is empty', // is empty
-        'nn' => 'not empty', // not empty
-        'gt' => 'greater than', // greater than
-        'lt' => 'less than', // less than
-
+        'gt' => ['>', ''], // greater than
+        'lt' => ['<', ''], // less than
+        
+        'null' => ['=""', 'IS NULL'], // is empty
+        'nn' => ['!=""', 'IS NOT NULL'], // not empty
         'in' => 'matches one of the following (separated by cammas stored in value)',
         
-        'bw' => 'between value and value2',
-        'nbw' => 'NOT between value and value2',
+        'bw' => ['BETWEEN ', ' AND '], // between value and value2
+        'nbw' => ['NOT BETWEEN ', ' AND '], //NOT between value and value2
     );
     $MAIN_QUERY = 'SELECT * FROM `all_referrals` WHERE 1 ORDER BY `all_referrals`.`id` DESC LIMIT 10';
 
@@ -48,20 +48,32 @@
             $value = $_GET['value-'.$i]; 
             $value2 = $_GET['value2-'.$i];
 
-            if ($op == 'in') { // spacial case for matches
-                $MAIN_QUERY .= '';
-            } else if ($op == 'bw') { // spacial case for between
-                $MAIN_QUERY .= '';
-            } else if ($op == 'nbw') { // spacial case for not between
-                $MAIN_QUERY .= '';
-            } else { // otherwise, handle normally
-
-                $MAIN_QUERY .= '`'.$field.'`'.' '.$operatorLookup[$op][0].$value.$operatorLookup[$op][1];
-                
+            if ($op == 'null' || $op == 'nn') // spacial case for empty or not empty
+            {
+                $MAIN_QUERY .= '(`'.$field.'` '.$operatorLookup[$op][0].' OR `'.$field.'` '.$operatorLookup[$op][1].')';
+            }
+            else if ($op == 'in') // spacial case for matches
+            {
+                $mats = explode(",", $value);
+                $MAIN_QUERY .= '(';
+                foreach ($mats as $j => $m) {
+                    $MAIN_QUERY .= '`'.$field.'` '.$operatorLookup['eq'][0].$value.$operatorLookup['eq'][1].' AND ';
+                }
+                $MAIN_QUERY = substr($MAIN_QUERY, 0, -5);
+                $MAIN_QUERY .= ')';
+            }
+            else if ($op == 'bw' || $op == 'nbw') // spacial case for between and not between
+            {
+                $MAIN_QUERY .= '`'.$field.'` '.$operatorLookup[$op][0].$value.$operatorLookup[$op][1].$value2;
+            }
+            else // otherwise, handle normally
+            {
+                $MAIN_QUERY .= '`'.$field.'` '.$operatorLookup[$op][0].$value.$operatorLookup[$op][1];
             }
             $MAIN_QUERY .= ') AND';
         }
         $MAIN_QUERY = substr($MAIN_QUERY, 0, -4);
+        $MAIN_QUERY = 'SELECT * FROM `all_referrals` WHERE '.$MAIN_QUERY.' ORDER BY `all_referrals`.`id` DESC LIMIT 10';
     }
     echo('mainQ: '.$MAIN_QUERY);
 ?>
@@ -106,6 +118,7 @@
 </div>
 <div class="dash-content">
 <div id="myFilter"></div>
+<button onclick="refreshWithFilter()">GO</button>
 <table id="data_table" class="table table-bordered table-striped">
     <tr class="header">
         <?php
@@ -157,6 +170,9 @@ function getEditableClassAndType(colName) {
             return ['textEditable', 'text'];
     }
 }
+function refreshWithFilter() {
+    window.location.href = '?' + $("#myFilter").structFilter("valUrl");
+}
 
 function make_table(data) {
     let html_data = '';
@@ -206,8 +222,8 @@ $(document).ready(function() { // create filter box
     $("#myFilter").structFilter({
         submitButton: true,
         fields: [
-            {id:"lastname", type:"text", label:"Lastname"},
-            {id:"firstname", type:"text", label:"Firstname"},
+            {id:"First Name", type:"text", label:"First Name"},
+            {id:"id", type:"number", label:"id"},
             {id:"active", type:"boolean", label:"Is active"},
             {id:"age", type:"number", label:"Age"},
             {id:"bday", type:"date", label:"Birthday"},
