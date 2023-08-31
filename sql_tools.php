@@ -41,11 +41,21 @@ function writeSQL($YOUR_DATABASE_NAME, $sqlStr) {
 }
 
 function readTableColumns($YOUR_DATABASE_NAME, $tableName) {
-    $raw =  readSQL($YOUR_DATABASE_NAME, "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '".$YOUR_DATABASE_NAME."' AND TABLE_NAME = '".$tableName."'");
+    $raw = readSQL($YOUR_DATABASE_NAME, "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '".$YOUR_DATABASE_NAME."' AND TABLE_NAME = '".$tableName."'");
     for ($i=0; $i < count($raw); $i++) { 
         $raw[$i] = $raw[$i][0];
     }
     return $raw;
+}
+function readTableColumnInfo($YOUR_DATABASE_NAME, $tableName) {
+    $q = <<<HERA
+    select COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, 
+        NUMERIC_PRECISION, DATETIME_PRECISION, 
+        IS_NULLABLE 
+    from INFORMATION_SCHEMA.COLUMNS
+    where TABLE_NAME='{$tableName}'
+    HERA;
+    return readSQL($YOUR_DATABASE_NAME, $q);
 }
 function updateTableRowFromArray($YOUR_DATABASE_NAME, $tableName, $rowSelector, $arr, $addIfRowSelectorDoesntExist=false, $debug=false) {
 	// get a list of the names of each column

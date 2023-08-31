@@ -92,6 +92,9 @@ carefulWriteSQL($mykey, "CREATE TABLE `".$mykey."`.`teams` (`id` INT NOT NULL AU
 carefulWriteSQL($mykey, 'CREATE TABLE `'.$mykey.'`.`schedule` (`json` TEXT NULL DEFAULT NULL ) ENGINE = InnoDB;');
 carefulWriteSQL($mykey, 'INSERT INTO `schedule`(`json`) VALUES (\'[["", "", "2002-10-22"], ["10:00", "11:00", ""]]\')');
 
+// create list of referral types
+carefulWriteSQL($myKey, 'CREATE TABLE `'.$myKey.'`.`referral_types` (`id` INT NOT NULL AUTO_INCREMENT , `name` TEXT NOT NULL DEFAULT \'\' , PRIMARY KEY (`id`)) ENGINE = InnoDB;');
+
 // redirect
 header('location: index.php');
 ?>

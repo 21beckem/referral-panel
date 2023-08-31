@@ -15,6 +15,12 @@
     // get table cols
     $tableCols = readTableColumns($_SESSION['missionInfo']->mykey, 'all_referrals');
 
+    // get table cols info
+    $tableColInfo = readTableColumnInfo($_SESSION['missionInfo']->mykey, 'all_referrals');
+
+    // get all referral types
+    $referral_types = readSQL($_SESSION['missionInfo']->mykey, 'SELECT * FROM `referral_types` WHERE 1');
+
 
     ///////////////////////////////////////////////////
     //                  Make Query                   //
@@ -38,6 +44,22 @@
     );
     $MAIN_QUERY = 'SELECT * FROM `all_referrals` WHERE 1 ORDER BY `all_referrals`.`id` DESC LIMIT 10';
 
+    /*  // attempting to fix getting referrals on one specific day. Too complecated to deal with now though
+    $colTypeLookup = array();
+    for ($i=0; $i < count($tableColInfo); $i++) { 
+        $colTypeLookup[ $tableColInfo[$i][0] ] = $tableColInfo[$i][1];
+    }
+    function giveQuotes($col, $val) {
+        global $colTypeLookup;
+        echo($colTypeLookup[$col]);
+        if ($colTypeLookup[$col] == 'datetime' || $colTypeLookup[$col] == 'int') {
+            return $val;
+        } else {
+            return '"'.$val.'"';
+        }
+    }
+    */
+
     if (isset($_GET['filters'])) {
         $filtersCount = intval($_GET['filters']);
         $MAIN_QUERY = '';
@@ -57,9 +79,9 @@
                 $mats = explode(",", $value);
                 $MAIN_QUERY .= '(';
                 foreach ($mats as $j => $m) {
-                    $MAIN_QUERY .= '`'.$field.'` '.$operatorLookup['eq'][0].$value.$operatorLookup['eq'][1].' AND ';
+                    $MAIN_QUERY .= '`'.$field.'` '.$operatorLookup['eq'][0].$m.$operatorLookup['eq'][1].' OR ';
                 }
-                $MAIN_QUERY = substr($MAIN_QUERY, 0, -5);
+                $MAIN_QUERY = substr($MAIN_QUERY, 0, -4);
                 $MAIN_QUERY .= ')';
             }
             else if ($op == 'bw' || $op == 'nbw') // spacial case for between and not between
@@ -127,24 +149,22 @@
             }
         ?>
     </tr>
-    <tbody id="employee_data">
-    </tbody>
-<?php
-/*for ($i=0; $i < count($referralList); $i++) { 
-    $ref = $referralList[$i];
-    echo('<tr id="tableRowId_'.$ref[1].'">');
-    for ($j=0; $j < count($ref); $j++) { 
-        $refVal = $ref[$j];
-        echo('<td>'.$refVal.'</td>');
-    }
-    echo('</tr>');
-}*/
-?>
-</table>
+    <tbody id="employee_data"></table>
 </div>
 <script>
 const tableCols = <?php echo(json_encode($tableCols)); ?>;
 let teamInfos = <?php echo(json_encode($teamInfos)); ?>;
+let TableInfo = <?php echo(json_encode($tableColInfo)); ?>;
+TableInfo.map(col => {
+    if (col[1].includes('text')) {
+        col[1] = 'text';
+    } else if (col[1].includes('date')) {
+        col[1] = 'date';
+    } else if (col[1].includes('int')) {
+        col[1] = 'number';
+    }
+    return col;
+});
 let teamLookup = Array();
 for (let i = 0; i < teamInfos.length; i++) {
     const tm = teamInfos[i];
@@ -171,7 +191,9 @@ function getEditableClassAndType(colName) {
     }
 }
 function refreshWithFilter() {
-    window.location.href = '?' + $("#myFilter").structFilter("valUrl");
+    let q = '?' + $("#myFilter").structFilter("valUrl");
+    q += '&val=' + encodeURIComponent(JSON.stringify($("#myFilter").structFilter("val")));
+    window.location.href = q;
 }
 
 function make_table(data) {
@@ -219,25 +241,51 @@ $('#employee_data').editable({ // claimedCol class is now editable with select
 });
 
 $(document).ready(function() { // create filter box
-    $("#myFilter").structFilter({
-        submitButton: true,
-        fields: [
-            {id:"First Name", type:"text", label:"First Name"},
-            {id:"id", type:"number", label:"id"},
-            {id:"active", type:"boolean", label:"Is active"},
-            {id:"age", type:"number", label:"Age"},
-            {id:"bday", type:"date", label:"Birthday"},
-            {id:"category", type:"list", label:"Category",
-                list:[
-                    {id:"1", label:"Family"},
-                    {id:"2", label:"Friends"},
-                    {id:"3", label:"Business"},
-                    {id:"4", label:"Acquaintances"},
-                    {id:"5", label:"Other"}
-                ]
+    let fields = Array();
+    for (let i = 0; i < TableInfo.length; i++) {
+        const col = TableInfo[i];
+        if (col[0] == 'Referral Type') {
+            const types = <?php echo(json_encode( $referral_types )); ?>.map(x => x[1]);
+            let arr = Array();
+            for (let j = 0; j < types.length; j++) {
+                const typ = types[j];
+                arr.push({
+                    id : typ,
+                    label : typ
+                });
             }
-        ]
+            fields.push({
+                id : col[0],
+                type : 'list',
+                label : col[0],
+                list : arr
+            });
+        } else if (col[0] == 'Claimed') {
+            fields.push({
+                id : col[0],
+                type : 'list',
+                label : col[0],
+                list : teamLookup.map(x => {
+                    return {
+                        id : x.value,
+                        label : x.text
+                    }
+                })
+            });
+        } else {
+            fields.push({
+                id : col[0],
+                type : col[1],
+                label : col[0]
+            });
+        }
+    }
+    $("#myFilter").structFilter({
+        submitButton: false,
+        fields: fields,
+        buttonLabels: true
     });
+    $("#myFilter").structFilter("val", <?php echo($_GET['val']); ?>);
 });
 
 </script>
