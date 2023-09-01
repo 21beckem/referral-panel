@@ -42,7 +42,7 @@
         'bw' => ['BETWEEN ', ' AND '], // between value and value2
         'nbw' => ['NOT BETWEEN ', ' AND '], //NOT between value and value2
     );
-    $MAIN_QUERY = 'SELECT * FROM `all_referrals` WHERE 1 ORDER BY `all_referrals`.`id` DESC LIMIT 10';
+    $MAIN_QUERY = 'SELECT * FROM `all_referrals` WHERE 1 ORDER BY `all_referrals`.`id` DESC LIMIT 50';
 
     /*  // attempting to fix getting referrals on one specific day. Too complecated to deal with now though
     $colTypeLookup = array();
@@ -97,7 +97,7 @@
         $MAIN_QUERY = substr($MAIN_QUERY, 0, -4);
         $MAIN_QUERY = 'SELECT * FROM `all_referrals` WHERE '.$MAIN_QUERY.' ORDER BY `all_referrals`.`id` DESC LIMIT 10';
     }
-    echo('mainQ: '.$MAIN_QUERY);
+    //echo('mainQ: '.$MAIN_QUERY);
 ?>
 <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet">
 <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
@@ -110,6 +110,7 @@
 <link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css">
 <style>
 #data_table {
+    margin-top: 150px;
     border-spacing: 0 0px;
 }
 #data_table td {
@@ -120,7 +121,7 @@
 }
 #data_table tr.header {
     position: sticky;
-    top: 80px;
+    top: 233px;
     box-shadow: 1px 2px 10px -7px rgba(0, 0, 0, 0.5);
 }
 .btn-primary {
@@ -132,6 +133,31 @@
     background-color: #b037df;
     border-color: transparent;
 }
+#searchBarParent {
+    position: fixed;
+    left: var(--sidebarSize);
+    width: calc(95% - var(--sidebarSize));
+    transition: var(--tran-05);
+    align-items: right;
+    z-index: 5;
+}
+#searchBarParent div.otherBtns {
+    width: 100%;
+    align-items: end;
+    display: flex;
+    justify-content: flex-end;  
+}
+#searchBarParent div.otherBtns select {
+    padding: 3px 7px;
+}
+#whiteBlanket {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 235px;
+    background-color: white;
+}
 </style>
 <div class="top">
     <i class="fa-solid fa-bars sidebar-toggle"></i>
@@ -139,8 +165,33 @@
     <img src="img/logo.png" alt="">
 </div>
 <div class="dash-content">
-<div id="myFilter"></div>
-<button onclick="refreshWithFilter()">GO</button>
+<div id="searchBarParent">
+    <div id="myFilter"></div>
+    <div class="otherBtns">
+        Sort by:&nbsp;
+        <select id="sortCol"> 
+            <option>Referral Type</option>
+            <option>id</option>
+        </select>
+        &nbsp;
+        <select id="sortDir"> 
+            <option>Ascending</option>
+            <option>Descending</option>
+        </select>
+        &nbsp;&nbsp;&nbsp;
+        Number of rows:&nbsp;
+        <select id="rowsLimit"> 
+            <option>25</option>
+            <option>50</option>
+            <option>100</option>
+            <option>250</option>
+            <option>500</option>
+            <option>ALL</option>
+        </select>
+        <button class="purpleBtn" style="padding: 5px 10px" onclick="refreshWithFilter()">GO</button>
+    </div>
+</div>
+<div id="whiteBlanket"></div>
 <table id="data_table" class="table table-bordered table-striped">
     <tr class="header">
         <?php
@@ -152,6 +203,14 @@
     <tbody id="employee_data"></table>
 </div>
 <script>
+function _(x) { return document.getElementById(x); }
+HTMLCollection.prototype.forEach = function (x) { return Array.from(this).forEach(x); }
+const filterBoxSizeChange = new ResizeObserver(entries => {
+    _('data_table').style.marginTop = (entries[0].target.clientHeight + 10) + 'px';
+    document.querySelector('#data_table tr.header').style.top = (entries[0].target.clientHeight + 93) + 'px';
+    _('whiteBlanket').style.height = (entries[0].target.clientHeight + 93) + 'px';
+});
+filterBoxSizeChange.observe(_('searchBarParent'));
 const tableCols = <?php echo(json_encode($tableCols)); ?>;
 let teamInfos = <?php echo(json_encode($teamInfos)); ?>;
 let TableInfo = <?php echo(json_encode($tableColInfo)); ?>;

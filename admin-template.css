@@ -40,6 +40,8 @@
     --tran-05: all 0.5s ease;
     --tran-03: all 0.3s ease;
     --tran-03: all 0.2s ease;
+
+    --sidebarSize: 73px;
 }
 
 body{
@@ -390,6 +392,9 @@ nav.close ~ .dashboard .top{
     nav{
         width: 73px;
     }
+    :root {
+        --sidebarSize: 73px;
+    }
     nav.close{
         width: 250px;
     }
@@ -444,6 +449,9 @@ nav.close ~ .dashboard .top{
 @media (max-width: 400px) {
     nav{
         width: 0px;
+    }
+    :root {
+        --sidebarSize: 0px;
     }
     nav.close{
         width: 73px;

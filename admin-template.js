@@ -6,14 +6,19 @@ const body = document.querySelector("body"),
 let getStatus = localStorage.getItem("status");
 if(getStatus && getStatus ==="close"){
     sidebar.classList.toggle("close");
+    document.querySelector(':root').style.setProperty('--sidebarSize', '250px');
+} else {
+    document.querySelector(':root').style.setProperty('--sidebarSize', '73px');
 }
 
 sidebarToggle.addEventListener("click", () => {
     sidebar.classList.toggle("close");
     if(sidebar.classList.contains("close")){
         localStorage.setItem("status", "close");
+        document.querySelector(':root').style.setProperty('--sidebarSize', '250px');
     }else{
         localStorage.setItem("status", "open");
+        document.querySelector(':root').style.setProperty('--sidebarSize', '73px');
     }
 });
 
