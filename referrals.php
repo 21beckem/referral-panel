@@ -42,7 +42,7 @@
         'bw' => ['BETWEEN ', ' AND '], // between value and value2
         'nbw' => ['NOT BETWEEN ', ' AND '], //NOT between value and value2
     );
-    $MAIN_QUERY = 'SELECT * FROM `all_referrals` WHERE 1 ORDER BY `all_referrals`.`id` DESC LIMIT 50';
+    $MAIN_QUERY = 'SELECT * FROM `all_referrals` WHERE 1 ORDER BY `all_referrals`.`id` DESC LIMIT 25';
 
     /*  // attempting to fix getting referrals on one specific day. Too complecated to deal with now though
     $colTypeLookup = array();
@@ -60,42 +60,51 @@
     }
     */
 
-    if (isset($_GET['filters'])) {
-        $filtersCount = intval($_GET['filters']);
+    if (isset($_GET['val'])) {
         $MAIN_QUERY = '';
-        for ($i=0; $i < $filtersCount; $i++) { 
-            $MAIN_QUERY .= '(';
-            $field = $_GET['field-'.$i]; 
-            $op = $_GET['operator-'.$i]; 
-            $value = $_GET['value-'.$i]; 
-            $value2 = $_GET['value2-'.$i];
-
-            if ($op == 'null' || $op == 'nn') // spacial case for empty or not empty
-            {
-                $MAIN_QUERY .= '(`'.$field.'` '.$operatorLookup[$op][0].' OR `'.$field.'` '.$operatorLookup[$op][1].')';
-            }
-            else if ($op == 'in') // spacial case for matches
-            {
-                $mats = explode(",", $value);
+        if (isset($_GET['filters'])) {
+            $filtersCount = intval($_GET['filters']);
+            for ($i=0; $i < $filtersCount; $i++) { 
                 $MAIN_QUERY .= '(';
-                foreach ($mats as $j => $m) {
-                    $MAIN_QUERY .= '`'.$field.'` '.$operatorLookup['eq'][0].$m.$operatorLookup['eq'][1].' OR ';
+                $field = $_GET['field-'.$i]; 
+                $op = $_GET['operator-'.$i]; 
+                $value = $_GET['value-'.$i]; 
+                $value2 = $_GET['value2-'.$i];
+    
+                if ($op == 'null' || $op == 'nn') // spacial case for empty or not empty
+                {
+                    $MAIN_QUERY .= '(`'.$field.'` '.$operatorLookup[$op][0].' OR `'.$field.'` '.$operatorLookup[$op][1].')';
                 }
-                $MAIN_QUERY = substr($MAIN_QUERY, 0, -4);
-                $MAIN_QUERY .= ')';
+                else if ($op == 'in') // spacial case for matches
+                {
+                    $mats = explode(",", $value);
+                    $MAIN_QUERY .= '(';
+                    foreach ($mats as $j => $m) {
+                        $MAIN_QUERY .= '`'.$field.'` '.$operatorLookup['eq'][0].$m.$operatorLookup['eq'][1].' OR ';
+                    }
+                    $MAIN_QUERY = substr($MAIN_QUERY, 0, -4);
+                    $MAIN_QUERY .= ')';
+                }
+                else if ($op == 'bw' || $op == 'nbw') // spacial case for between and not between
+                {
+                    $MAIN_QUERY .= '`'.$field.'` '.$operatorLookup[$op][0].$value.$operatorLookup[$op][1].$value2;
+                }
+                else // otherwise, handle normally
+                {
+                    $MAIN_QUERY .= '`'.$field.'` '.$operatorLookup[$op][0].$value.$operatorLookup[$op][1];
+                }
+                $MAIN_QUERY .= ') AND';
             }
-            else if ($op == 'bw' || $op == 'nbw') // spacial case for between and not between
-            {
-                $MAIN_QUERY .= '`'.$field.'` '.$operatorLookup[$op][0].$value.$operatorLookup[$op][1].$value2;
-            }
-            else // otherwise, handle normally
-            {
-                $MAIN_QUERY .= '`'.$field.'` '.$operatorLookup[$op][0].$value.$operatorLookup[$op][1];
-            }
-            $MAIN_QUERY .= ') AND';
+            $MAIN_QUERY = substr($MAIN_QUERY, 0, -4);
+        } else {
+            $MAIN_QUERY = '1';
         }
-        $MAIN_QUERY = substr($MAIN_QUERY, 0, -4);
-        $MAIN_QUERY = 'SELECT * FROM `all_referrals` WHERE '.$MAIN_QUERY.' ORDER BY `all_referrals`.`id` DESC LIMIT 10';
+        if ($_GET['rowsLimit'] == 'ALL') {
+            $limitStr = '';
+        } else {
+            $limitStr = ' LIMIT '.$_GET['rowsLimit'];
+        }
+        $MAIN_QUERY = 'SELECT * FROM `all_referrals` WHERE '.$MAIN_QUERY.' ORDER BY `all_referrals`.`'.$_GET['sortCol'].'` '.$_GET['sortDir'].$limitStr;
     }
     //echo('mainQ: '.$MAIN_QUERY);
 ?>
@@ -120,6 +129,7 @@
     background-color: #fee4ff;
 }
 #data_table tr.header {
+    z-index: 5;
     position: sticky;
     top: 233px;
     box-shadow: 1px 2px 10px -7px rgba(0, 0, 0, 0.5);
@@ -169,24 +179,31 @@
     <div id="myFilter"></div>
     <div class="otherBtns">
         Sort by:&nbsp;
-        <select id="sortCol"> 
-            <option>Referral Type</option>
-            <option>id</option>
+        <select id="sortCol">
+            <?php
+            foreach ($tableColInfo as $i => $col) {
+                if ($col[1] == 'int') {
+                    $selected = '';
+                    if($_GET['sortCol']==$col[0]) {$selected=' selected';}
+                    echo('<option'.$selected.'>'.$col[0].'</option>');
+                }
+            }
+            ?>
         </select>
         &nbsp;
         <select id="sortDir"> 
-            <option>Ascending</option>
-            <option>Descending</option>
+            <option value="DESC"<?php if($_GET['sortDir']=='DESC') {echo(' selected');} ?>>Descending</option>
+            <option value="ASC"<?php if($_GET['sortDir']=='ASC') {echo(' selected');} ?>>Ascending</option>
         </select>
         &nbsp;&nbsp;&nbsp;
         Number of rows:&nbsp;
-        <select id="rowsLimit"> 
-            <option>25</option>
-            <option>50</option>
-            <option>100</option>
-            <option>250</option>
-            <option>500</option>
-            <option>ALL</option>
+        <select id="rowsLimit" onchange="warnRequestingAllRows(this.value)"> 
+            <option <?php if($_GET['rowsLimit']==25) {echo('selected');} ?>>25</option>
+            <option <?php if($_GET['rowsLimit']==50) {echo('selected');} ?>>50</option>
+            <option <?php if($_GET['rowsLimit']==100) {echo('selected');} ?>>100</option>
+            <option <?php if($_GET['rowsLimit']==250) {echo('selected');} ?>>250</option>
+            <option <?php if($_GET['rowsLimit']==500) {echo('selected');} ?>>500</option>
+            <option <?php if($_GET['rowsLimit']=='ALL') {echo('selected');} ?>>ALL</option>
         </select>
         <button class="purpleBtn" style="padding: 5px 10px" onclick="refreshWithFilter()">GO</button>
     </div>
@@ -249,9 +266,17 @@ function getEditableClassAndType(colName) {
             return ['textEditable', 'text'];
     }
 }
+function warnRequestingAllRows(v) {
+    if (v.toLowerCase()=='all') {
+        JSAlert.alert('Requesting all rows may crash your browser depending on how many rows result from your filter.<br>Just so you know.', '', JSAlert.Icons.Warning)
+    }
+}
 function refreshWithFilter() {
     let q = '?' + $("#myFilter").structFilter("valUrl");
     q += '&val=' + encodeURIComponent(JSON.stringify($("#myFilter").structFilter("val")));
+    q += '&sortCol=' + encodeURIComponent(_('sortCol').value);
+    q += '&sortDir=' + encodeURIComponent(_('sortDir').value);
+    q += '&rowsLimit=' + encodeURIComponent(_('rowsLimit').value);
     window.location.href = q;
 }
 
@@ -340,7 +365,6 @@ $(document).ready(function() { // create filter box
         }
     }
     $("#myFilter").structFilter({
-        submitButton: false,
         fields: fields,
         buttonLabels: true
     });

@@ -3,22 +3,22 @@ const body = document.querySelector("body"),
       sidebarToggle = body.querySelector(".sidebar-toggle");
 
 
-let getStatus = localStorage.getItem("status");
-if(getStatus && getStatus ==="close"){
+let getStatus = localStorage.getItem("sidebar-status");
+if(getStatus && getStatus ==="close") {
     sidebar.classList.toggle("close");
-    document.querySelector(':root').style.setProperty('--sidebarSize', '250px');
-} else {
     document.querySelector(':root').style.setProperty('--sidebarSize', '73px');
+} else {
+    document.querySelector(':root').style.setProperty('--sidebarSize', '250px');
 }
 
 sidebarToggle.addEventListener("click", () => {
     sidebar.classList.toggle("close");
     if(sidebar.classList.contains("close")){
-        localStorage.setItem("status", "close");
-        document.querySelector(':root').style.setProperty('--sidebarSize', '250px');
-    }else{
-        localStorage.setItem("status", "open");
+        localStorage.setItem("sidebar-status", "close");
         document.querySelector(':root').style.setProperty('--sidebarSize', '73px');
+    }else{
+        localStorage.setItem("sidebar-status", "open");
+        document.querySelector(':root').style.setProperty('--sidebarSize', '250px');
     }
 });
 
