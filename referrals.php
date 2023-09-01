@@ -366,7 +366,7 @@ $(document).ready(function() { // create filter box
     }
     $("#myFilter").structFilter({
         fields: fields,
-        buttonLabels: true
+        buttonLabels: false
     });
     $("#myFilter").structFilter("val", <?php echo($_GET['val']); ?>);
 });

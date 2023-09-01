@@ -63,7 +63,7 @@
         },
         _create: function() {
             function t(t, e, i) {
-                return '<a class="' + t + '"' + (i ? ' style="display:none;"' : "") + ' href="javascript:void(0)">' + e + "</a>"
+                return '<a class="' + t + '"' + (i ? ' style="display:none;"' : "") + ' href="javascript:void(0)">' + e + '</a>'
             }
             var e = this.options.buttonLabels,
                 s = this,
@@ -129,7 +129,7 @@
             this._editor.empty(), this._bAdd.hide(), this._bDel.hide(), this._enableFilter(null, !1), this._bNew.removeClass("ui-state-active").show(), this._bSubmit && this._bSubmit.removeClass("ui-state-active").show(), t && this._bNew.focus(), this._step = 0, this._field = this._type = this._operator = null
         },
         addCondition: function(t) {
-            t = d('<a href="javascript:void(0)"><span>' + this._htmlFilter(t) + "</span></a>").prependTo(this._filters).button({
+            t = d('<a href="javascript:void(0)"><span>' + this._htmlFilter(t) + "</span>"+'<span class="ui-button-icon-space"> </span><span class="ui-button-icon ui-icon ui-icon-close"></span>'+"</a>").prependTo(this._filters).button({
                 icon: "ui-icon-close",
                 iconPosition: "end"
             }).data("filter", t).fadeIn();
