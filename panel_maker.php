@@ -40,7 +40,7 @@ function makeHTMLtop($name="") {
         <title>Referral Panel{$nameStr}</title> 
     </head>
     <body>
-        <nav>
+        <nav style="opacity:1">
             <script>
             window.onload = () => { {$successToAlert} }
             </script>
