@@ -49,11 +49,26 @@
     height: calc(100vh - 90px);
     overflow-y: scroll;
 }
+#rightHalf hr {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
 #rightHalf .card {
     width: 100%;
+    max-width: 1000px;
     background-color: white;
     box-shadow: 1px 2px 8px -5px rgba(0, 0, 0, 0.5);
-    padding: 10px;
+    padding: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+#rightHalf .card p {
+    color: #4d4d4d;
 }
 .refTypCard {
     padding: 5px;
@@ -92,6 +107,18 @@
 .refTypCard:not(.editing) .undoBtn {
     display: none;
 }
+h4 {
+    margin-bottom: 5px;
+}
+p {
+    margin-bottom: -7px;
+    padding-bottom: 0;
+}
+.pasteMe {
+    padding: 10px;
+    width: 100%;
+    margin-top: 5px;
+}
 </style>
 <div class="top">
     <i class="fa-solid fa-bars sidebar-toggle"></i>
@@ -105,12 +132,11 @@
         <div href="#">2) Connect</div>
         <div href="#" class="tabbed">● Facebook</div>
         <div href="#" class="tabbed">● Webhooks</div>
-        <button onclick="openThisTeam('new')" class="purpleBtn">Add Team</button>
     </div>
 
 <div id="rightHalf">
     <div class="card">
-        <h3>Referral Types</h3>
+        <h2>Referral Types</h2>
         <?php
         foreach ($referral_types as $i => $row) {
             echo(<<<HERRA
@@ -133,6 +159,85 @@
             <input type="hidden" name="delete" value="0">
         </form>
     </div>
+    <?php if (count($referral_types) != 0) { ?>
+    <hr>
+    <div class="card">
+        <h2>Connect</h2>
+        <br>
+        <p>Welcome to the <strong>Integrate</strong> page!</p>
+        <br>
+        <p>First things first, if you haven't already added a Referral Type above, <strong>please do that now.</strong> Integration isn't possible until you have at least 1 Referral Type</p>
+        <br>
+        <p>This is where you'll connect your ads, forms, etc. to Referral Panel so that you can use Referral Suite to manage all your referrals. The steps below are generalized for everyone. You can't simply copy and paste everything. But as long as you read all the instructions here you'll have no problem at all!</p>
+    </div>
+
+    <div class="card">
+        <h3><i class="fa-brands fa-facebook" style="color: #3396ff; font-size: 40px"></i> Facebook</h3>
+        <br>
+        <p>Connect Referral Panel <strong>directly</strong> to Facebook Ads Manager</p>
+        <br>
+        <p>This feature is still in progress. I'll hopefully have it avalible soon!! But until then, use Webhooks</p>
+    </div>
+
+    <div class="card">
+        <h3><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-webhook" width="40" height="40" viewBox="0 0 24 24" stroke-width="2" stroke="#fc8c03" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M4.876 13.61a4 4 0 1 0 6.124 3.39h6" /> <path d="M15.066 20.502a4 4 0 1 0 1.934 -7.502c-.706 0 -1.424 .179 -2 .5l-3 -5.5" /> <path d="M16 8a4 4 0 1 0 -8 0c0 1.506 .77 2.818 2 3.5l-3 5.5" /> </svg> Webhooks</h3>
+        <br>
+        <p>Connect Referral Panel to <strong>any</strong> platform using Webhooks</p>
+        <br>
+        <p>For this tutorial's sake, I'll assume you're using Zapier to push referrals to Referral Panel. However, any system that can submit a POST request to a specific URL is capable of being used here.</p>
+        <br>
+        <h4>Step 1: Event / Method</h4>
+        <p>Select POST</p>
+        <br>
+        <br>
+        <h4>Step 2: URL / Action</h4>
+        <p>Use this Url:</p>
+        <input type="text" disabled value="https://www.referralpanel.com/API/new_referral.php" class="pasteMe"><br>
+        <br>
+        <br>
+        <h4>Step 3: Data -> manditory data</h4>
+        <p>This step is the easiest to mess up. Pay attention!</p>
+        <br>
+        <p>Under Data click add (+). Then on the left paste:</p>
+        <input type="text" disabled value="mykey" class="pasteMe"><br>
+        <p>And on the right paste:</p>
+        <input type="text" disabled value="<?php echo($_SESSION['missionInfo']->mykey); ?>" class="pasteMe"><br>
+        <p style="font-size: 13px">That is your security key. Don't share it with anyone.</p>
+        <br>
+        <br>
+        <p>Click add (+) again and on the left paste:</p>
+        <input type="text" disabled value="date" class="pasteMe"><br>
+        <p>And on the right paste:</p>
+        <input type="text" disabled value="{{zap_meta_human_now}}" class="pasteMe"><br>
+        <p style="font-size: 13px">Replace this with the current timestamp if not using Zapier</p>
+        <br>
+        <br>
+        <p>Click add (+) again and on the left paste:</p>
+        <input type="text" disabled value="type" class="pasteMe"><br>
+        <p>And on the right paste one of your Referral Types. For example:</p>
+        <input type="text" disabled value="<?php echo($referral_types[0][1]); ?>" class="pasteMe"><br>
+        <p style="font-size: 13px">Must be spelled EXACTLY as you spelled it at the top of this page. (Best to just copy and paste)</p>
+        <br>
+        <br>
+        <h4>Step 4: Referral Data</h4>
+        <p>Nearly Done! Just fill in all the person's info!</p>
+        <br>
+        <br>
+        <p>For this step, you're going to be adding all of the referrals' specific data. You may add as few or as many of these as you'd like. But keep in mind that at least 1 contact method must be provided.</p>
+        <br>
+        <p>Now you may add as many more rows of data as you'd like. The value in the left coloumn <strong>MUST</strong> match exactly one of the following:</p>
+        <br>
+        {[table]}
+        <br>
+        <br>
+        <br>
+        <h4>Step 5: Celebrate!!</h4>
+        <p>You've earned it!</p>
+        <br>
+        <p>If you're using Zapier you can test the action and as long as there are no errors, you should be good to go! (This will create a new row appear on the <a href="referrals.php">Referrals Tab</a>)</p>
+    </div>
+    <div style="width: 5px; height: 150px;"></div>
+    <?php } ?>
 </div>
 <script>
 function _(x) { return document.getElementById(x); }
