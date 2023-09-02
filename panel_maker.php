@@ -66,7 +66,7 @@ function makeHTMLtop($name="") {
                         <i class="fa-regular fa-paste"></i>
                         <span class="link-name">Templates</span>
                     </a></li>
-                    <li class="{$activeTab[5]}"><a href="#">
+                    <li class="{$activeTab[5]}"><a href="integrate.php">
                         <i class="fa-solid fa-link"></i>
                         <span class="link-name">Integrate</span>
                     </a></li>
