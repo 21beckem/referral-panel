@@ -7,6 +7,8 @@
     require_once('sql_tools.php');
     require_once('overall_vars.php');
     makeHTMLtop('Integrate');
+
+    $referral_types = readSQL($_SESSION['missionInfo']->mykey, 'SELECT * FROM `referral_types` WHERE 1');
 ?>
 <style>
 .sidenav {
@@ -109,22 +111,25 @@
 <div id="rightHalf">
     <div class="card">
         <h3>Referral Types</h3>
-        <form action="" class="refTypCard" id="refTypId_1">
-            <input type="hidden" name="id" value="1">
-            <input type="text" name="value" value="MB Request" data-original-val="MB Request">
-            <i class="editBtn fa-solid fa-pencil" onclick="enableRefTypEditing(1)"></i>
-            <i class="saveBtn fa-solid fa-floppy-disk" onclick="this.parentElement.submit()"></i>
-            <i class="undoBtn fa-solid fa-rotate-left" onclick="enableRefTypEditing()"></i>
-            <i class="deleBtn fa-solid fa-trash-can" style="color: #cb0101;" onclick="this.nextElementSibling.value = '1'; this.parentElement.submit()"></i>
-            <input type="hidden" name="delete" value="0">
-        </form>
-        <form action="" class="refTypCard" id="refTypId_2">
-            <input type="hidden" name="id" value="2">
-            <input type="text" name="value" value="Missionary Visit" data-original-val="Missionary Visit">
-            <i class="editBtn fa-solid fa-pencil" onclick="enableRefTypEditing(2)"></i>
-            <i class="saveBtn fa-solid fa-floppy-disk" onclick="this.parentElement.submit()"></i>
-            <i class="undoBtn fa-solid fa-rotate-left" onclick="enableRefTypEditing()"></i>
-            <i class="deleBtn fa-solid fa-trash-can" style="color: #cb0101;" onclick="this.nextElementSibling.value = '1'; this.parentElement.submit()"></i>
+        <?php
+        foreach ($referral_types as $i => $row) {
+            echo(<<<HERRA
+            <form action="saving_functions/referral_types_save.php" method="POST" class="refTypCard" id="refTypId_{$row[0]}">
+                <input type="hidden" name="id" value="{$row[0]}">
+                <input type="text" name="value" value="{$row[1]}" data-original-val="{$row[1]}">
+                <i class="editBtn fa-solid fa-pencil" onclick="enableRefTypEditing({$row[0]})"></i>
+                <i class="saveBtn fa-solid fa-floppy-disk" onclick="this.parentElement.submit()"></i>
+                <i class="undoBtn fa-solid fa-rotate-left" onclick="enableRefTypEditing()"></i>
+                <i class="deleBtn fa-solid fa-trash-can" style="color: #cb0101;" onclick="deleteThisReferralType(this)"></i>
+                <input type="hidden" name="delete" value="0">
+            </form>
+            HERRA);
+        }
+        ?>
+        <button class="purpleBtn" style="padding:6px 8px; margin-top: 10px;" onclick="addNewReferralType()">Add New Referral Type</button>
+        <form action="saving_functions/referral_types_save.php" method="POST" id="addNewTypeForm">
+            <input type="hidden" name="id" value="new">
+            <input type="hidden" name="value" value="" id="addNewTypeValue">
             <input type="hidden" name="delete" value="0">
         </form>
     </div>
@@ -133,6 +138,21 @@
 function _(x) { return document.getElementById(x); }
 HTMLCollection.prototype.forEach = function (x) { return Array.from(this).forEach(x); }
 
+function addNewReferralType() {
+    JSAlert.prompt('Make sure this is right. This will be tedious <br> for you to change later after referrals <br> start coming in using under this type', '', '', 'Add New Referral Type').then(res => {
+        if (res == null) { return; }
+        _('addNewTypeValue').value = res;
+        _('addNewTypeForm').submit();
+    });
+}
+function deleteThisReferralType(el) {
+    JSAlert.confirm('Are you sure you want to delete this referral type? <br><br> Even if you\'re not using it anymore I\'d suggest not removing <br> it so you can still filter search for these referrals', '', JSAlert.Icons.Warning).then(res => {
+        if (res) {
+            el.nextElementSibling.value = '1';
+            el.parentElement.submit()
+        }
+    });
+}
 function enableRefTypEditing(id) {
     document.querySelectorAll('.refTypCard.editing').forEach(el => {
         el.classList.remove('editing');

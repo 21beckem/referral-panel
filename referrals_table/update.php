@@ -2,6 +2,7 @@
 
     session_start();
     if (!$_SESSION['missionSignedIn']) {
+        header("HTTP/1.1 500 Internal Server Error");
         die('[[error]]');
     }
     require_once('../sql_tools.php');
