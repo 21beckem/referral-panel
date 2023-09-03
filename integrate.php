@@ -44,10 +44,9 @@
 }
 
 #rightHalf {
-    margin-left: 180px;
+    margin-top: 90px;
+    margin-left: 0;
     padding: 0px 10px;
-    height: calc(100vh - 90px);
-    overflow-y: scroll;
 }
 #rightHalf hr {
     width: 50%;
@@ -119,6 +118,19 @@ p {
     width: 100%;
     margin-top: 5px;
 }
+#webhookKeys {
+    margin-left: auto;
+    margin-right: auto;
+    border-spacing: 0;
+    box-shadow: 1px 2px 8px -5px rgba(0, 0, 0, 0.5);
+}
+#webhookKeys td {
+    padding: 5px;
+}
+#webhookKeys tr:first-child {
+    background-color: #fcdcff;
+    font-size: 20px;
+}
 </style>
 <div class="top">
     <i class="fa-solid fa-bars sidebar-toggle"></i>
@@ -126,15 +138,17 @@ p {
     <img src="img/logo.png" alt="">
 </div>
 
-<div class="dash-content">
-    <div id="teamBtns" class="sidenav">
-        <div href="#">1) Referral Types</div>
-        <div href="#">2) Connect</div>
-        <div href="#" class="tabbed">● Facebook</div>
-        <div href="#" class="tabbed">● Webhooks</div>
-    </div>
-
 <div id="rightHalf">
+    <div class="card">
+        <h2>Connect</h2>
+        <br>
+        <p>Welcome to the <strong>Integrate</strong> page!</p>
+        <br>
+        <p>First things first, you need to add a <strong>Referral Type</strong>. Integration isn't possible until you have at least one Referral Type</p>
+        <br>
+        <p>This is where you'll connect your ads, forms, etc. to Referral Panel so that you can use Referral Suite to manage all your referrals. The steps below are generalized for everyone. <strong>You can't simply copy and paste everything without reading the instructions.</strong> But as long as you read all the instructions you'll have no problem at all!</p>
+    </div>
+    <hr>
     <div class="card">
         <h2>Referral Types</h2>
         <?php
@@ -161,24 +175,17 @@ p {
     </div>
     <?php if (count($referral_types) != 0) { ?>
     <hr>
-    <div class="card">
-        <h2>Connect</h2>
-        <br>
-        <p>Welcome to the <strong>Integrate</strong> page!</p>
-        <br>
-        <p>First things first, if you haven't already added a Referral Type above, <strong>please do that now.</strong> Integration isn't possible until you have at least 1 Referral Type</p>
-        <br>
-        <p>This is where you'll connect your ads, forms, etc. to Referral Panel so that you can use Referral Suite to manage all your referrals. The steps below are generalized for everyone. You can't simply copy and paste everything. But as long as you read all the instructions here you'll have no problem at all!</p>
-    </div>
 
     <div class="card">
         <h3><i class="fa-brands fa-facebook" style="color: #3396ff; font-size: 40px"></i> Facebook</h3>
         <br>
         <p>Connect Referral Panel <strong>directly</strong> to Facebook Ads Manager</p>
         <br>
+        <center><h2 style="color: #c6c6c6;">Coming Soon</h2></center>
+        <br>
         <p>This feature is still in progress. I'll hopefully have it avalible soon!! But until then, use Webhooks</p>
     </div>
-
+    <hr>
     <div class="card">
         <h3><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-webhook" width="40" height="40" viewBox="0 0 24 24" stroke-width="2" stroke="#fc8c03" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M4.876 13.61a4 4 0 1 0 6.124 3.39h6" /> <path d="M15.066 20.502a4 4 0 1 0 1.934 -7.502c-.706 0 -1.424 .179 -2 .5l-3 -5.5" /> <path d="M16 8a4 4 0 1 0 -8 0c0 1.506 .77 2.818 2 3.5l-3 5.5" /> </svg> Webhooks</h3>
         <br>
@@ -192,7 +199,7 @@ p {
         <br>
         <h4>Step 2: URL / Action</h4>
         <p>Use this Url:</p>
-        <input type="text" disabled value="https://www.referralpanel.com/API/new_referral.php" class="pasteMe"><br>
+        <input type="text" disabled value="https://www.referralpanel.com/API/new_referral.php CHANGE THIS URL LATER!!" class="pasteMe"><br>
         <br>
         <br>
         <h4>Step 3: Data -> manditory data</h4>
@@ -225,9 +232,55 @@ p {
         <br>
         <p>For this step, you're going to be adding all of the referrals' specific data. You may add as few or as many of these as you'd like. But keep in mind that at least 1 contact method must be provided.</p>
         <br>
-        <p>Now you may add as many more rows of data as you'd like. The value in the left coloumn <strong>MUST</strong> match exactly one of the following:</p>
+        <p>Now you may add as many more rows of data as you'd like. The value in the left coloumn <strong>MUST</strong> match exactly one of the following keys:</p>
         <br>
-        {[table]}
+        <table id="webhookKeys">
+            <tr>
+                <td><center>Key</center></td><td><center>Description</center></td>
+            </tr>
+            <tr>
+                <td><input type="text" disabled value="fname" class="pasteMe"></td><td>First Name</td>
+            </tr>
+            <tr>
+                <td><input type="text" disabled value="lname" class="pasteMe"></td><td>Last Name</td>
+            </tr>
+            <tr>
+                <td><input type="text" disabled value="phone" class="pasteMe"></td><td>Phone Number</td>
+            </tr>
+            <tr>
+                <td><input type="text" disabled value="email" class="pasteMe"></td><td>Email Address</td>
+            </tr>
+            <tr>
+                <td><input type="text" disabled value="street" class="pasteMe"></td><td>Street Address</td>
+            </tr>
+            <tr>
+                <td><input type="text" disabled value="city" class="pasteMe"></td><td>City</td>
+            </tr>
+            <tr>
+                <td><input type="text" disabled value="zip" class="pasteMe"></td><td>Zip/Postal Code</td>
+            </tr>
+            <tr>
+                <td><input type="text" disabled value="lang" class="pasteMe"></td><td>Preferred Language</td>
+            </tr>
+            <tr>
+                <td><input type="text" disabled value="platform" class="pasteMe"></td><td>Platform The Referral Came From (fb, ig, web)</td>
+            </tr>
+            <tr>
+                <td><input type="text" disabled value="ad_name" class="pasteMe"></td><td>Ad Name</td>
+            </tr>
+            <tr>
+                <td><input type="text" disabled value="ad_id" class="pasteMe"></td><td>Id Of Your Ad<p style="font-size: 13px">Usefull for your own reference only</p></td>
+            </tr>
+            <tr>
+                <td><input type="text" disabled value="form_id" class="pasteMe"></td><td>Id Of Your Form<p style="font-size: 13px">Usefull for your own reference only</p></td>
+            </tr>
+            <tr>
+                <td><input type="text" disabled value="helpRequest" class="pasteMe"></td><td>Discription Of What They Want Help With<p style="font-size: 13px">Usefull for Family History referrals</p></td>
+            </tr>
+            <tr>
+                <td><input type="text" disabled value="knowledgeLevel" class="pasteMe"></td><td>Discription Of How Much Previous Knowledge They Have<p style="font-size: 13px">Usefull for Family History referrals</p></td>
+            </tr>
+        </table>
         <br>
         <br>
         <br>
