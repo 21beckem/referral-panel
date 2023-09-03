@@ -199,7 +199,7 @@ p {
         <br>
         <h4>Step 2: URL / Action</h4>
         <p>Use this Url:</p>
-        <input type="text" disabled value="https://www.referralpanel.com/API/new_referral.php CHANGE THIS URL LATER!!" class="pasteMe"><br>
+        <input type="text" disabled value="http://185.77.96.63/Elder_Becker_Workspace/code_workspaces/referral-panel/API/new_referral.php    // CHANGE THIS LATER ! ! ! !" class="pasteMe"><br>
         <br>
         <p>Then select under <strong>Payload Type</strong>:</p>
         <input type="text" disabled value="form" class="pasteMe"><br>
