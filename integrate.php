@@ -201,6 +201,9 @@ p {
         <p>Use this Url:</p>
         <input type="text" disabled value="https://www.referralpanel.com/API/new_referral.php CHANGE THIS URL LATER!!" class="pasteMe"><br>
         <br>
+        <p>Then select under <strong>Payload Type</strong>:</p>
+        <input type="text" disabled value="form" class="pasteMe"><br>
+        <br>
         <br>
         <h4>Step 3: Data -> manditory data</h4>
         <p>This step is the easiest to mess up. Pay attention!</p>
