@@ -179,11 +179,10 @@ function setTransferStartDate() {
     setDontRefresh(true);
     let d = new Date(strtDateInEl.value);
     for (let i = 2; i < schedArr[0].length; i++) {
-        schedArr[0][i] = d.toLocaleDateString(undefined, { // you can use undefined as first argument
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-        });
+        let getYear = d.toLocaleString("default", { year: "numeric" });
+        var getMonth = d.toLocaleString("default", { month: "2-digit" });
+        var getDay = d.toLocaleString("default", { day: "2-digit" });
+        schedArr[0][i] = getYear + "-" + getMonth + "-" + getDay;
         d.setDate(d.getDate()+1);
     }
     setAllValuesAndTables();
