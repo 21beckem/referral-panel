@@ -242,6 +242,7 @@ TableInfo.map(col => {
     return col;
 });
 let teamLookup = Array();
+teamLookup.push( {value: 'Unclaimed', text: 'Unclaimed'} );
 for (let i = 0; i < teamInfos.length; i++) {
     const tm = teamInfos[i];
     teamLookup.push( {value: tm[0], text: tm[1]} );
@@ -250,7 +251,7 @@ function getTeamFromId(id) {
     try {
         return teamLookup.filter(x => parseInt(x.value)==parseInt(id))[0].text;
     } catch (e) {}
-    return '';
+    return id;
 }
 function getEditableClassAndType(colName) {
     switch (colName) {
