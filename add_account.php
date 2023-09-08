@@ -95,6 +95,9 @@ carefulWriteSQL($mykey, 'INSERT INTO `schedule`(`json`) VALUES (\'[["", "", "200
 // create list of referral types
 carefulWriteSQL($mykey, 'CREATE TABLE `'.$mykey.'`.`referral_types` (`id` INT NOT NULL AUTO_INCREMENT , `name` TEXT NOT NULL DEFAULT \'\' , PRIMARY KEY (`id`)) ENGINE = InnoDB;');
 
+// create table for template messages
+carefulWriteSQL($mykey, "CREATE TABLE `".$mykey."`.`templates` (`id` INT NOT NULL AUTO_INCREMENT , `type` TEXT NOT NULL , `text` TEXT NOT NULL DEFAULT '' , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
+
 // redirect
 header('location: index.php');
 ?>
