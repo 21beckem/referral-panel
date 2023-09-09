@@ -27,7 +27,7 @@ function makeHTMLtop($name="") {
         }
         unset($_SESSION['sucess_status']);
     }
-    echo(<<<HERA
+    ?>
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -37,42 +37,46 @@ function makeHTMLtop($name="") {
         <link rel="stylesheet" href="admin-template.css">
         <script src="https://kit.fontawesome.com/0bddc0a0f7.js" crossorigin="anonymous"></script>
         <script src="https://ssmission.github.io/referral-suite/jsalert.js"></script>
-        <title>Referral Panel{$nameStr}</title> 
+        <title>Referral Panel<?php echo($nameStr); ?></title> 
     </head>
     <body>
         <nav style="opacity:1">
             <script>
-            window.onload = () => { {$successToAlert} }
+            window.onload = () => { <?php echo($successToAlert); ?> }
             </script>
             <div class="menu-items">
                 <ul class="nav-links">
-                    <li class="{$activeTab[0]}"><a href="index.php">
+                    <li class="<?php echo(acivateThisTab($name, 'Dashboard')); ?>"><a href="index.php">
                         <i class="fa-solid fa-house"></i>
                         <span class="link-name">Dashboard</span>
                     </a></li>
-                    <li class="{$activeTab[1]}"><a href="referrals.php">
+                    <li class="<?php echo(acivateThisTab($name, 'Referrals')); ?>"><a href="referrals.php">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <span class="link-name">Referrals</span>
                     </a></li>
-                    <li class="{$activeTab[2]}"><a href="schedule.php">
+                    <li class="<?php echo(acivateThisTab($name, 'Schedule')); ?>"><a href="schedule.php">
                         <i class="fa-regular fa-calendar"></i>
                         <span class="link-name">Schedule</span>
                     </a></li>
-                    <li class="{$activeTab[3]}"><a href="inboxers.php">
+                    <li class="<?php echo(acivateThisTab($name, 'Inboxers')); ?>"><a href="inboxers.php">
                         <i class="fa-solid fa-users"></i>
                         <span class="link-name">Inboxers</span>
                     </a></li>
-                    <li class="{$activeTab[4]}"><a href="#">
+                    <li class="<?php echo(acivateThisTab($name, 'Templates')); ?>"><a href="#">
                         <i class="fa-regular fa-paste"></i>
                         <span class="link-name">Templates</span>
                     </a></li>
-                    <li class="{$activeTab[5]}"><a href="integrate.php">
+                    <li class="<?php echo(acivateThisTab($name, 'Mission Areas')); ?>"><a href="#">
+                        <i class="fa-solid fa-place-of-worship"></i>
+                        <span class="link-name">Mission Areas</span>
+                    </a></li>
+                    <li class="<?php echo(acivateThisTab($name, 'Integrate')); ?>"><a href="integrate.php">
                         <i class="fa-solid fa-link"></i>
                         <span class="link-name">Integrate</span>
                     </a></li>
-                    <li class="{$activeTab[6]}"><a href="#">
+                    <li class="<?php echo(acivateThisTab($name, 'Settings')); ?>"><a href="#">
                         <i class="fa-solid fa-gears"></i>
-                        <span class="link-name">Config</span>
+                        <span class="link-name">Settings</span>
                     </a></li>
                 </ul>
                 
@@ -86,7 +90,7 @@ function makeHTMLtop($name="") {
         </nav>
     
         <section class="dashboard">
-    HERA);
+    <?php
 }
 function makeHTMLbottom() {
     echo(<<<HERA
