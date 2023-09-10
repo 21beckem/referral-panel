@@ -144,7 +144,7 @@
     background-position: center;
     transform: TranslateY(-40px);
     background-size: contain;
-    background-image: url('https://ssmission.github.io/referral-suite/img/streak1.png')
+    background-image: url('https://21beckem.github.io/referral-suite/img/streak1.png')
 }
 #inbucksImg {
     width: 100%;
@@ -154,7 +154,7 @@
     background-position: center;
     transform: TranslateY(-40px);
     background-size: contain;
-    background-image: url('https://ssmission.github.io/referral-suite/img/inbucks1.png')
+    background-image: url('https://21beckem.github.io/referral-suite/img/inbucks1.png')
 }
 .box {
     margin-bottom: 20px !important;
@@ -300,7 +300,7 @@ function openThisTeam(tmId) {
 }
 
 function updateProfileColor() {
-    profilePicEl.style.backgroundImage = 'url("https://ssmission.github.io/referral-suite/img/fox_profile_pics/'+profilePicColor.value+'.svg")';
+    profilePicEl.style.backgroundImage = 'url("https://21beckem.github.io/referral-suite/img/fox_profile_pics/'+profilePicColor.value+'.svg")';
     try {
         _('teamSelectBtn_'+uniqueIdIn.value).style.backgroundColor = InboxColors[ profilePicColor.value ];
     } catch (e) {}
