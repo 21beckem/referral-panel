@@ -70,7 +70,7 @@ let teamInfos = <?php echo(json_encode($teamInfos)); ?>;
 // make team color lookup
 let teamColorLookup = {};
 for (let i = 0; i < teamInfos.length; i++) {
-    teamColorLookup[ teamInfos[i][1] ] = teamInfos[i][3];
+    teamColorLookup[ teamInfos[i][0] ] = teamInfos[i][3];
 }
 
 function setAllValuesAndTables() {
@@ -114,7 +114,7 @@ function setAllValuesAndTables() {
             let inboxersOptions = '<option></option>';
             for (let k = 0; k < teamInfos.length; k++) {
                 const team = teamInfos[k];
-                inboxersOptions += '<option'+( (cell==team[1]) ? ' selected' : '' )+'>' + team[1] + '</option>';
+                inboxersOptions += '<option value="'+team[0]+'"'+( (cell==team[0]) ? ' selected' : '' )+'>' + team[1] + '</option>';
             }
 
             mainTbOut += '<td><select onchange="dropdownOnChange(this, '+i+', '+j+')" style="background-color: '+colorForTeam(cell)+';">' + inboxersOptions + '</select></td>';
@@ -125,9 +125,9 @@ function setAllValuesAndTables() {
     hiddenSavingEl.value = JSON.stringify(schedArr);
     schTbleEl.innerHTML = mainTbOut;
 }
-function colorForTeam(team) {
-    if (teamColorLookup.hasOwnProperty(team)) {
-        return InboxColors[ teamColorLookup[team] ];
+function colorForTeam(teamId) {
+    if (teamColorLookup.hasOwnProperty(teamId)) {
+        return InboxColors[ teamColorLookup[teamId] ];
     } else { return ''; }
 }
 function openCpyDropdown(el) {

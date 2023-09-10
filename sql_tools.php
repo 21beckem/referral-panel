@@ -47,7 +47,7 @@ function readTableColumns($YOUR_DATABASE_NAME, $tableName) {
     }
     return $raw;
 }
-function readTableColumnInfo($YOUR_DATABASE_NAME, $tableName) {
+function readTableColumnInfo($YOUR_DATABASE_NAME, $tableName, $colName=null) {
     $q = <<<HERA
     select COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, 
         NUMERIC_PRECISION, DATETIME_PRECISION, 
@@ -55,6 +55,9 @@ function readTableColumnInfo($YOUR_DATABASE_NAME, $tableName) {
     from INFORMATION_SCHEMA.COLUMNS
     where TABLE_NAME='{$tableName}'
     HERA;
+    if ($colName != null) {
+        $q .= " AND COLUMN_NAME='".$colName."'";
+    }
     return readSQL($YOUR_DATABASE_NAME, $q);
 }
 function updateTableRowFromArray($YOUR_DATABASE_NAME, $tableName, $rowSelector, $arr, $addIfRowSelectorDoesntExist=false, $debug=false) {

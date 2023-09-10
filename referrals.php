@@ -168,6 +168,20 @@
     height: 235px;
     background-color: white;
 }
+#manualAddBtn {
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    padding: 17px;
+    border-radius: 50%;
+    font-size: 27px;
+    width: 75px;
+    height: 75px;
+    box-shadow: 1px 2px 10px -3px rgba(0, 0, 0, 0.5);
+}
+#manualAddBtn * {
+    transform: translateX(4px);
+}
 </style>
 <div class="top">
     <i class="fa-solid fa-bars sidebar-toggle"></i>
@@ -219,6 +233,7 @@
     </tr>
     <tbody id="employee_data"></table>
 </div>
+<button id="manualAddBtn" class="purpleBtn"><i class="fa-solid fa-user-plus"></i></button>
 <script>
 function _(x) { return document.getElementById(x); }
 HTMLCollection.prototype.forEach = function (x) { return Array.from(this).forEach(x); }
