@@ -36,7 +36,7 @@ function makeHTMLtop($name="") {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="admin-template.css">
         <script src="https://kit.fontawesome.com/0bddc0a0f7.js" crossorigin="anonymous"></script>
-        <script src="https://ssmission.github.io/referral-suite/jsalert.js"></script>
+        <script src="https://21beckem.github.io/referral-suite/jsalert.js"></script>
         <title>Referral Panel<?php echo($nameStr); ?></title> 
     </head>
     <body>

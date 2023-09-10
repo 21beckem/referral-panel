@@ -270,12 +270,20 @@ function getTeamFromId(id) {
 }
 function getEditableClassAndType(colName) {
     switch (colName) {
+        case 'Referral Type':
+            return ['refTyp', 'select'];
+            break;
+
         case 'id':
             return ['', ''];
             break;
         
         case 'Claimed':
             return ['claimedCol', 'select'];
+            break;
+        
+        case 'Referral Sent':
+            return ['SentStatus', 'select'];
             break;
         
         default:
@@ -326,6 +334,34 @@ $('#employee_data').editable({ // textEditable class is now editable
     title: 'Edit Cell',
     type: "GET",
     dataType: 'json'
+});
+$('#employee_data').editable({ // refTyp class is now editable with select
+    container: 'body',
+    selector: 'td.refTyp',
+    url: "referrals_table/update.php",
+    title: 'Edit Cell',
+    type: "GET",
+    dataType: 'json',
+    source: <?php echo(json_encode( $referral_types )); ?>.map(x =>{  return {value: x[1], text: x[1]}  }),
+    validate: function(value) {
+        if($.trim(value) == '') { return 'This field is required' }
+    }
+});
+$('#employee_data').editable({ // SentStatus class is now editable with select
+    container: 'body',
+    selector: 'td.SentStatus',
+    url: "referrals_table/update.php",
+    title: 'Edit Cell',
+    type: "GET",
+    dataType: 'json',
+    source: [
+        {value: 'Not sent', text: 'Not sent'},
+        {value: 'Sent', text: 'Sent'},
+        {value: 'Not interested', text: 'Not interested'}
+    ],
+    validate: function(value) {
+        if($.trim(value) == '') { return 'This field is required' }
+    }
 });
 $('#employee_data').editable({ // claimedCol class is now editable with select
     container: 'body',
