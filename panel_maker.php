@@ -62,7 +62,7 @@ function makeHTMLtop($name="") {
                         <i class="fa-solid fa-users"></i>
                         <span class="link-name">Inboxers</span>
                     </a></li>
-                    <li class="<?php echo(acivateThisTab($name, 'Templates')); ?>"><a href="#">
+                    <li class="<?php echo(acivateThisTab($name, 'Templates')); ?>"><a href="templates.php">
                         <i class="fa-regular fa-paste"></i>
                         <span class="link-name">Templates</span>
                     </a></li>
