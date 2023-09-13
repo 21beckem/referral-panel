@@ -126,7 +126,7 @@
     text-wrap: nowrap;
 }
 #data_table tr:nth-child(even) {
-    background-color: #fee4ff;
+    background-color: #feecff;
 }
 #data_table tr.header {
     z-index: 5;
@@ -182,6 +182,11 @@
 #manualAddBtn * {
     transform: translateX(4px);
 }
+.delBtn {
+    color: #fe0606;
+    border: none;
+    background-color: transparent;
+}
 </style>
 <div class="top">
     <i class="fa-solid fa-bars sidebar-toggle"></i>
@@ -225,6 +230,7 @@
 <div id="whiteBlanket"></div>
 <table id="data_table" class="table table-bordered table-striped">
     <tr class="header">
+        <td></td>
         <?php
             foreach ($tableCols as $key => $value) {
                 echo('<td>'.$value.'</td>');
@@ -292,7 +298,7 @@ function getEditableClassAndType(colName) {
 }
 function warnRequestingAllRows(v) {
     if (v.toLowerCase()=='all') {
-        JSAlert.alert('Requesting all rows may crash your browser depending on how many rows result from your filter.<br>Just so you know.', '', JSAlert.Icons.Warning)
+        JSAlert.alert('Requesting all rows may crash your browser depending on how many rows result from your filter.<br>Just so you know.', '', JSAlert.Icons.Warning);
     }
 }
 function refreshWithFilter() {
@@ -303,13 +309,23 @@ function refreshWithFilter() {
     q += '&rowsLimit=' + encodeURIComponent(_('rowsLimit').value);
     window.location.href = q;
 }
+function deleteRow(rowId, nam) {
+    JSAlert.confirm('Are you absolutely sure you want to delete '+nam+'? This <strong>CANNOT be undone!</strong><br><br>If you simply want it to disappear from Referral Suite, set \'Referral Sent\' to "Not Interested"', '', JSAlert.Icons.Warning)
+    .then(res => {
+        if (res) {
+            fetch('referrals_table/rm.php?pk='+rowId).then(res => {
+                window.location.reload();
+            });
+        }
+    });
+}
 
 function make_table(data) {
     let html_data = '';
     for (let i=0; i<data.length; i++) {
         const row = data[i];
 
-        html_data += '<tr>'
+        html_data += '<tr><td><button class="delBtn" onclick="deleteRow('+row[1]+', \''+row[7]+' '+row[8]+'\')"><i class="fa-solid fa-trash-can"></i></button></td>'
         for (let j = 0; j < row.length; j++) {
             const cell = row[j];
             const col = tableCols[j];
