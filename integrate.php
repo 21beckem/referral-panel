@@ -134,7 +134,7 @@ p {
 </style>
 <div class="top">
     <i class="fa-solid fa-bars sidebar-toggle"></i>
-    <h2>Referral Panel</h2>
+    <h2>Integrate</h2>
     <img src="img/logo.png" alt="">
 </div>
 
