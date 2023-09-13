@@ -6,9 +6,10 @@
         die('[[error]]');
     }
     require_once('../sql_tools.php');
-    $pk = addslashes($_GET["pk"]);
 
-    if (writeSQL($_SESSION['missionInfo']->mykey, "DELETE FROM `all_referrals` WHERE `id`=".$pk)) {
+    $date_and_time = date('Y-m-d H:i:s');
+
+    if (writeSQL($_SESSION['missionInfo']->mykey, "INSERT INTO `all_referrals` (`Date and Time`) VALUES ('".$date_and_time."')")) {
         $_SESSION['sucess_status'] = true;
         echo('Saved!');
     } else {

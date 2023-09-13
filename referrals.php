@@ -174,18 +174,22 @@
     bottom: 30px;
     padding: 17px;
     border-radius: 50%;
-    font-size: 27px;
-    width: 75px;
-    height: 75px;
+    font-size: 23px;
+    width: 70px;
+    height: 70px;
     box-shadow: 1px 2px 10px -3px rgba(0, 0, 0, 0.5);
 }
 #manualAddBtn * {
     transform: translateX(4px);
 }
 .delBtn {
-    color: #fe0606;
+    color: #ff000057;
     border: none;
     background-color: transparent;
+    transition: 0.15s ease;
+}
+.delBtn:hover {
+    color: #ff0000b0;
 }
 </style>
 <div class="top">
@@ -239,7 +243,7 @@
     </tr>
     <tbody id="employee_data"></table>
 </div>
-<button id="manualAddBtn" class="purpleBtn"><i class="fa-solid fa-user-plus"></i></button>
+<button id="manualAddBtn" class="purpleBtn" onclick="addNewRow()"><i class="fa-solid fa-user-plus"></i></button>
 <script>
 function _(x) { return document.getElementById(x); }
 HTMLCollection.prototype.forEach = function (x) { return Array.from(this).forEach(x); }
@@ -317,6 +321,11 @@ function deleteRow(rowId, nam) {
                 window.location.reload();
             });
         }
+    });
+}
+function addNewRow() {
+    fetch('referrals_table/new.php').then(res => {
+        window.location.reload();
     });
 }
 
