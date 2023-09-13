@@ -152,6 +152,10 @@ nav .menu-items{
     border-radius: 50%;
     background-color: var(--primary-color);
 }
+li.active {
+    background-color: #e8cfff5e;
+    border-radius: 5px;
+}
 .nav-links li.active a i, .nav-links li.active a span {
     color: var(--primary-color);
 }
