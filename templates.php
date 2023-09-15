@@ -60,7 +60,9 @@
     padding: 25px;
     margin-bottom: 25px;
 }
-.templateCard textarea {
+.templateCard .textarea {
+    border: 1px solid rgba(118, 118, 118, 0.3);
+    background-color: rgba(239, 239, 239, 0.3);
     width: 100%;
     border-radius: 20px;
     padding: 10px;
@@ -74,21 +76,17 @@
     background-color: #efefef;
     border-radius: 5px;
 }
-#tableColBtns div {
+.dataCard {
     border-radius: 5px;
     padding: 3px;
     margin-bottom: 3px;
     box-shadow: 1px 2px 12px -7px rgba(0, 0, 0, 0.5);
     cursor: pointer;
     background-color: white;
+    width: fit-content;
 }
-#tableColBtns div:before {
-    content: '{';
-    opacity: 0.5;
-}
-#tableColBtns div:after {
-    content: '}';
-    opacity: 0.5;
+.textarea .dataCard {
+    display: inline;
 }
 </style>
 <div class="top">
@@ -132,27 +130,69 @@
                 </div>');
             }
         ?>
+        <div class="templateCard">
+            <div class="textarea" contenteditable="true">
+                hi<div contenteditable="false" class="dataCard">street address</div>
+            </div>
+        </div>
+        <div class="templateCard">
+            <div class="textarea" contenteditable="true">
+                Wy<div contenteditable="false" class="dataCard">phone</div>asdfsadfsadfasdfsadfasfdsa
+            </div>
+        </div>
+        <div class="templateCard">
+            <div class="textarea" contenteditable="true">
+                hi<div contenteditable="false" class="dataCard">first name</div>
+            </div>
+        </div>
     </div>
     <div class="sidenav" id="tableColBtns">
-        <div>first name</div>
-        <div>last name</div>
-        <div>address</div>
-        <div>street address</div>
-        <div>city</div>
-        <div>zip</div>
-        <div>phone</div>
-        <div>teaching area</div>
-        <div>email</div>
-        <div>ad name</div>
-        <div>experience</div>
-        <div>help request</div>
-        <div>lang</div>
-        <div>referral origin</div>
-
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{first name}</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{last name}</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">address</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">street address</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">city</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">zip</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">phone</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">teaching area</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">email</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">ad name</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">experience</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">help request</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">lang</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">referral origin</div>
     </div>
 <script>
 function _(x) { return document.getElementById(x); }
 HTMLCollection.prototype.forEach = function (x) { return Array.from(this).forEach(x); }
+
+let currentInput = {
+    selection : null,
+    range : null
+};
+document.querySelector('div.textarea').addEventListener("focus", (event) => {
+    setTimeout(() => {
+        currentInput = {
+            selection : window.getSelection(),
+            range : window.getSelection().getRangeAt(0)
+        };
+        console.log(currentInput);
+    }, 1);
+});
+
+
+function addDataCard(text) {
+    let selection = currentInput.selection;
+    let range = currentInput.range;
+    range.deleteContents();
+    let node = document.createTextNode(text);
+    range.insertNode(node);
+
+    for(let position = 0; position != text.length; position++)
+    {
+        selection.modify("move", "right", "character");
+    };
+}
 
 function openRefType(refTyp) {
     location.href = '?refTyp=' + refTyp + '&contactTyp=' + document.querySelector('input[name="contactTyp"]:checked').value;
