@@ -9,7 +9,12 @@
     makeHTMLtop('Templates');
     
     $referral_types = readSQL($_SESSION['missionInfo']->mykey, 'SELECT * FROM `referral_types` WHERE 1');
-    $tableCols = readTableColumns($_SESSION['missionInfo']->mykey, 'all_referrals');
+    
+    if (isset($_GET['refTyp'])) {
+        $templates = readSQL($_SESSION['missionInfo']->mykey, 'SELECT * FROM `templates` WHERE `Referral Type`="'.$_GET['refTyp'].'" AND `type`="'.$_GET['contactTyp'].'"');
+    } else {
+        $templates = [];
+    }
 ?>
 <style>
 .dash-content {
@@ -27,11 +32,18 @@
     margin-right: 2px;
     align-self: flex-start;
 }
+#refTypes div.active {
+    text-align: center;
+    box-shadow: inset 1px 2px 8px 0px rgb(255 255 255);
+}
 #contactType div {
     border-radius: 5px;
     padding: 10px;
     box-shadow: 1px 2px 12px -7px rgba(0, 0, 0, 0.5);
     cursor: pointer;
+}
+#contactType div label {
+    pointer-events: none;
 }
 #contactType div:after {
     content: ' >';
@@ -51,18 +63,24 @@
 .templateCard textarea {
     width: 100%;
     border-radius: 20px;
+    padding: 10px;
 }
 #tableColBtns {
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
     align-items: flex-end;
+    padding-right: 10px;
+    background-color: #efefef;
+    border-radius: 5px;
 }
 #tableColBtns div {
     border-radius: 5px;
     padding: 3px;
+    margin-bottom: 3px;
     box-shadow: 1px 2px 12px -7px rgba(0, 0, 0, 0.5);
     cursor: pointer;
+    background-color: white;
 }
 #tableColBtns div:before {
     content: '{';
@@ -84,32 +102,36 @@
         <div class="sidenav" id="refTypes">
             <?php
             foreach ($referral_types as $i => $row) {
-                echo('<div href="templates.php?typ='.$row[1].'" onclick="location.href=this.getAttribute(\'href\')" class="purpleBtn" style="margin: 5px 0px;">'.$row[1].'</div>');
+                if ($row[1]==$_GET['refTyp']) {
+                    $activeState = ' active';
+                } else {
+                    $activeState = '';
+                }
+                echo('<div onclick="openRefType(\''.$row[1].'\')" class="purpleBtn'.$activeState.'" style="margin: 5px 0px;">'.$row[1].'</div>');
             }
             ?>
         </div>
         <div class="sidenav" id="contactType">
-            <div>SMS</div>
-            <div>Email</div>
+            <div onclick="this.querySelector('input').click()">
+                <input onchange="updateContactTyp(this.value)" type="radio" id="SMS_radio" name="contactTyp" value="SMS" <?php if (!isset($_GET['contactTyp']) || $_GET['contactTyp']=='SMS') {echo('checked');} ?>>
+                <label for="SMS">SMS</label>
+            </div>
+            <div onclick="this.querySelector('input').click()">
+                <input onchange="updateContactTyp(this.value)" type="radio" id="MAIL_radio" name="contactTyp" value="Email" <?php if ($_GET['contactTyp']=='Email') {echo('checked');} ?>>
+                <label for="Email">Email</label>
+            </div>
         </div>
     </div>
 
-    <div id="mainParent" style="opacity:1">
-        <div class="templateCard">
-            <textarea style="width:100%" rows="7" disabled></textarea>
-        </div>
-        <div class="templateCard">
-            <textarea style="width:100%" rows="7" disabled></textarea>
-        </div>
-        <div class="templateCard">
-            <textarea style="width:100%" rows="7" disabled></textarea>
-        </div>
-        <div class="templateCard">
-            <textarea style="width:100%" rows="7" disabled></textarea>
-        </div>
-        <div class="templateCard">
-            <textarea style="width:100%" rows="7" disabled></textarea>
-        </div>
+    <div id="mainParent" style="opacity:<?php if (isset($_GET['refTyp'])) {echo('1');} else {echo('0');} ?>">
+        <?php
+            foreach ($templates as $i => $row) {
+                echo('
+                <div class="templateCard">
+                    <textarea style="width:100%" rows="7" disabled>'.$row[3].'</textarea>
+                </div>');
+            }
+        ?>
     </div>
     <div class="sidenav" id="tableColBtns">
         <div>first name</div>
@@ -132,8 +154,14 @@
 function _(x) { return document.getElementById(x); }
 HTMLCollection.prototype.forEach = function (x) { return Array.from(this).forEach(x); }
 
-function openTab(refTyp) {
-
+function openRefType(refTyp) {
+    location.href = '?refTyp=' + refTyp + '&contactTyp=' + document.querySelector('input[name="contactTyp"]:checked').value;
+}
+function updateContactTyp(val) {
+    let refTyp = document.querySelector('#refTypes div.active');
+    if (refTyp!=null) {
+        location.href = '?refTyp=' + refTyp.innerHTML + '&contactTyp=' + val;
+    }
 }
 
 <?php
