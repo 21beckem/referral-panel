@@ -25,6 +25,7 @@
     top: 80px;
     position: sticky;
     width: 170px;
+    min-width: 170px;
     z-index: 1;
     left: 0px;
     overflow-x: hidden;
@@ -87,6 +88,8 @@
 }
 .textarea .dataCard {
     display: inline;
+    cursor: default;
+    padding: 0px;
 }
 </style>
 <div class="top">
@@ -132,35 +135,35 @@
         ?>
         <div class="templateCard">
             <div class="textarea" contenteditable="true">
-                hi<div contenteditable="false" class="dataCard">street address</div>
+                hi there you little <div contenteditable="false" class="dataCard">{street address}</div>
             </div>
         </div>
         <div class="templateCard">
             <div class="textarea" contenteditable="true">
-                Wy<div contenteditable="false" class="dataCard">phone</div>asdfsadfsadfasdfsadfasfdsa
+                Wy<div contenteditable="false" class="dataCard">{phone}</div>asdfsadfsadfasdfsadfasfdsa
             </div>
         </div>
         <div class="templateCard">
             <div class="textarea" contenteditable="true">
-                hi<div contenteditable="false" class="dataCard">first name</div>
+                hi<div contenteditable="false" class="dataCard">{first name}</div>
             </div>
         </div>
     </div>
     <div class="sidenav" id="tableColBtns">
         <div class="dataCard" onclick="addDataCard(this.innerHTML)">{first name}</div>
         <div class="dataCard" onclick="addDataCard(this.innerHTML)">{last name}</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">address</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">street address</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">city</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">zip</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">phone</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">teaching area</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">email</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">ad name</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">experience</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">help request</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">lang</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">referral origin</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{address}</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{street address}</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{city}</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{zip}</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{phone}</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{teaching area}</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{email}</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{ad name}</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{experience}</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{help request}</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{lang}</div>
+        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{referral origin}</div>
     </div>
 <script>
 function _(x) { return document.getElementById(x); }
@@ -170,23 +173,25 @@ let currentInput = {
     selection : null,
     range : null
 };
-document.querySelector('div.textarea').addEventListener("focus", (event) => {
-    setTimeout(() => {
+setInterval(() => {
+    if (window.getSelection().anchorNode!=null && Boolean(window.getSelection().anchorNode.parentElement.closest('div.textarea'))) {
         currentInput = {
             selection : window.getSelection(),
             range : window.getSelection().getRangeAt(0)
         };
-        console.log(currentInput);
-    }, 1);
-});
+    }
+}, 500);
 
 
 function addDataCard(text) {
     let selection = currentInput.selection;
     let range = currentInput.range;
     range.deleteContents();
-    let node = document.createTextNode(text);
-    range.insertNode(node);
+    let node = document.createElement('div');
+    node.setAttribute('contenteditable', 'false');
+    node.classList.add('dataCard');
+    node.innerHTML = text;
+    currentInput.range.insertNode(node);
 
     for(let position = 0; position != text.length; position++)
     {
