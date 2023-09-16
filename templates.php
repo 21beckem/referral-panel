@@ -78,7 +78,7 @@
     background-color: #efefef;
     border-radius: 5px;
 }
-.dataCard {
+dataCard {
     border-radius: 5px;
     padding: 3px;
     margin-bottom: 3px;
@@ -87,7 +87,7 @@
     background-color: white;
     width: fit-content;
 }
-.textarea .dataCard {
+.textarea dataCard {
     display: inline;
     cursor: default;
     padding: 0px;
@@ -134,35 +134,49 @@
     <div id="mainParent" style="opacity:<?php if (isset($_GET['refTyp'])) {echo('1');} else {echo('0');} ?>">
     </div>
     <div class="sidenav" id="tableColBtns">
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{first name}</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{last name}</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{address}</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{street address}</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{city}</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{zip}</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{phone}</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{teaching area}</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{email}</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{ad name}</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{experience}</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{help request}</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{lang}</div>
-        <div class="dataCard" onclick="addDataCard(this.innerHTML)">{referral origin}</div>
+        <dataCard onclick="addDataCard(this.innerHTML)">{first name}</dataCard>
+        <dataCard onclick="addDataCard(this.innerHTML)">{last name}</dataCard>
+        <dataCard onclick="addDataCard(this.innerHTML)">{address}</dataCard>
+        <dataCard onclick="addDataCard(this.innerHTML)">{street address}</dataCard>
+        <dataCard onclick="addDataCard(this.innerHTML)">{city}</dataCard>
+        <dataCard onclick="addDataCard(this.innerHTML)">{zip}</dataCard>
+        <dataCard onclick="addDataCard(this.innerHTML)">{phone}</dataCard>
+        <dataCard onclick="addDataCard(this.innerHTML)">{teaching area}</dataCard>
+        <dataCard onclick="addDataCard(this.innerHTML)">{email}</dataCard>
+        <dataCard onclick="addDataCard(this.innerHTML)">{ad name}</dataCard>
+        <dataCard onclick="addDataCard(this.innerHTML)">{experience}</dataCard>
+        <dataCard onclick="addDataCard(this.innerHTML)">{help request}</dataCard>
+        <dataCard onclick="addDataCard(this.innerHTML)">{lang}</dataCard>
+        <dataCard onclick="addDataCard(this.innerHTML)">{referral origin}</dataCard>
     </div>
 <script>
+document.execCommand('defaultParagraphSeparator', false, 'div');
 function _(x) { return document.getElementById(x); }
 HTMLCollection.prototype.forEach = function (x) { return Array.from(this).forEach(x); }
 
 // make all the cards
 const templates = <?php echo(json_encode($templates)); ?>;
 let mainParent = _('mainParent');
-templates.forEach(row => {
-    newTmpMssg = row[3].replace(/{[^}]*}/gm, function (x) {
-        return '<div contenteditable="false" class="dataCard">' + x + '</div>';
+templates.forEach((row, i) => {
+    // convert curly-brackets to dataCards
+    let newTmpMssg = row[3].replace(/{[^}]*}/gm, function (x) {
+        return '<dataCard contenteditable="false">' + x + '</dataCard>';
     });
+    //console.log(newTmpMssg);
+
+    // convert rest to HTML
+    let manMadeHTML = newTmpMssg.split('\n').map(lin => {
+        if (lin=='\r') {
+            return '<div><br></div>';
+        }
+        return '<div>' + lin + '</div>';
+    }).join('');
+    //console.log(manMadeHTML);
+
+    // paste
     mainParent.innerHTML += `
-        <form class="templateCard" method="POST" action="saving_functions/template_save.php">
-            <div class="textarea" oninput="onTextareaEdit(this)" contenteditable="true">`+newTmpMssg+`</div>
+        <form class="templateCard" method="POST" action="saving_functions/template_save.php" onsubmit="onTextareaEdit(this.querySelector('.textarea'))">
+            <div class="textarea" oninput="onTextareaEdit(this)" contenteditable="true">`+manMadeHTML+`</div>
             <input type="hidden" name="id" value="`+row[0]+`">
             <input type="hidden" class="hiddenTxt" name="txt" value="">
             <input type="submit" class="purpleBtn saveBtn" value="Save">
@@ -173,8 +187,36 @@ mainParent.innerHTML += `
         <input type="submit" class="purpleBtn saveBtn" style="display:block" value="Add New Template">
     </form>`;
 function onTextareaEdit(el) {
+    if (!el.classList.contains('textarea')) { return; }
+    let val = el.innerHTML;
+
+    // fix html output
+    if (val.includes('<div>')) {
+        let pArr = val.replace("</div>", "").split("<div>");
+        val = '<div>' + val.replace('<div>', '</div><div>');
+    } else {
+        val = '<div>' + val + '</div>';
+    }
+    val = val.replaceAll('<div></div>', '');
+
+    // convert html to plain text
+    let conv = val.replace(/<div>(.*?)\n*<\/div>/gmi, function(x, m) {
+        if (m=='<br>') {
+            return '\n';
+        }
+        m = m.replaceAll('&nbsp;', ' ');
+        return m.replace(/<dataCard contenteditable="false">(.*?)\n*<\/dataCard>/gmi, function(x, m) { return m; }) + '\n';
+    });
+    conv = conv.replace(/\n\Z/gmi, '');
+
+    //console.log(el.innerHTML);
+    //console.log(val);
+    console.log(conv);
+    //console.log('-------------------');
+    el.parentElement.querySelector('.hiddenTxt').value = conv;
     el.parentElement.querySelector('.saveBtn').style.display = 'block';
-    el.parentElement.querySelector('.hiddenTxt').value = el.innerText;
+
+    return true;
 }
 
 let currentInput = {
@@ -195,13 +237,14 @@ function addDataCard(text) {
     let selection = currentInput.selection;
     let range = currentInput.range;
     range.deleteContents();
-    let node = document.createElement('div');
+    let node = document.createElement('dataCard');
     node.setAttribute('contenteditable', 'false');
-    node.classList.add('dataCard');
     node.innerHTML = text;
     currentInput.range.insertNode(node);
 
-    onTextareaEdit( currentInput.range.commonAncestorContainer );
+    setTimeout(() => {
+        onTextareaEdit( currentInput.range.commonAncestorContainer );
+    }, 1);
 }
 
 function openRefType(refTyp) {
