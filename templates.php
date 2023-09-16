@@ -58,7 +58,7 @@
 }
 .templateCard {
     box-shadow: 1px 2px 12px -7px rgba(0, 0, 0, 0.5);
-    padding: 25px;
+    padding: 25px 25px 10px 25px;
     margin-bottom: 25px;
 }
 .templateCard .textarea {
@@ -67,6 +67,7 @@
     width: 100%;
     border-radius: 20px;
     padding: 10px;
+    margin-bottom: 15px;
 }
 #tableColBtns {
     display: flex;
@@ -90,6 +91,12 @@
     display: inline;
     cursor: default;
     padding: 0px;
+    border: 1px solid #3200324a;
+}
+.templateCard .saveBtn {
+    display: none;
+    overflow: hidden;
+    padding: 3px 20px;
 }
 </style>
 <div class="top">
@@ -125,29 +132,6 @@
     </div>
 
     <div id="mainParent" style="opacity:<?php if (isset($_GET['refTyp'])) {echo('1');} else {echo('0');} ?>">
-        <?php
-            foreach ($templates as $i => $row) {
-                echo('
-                <div class="templateCard">
-                    <textarea style="width:100%" rows="7" disabled>'.$row[3].'</textarea>
-                </div>');
-            }
-        ?>
-        <div class="templateCard">
-            <div class="textarea" contenteditable="true">
-                hi there you little <div contenteditable="false" class="dataCard">{street address}</div>
-            </div>
-        </div>
-        <div class="templateCard">
-            <div class="textarea" contenteditable="true">
-                Wy<div contenteditable="false" class="dataCard">{phone}</div>asdfsadfsadfasdfsadfasfdsa
-            </div>
-        </div>
-        <div class="templateCard">
-            <div class="textarea" contenteditable="true">
-                hi<div contenteditable="false" class="dataCard">{first name}</div>
-            </div>
-        </div>
     </div>
     <div class="sidenav" id="tableColBtns">
         <div class="dataCard" onclick="addDataCard(this.innerHTML)">{first name}</div>
@@ -169,6 +153,30 @@
 function _(x) { return document.getElementById(x); }
 HTMLCollection.prototype.forEach = function (x) { return Array.from(this).forEach(x); }
 
+// make all the cards
+const templates = <?php echo(json_encode($templates)); ?>;
+let mainParent = _('mainParent');
+templates.forEach(row => {
+    newTmpMssg = row[3].replace(/{[^}]*}/gm, function (x) {
+        return '<div contenteditable="false" class="dataCard">' + x + '</div>';
+    });
+    mainParent.innerHTML += `
+        <form class="templateCard" method="POST" action="saving_functions/template_save.php">
+            <div class="textarea" oninput="onTextareaEdit(this)" contenteditable="true">`+newTmpMssg+`</div>
+            <input type="hidden" name="id" value="`+row[0]+`">
+            <input type="hidden" class="hiddenTxt" name="txt" value="">
+            <input type="submit" class="purpleBtn saveBtn" value="Save">
+        </form>`;
+});
+mainParent.innerHTML += `
+    <form method="POST" action="saving_functions/template_save.php">
+        <input type="submit" class="purpleBtn saveBtn" style="display:block" value="Add New Template">
+    </form>`;
+function onTextareaEdit(el) {
+    el.parentElement.querySelector('.saveBtn').style.display = 'block';
+    el.parentElement.querySelector('.hiddenTxt').value = el.innerText;
+}
+
 let currentInput = {
     selection : null,
     range : null
@@ -180,7 +188,7 @@ setInterval(() => {
             range : window.getSelection().getRangeAt(0)
         };
     }
-}, 500);
+}, 250);
 
 
 function addDataCard(text) {
@@ -193,10 +201,7 @@ function addDataCard(text) {
     node.innerHTML = text;
     currentInput.range.insertNode(node);
 
-    for(let position = 0; position != text.length; position++)
-    {
-        selection.modify("move", "right", "character");
-    };
+    onTextareaEdit( currentInput.range.commonAncestorContainer );
 }
 
 function openRefType(refTyp) {
@@ -208,12 +213,6 @@ function updateContactTyp(val) {
         location.href = '?refTyp=' + refTyp.innerHTML + '&contactTyp=' + val;
     }
 }
-
-<?php
-if (isset($_GET['id'])) {
-    echo('openThisTeam('.$_GET['id'].');');
-}
-?>
 
 </script>
 
