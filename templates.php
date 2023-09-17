@@ -60,14 +60,24 @@
     box-shadow: 1px 2px 12px -7px rgba(0, 0, 0, 0.5);
     padding: 25px 25px 10px 25px;
     margin-bottom: 25px;
+    position: relative;
 }
 .templateCard .textarea {
     border: 1px solid rgba(118, 118, 118, 0.3);
     background-color: rgba(239, 239, 239, 0.3);
     width: 100%;
-    border-radius: 20px;
     padding: 10px;
     margin-bottom: 15px;
+    min-height: 45px;
+}
+.templateCard .textarea.SMS {
+    background: rgb(142,215,255);
+    background: linear-gradient(164deg, rgba(142,215,255,1) 0%, rgba(90,212,255,1) 100%);
+    border-radius: 20px;
+}
+.templateCard .textarea.Email {
+    box-shadow: 0 0 13px -9px red inset;
+    border-radius: 5px;
 }
 #tableColBtns {
     display: flex;
@@ -92,11 +102,25 @@ dataCard {
     cursor: default;
     padding: 0px;
     border: 1px solid #3200324a;
+    background-color: white;
 }
 .templateCard .saveBtn {
     display: none;
     overflow: hidden;
     padding: 3px 20px;
+}
+.templateCard .delBtn {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    cursor: pointer;
+    color: #ff000057;
+    background-color: transparent;
+    border: none;
+    transition: color 0.15s ease;
+}
+.templateCard .delBtn:hover {
+    color: #ff0000b0;
 }
 </style>
 <div class="top">
@@ -134,6 +158,7 @@ dataCard {
     <div id="mainParent" style="opacity:<?php if (isset($_GET['refTyp'])) {echo('1');} else {echo('0');} ?>">
     </div>
     <div class="sidenav" id="tableColBtns">
+        <h3 style="width: calc(100% - 10px); text-align: center; margin-bottom: 10px;">Data Cards</h3>
         <dataCard onclick="addDataCard(this.innerHTML)">{first name}</dataCard>
         <dataCard onclick="addDataCard(this.innerHTML)">{last name}</dataCard>
         <dataCard onclick="addDataCard(this.innerHTML)">{address}</dataCard>
@@ -175,15 +200,26 @@ templates.forEach((row, i) => {
 
     // paste
     mainParent.innerHTML += `
-        <form class="templateCard" method="POST" action="saving_functions/template_save.php" onsubmit="onTextareaEdit(this.querySelector('.textarea'))">
-            <div class="textarea" oninput="onTextareaEdit(this)" contenteditable="true">`+manMadeHTML+`</div>
-            <input type="hidden" name="id" value="`+row[0]+`">
-            <input type="hidden" class="hiddenTxt" name="txt" value="">
-            <input type="submit" class="purpleBtn saveBtn" value="Save">
-        </form>`;
+        <div class="templateCard">
+            <form method="POST" action="saving_functions/template_save.php" onsubmit="return confirmDeleteTemplate(this)">
+                <input type="hidden" name="setting" value="delete">
+                <input type="hidden" name="id" value="`+row[0]+`">
+                <button class="delBtn"><i class="fa-solid fa-trash-can"></i></button>
+            </form>
+            <form method="POST" action="saving_functions/template_save.php" onsubmit="onTextareaEdit(this.querySelector('.textarea'))">
+                <div class="textarea <?php echo($_GET['contactTyp']); ?>" oninput="onTextareaEdit(this)" contenteditable="true">`+manMadeHTML+`</div>
+                <input type="hidden" name="setting" value="update">
+                <input type="hidden" name="id" value="`+row[0]+`">
+                <input type="hidden" class="hiddenTxt" name="txt" value="">
+                <input type="submit" class="purpleBtn saveBtn" value="Save">
+            </form>
+        </div>`;
 });
 mainParent.innerHTML += `
     <form method="POST" action="saving_functions/template_save.php">
+        <input type="hidden" name="setting" value="new">
+        <input type="hidden" name="refTyp" value="<?php echo($_GET['refTyp']); ?>">
+        <input type="hidden" name="contactTyp" value="<?php echo($_GET['contactTyp']); ?>">
         <input type="submit" class="purpleBtn saveBtn" style="display:block" value="Add New Template">
     </form>`;
 function onTextareaEdit(el) {
@@ -242,9 +278,7 @@ function addDataCard(text) {
     node.innerHTML = text;
     currentInput.range.insertNode(node);
 
-    setTimeout(() => {
-        onTextareaEdit( currentInput.range.commonAncestorContainer );
-    }, 1);
+    onTextareaEdit( currentInput.range.commonAncestorContainer.closest('.textarea') );
 }
 
 function openRefType(refTyp) {
@@ -255,6 +289,17 @@ function updateContactTyp(val) {
     if (refTyp!=null) {
         location.href = '?refTyp=' + refTyp.innerHTML + '&contactTyp=' + val;
     }
+}
+let currentDeletingForm = null;
+function confirmDeleteTemplate(el) {
+    JSAlert.confirm('Are you absolutely sure you want to delete this template? This CANNOT be undone.', '', JSAlert.Icons.Warning)
+    .then(res => {
+        if (res) {
+            currentDeletingForm.submit();
+        }
+    });
+    currentDeletingForm = el;
+    return false;
 }
 
 </script>
