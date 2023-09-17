@@ -69,15 +69,13 @@
     padding: 10px;
     margin-bottom: 15px;
     min-height: 45px;
+    border-radius: 5px;
 }
 .templateCard .textarea.SMS {
-    background: rgb(142,215,255);
-    background: linear-gradient(164deg, rgba(142,215,255,1) 0%, rgba(90,212,255,1) 100%);
-    border-radius: 20px;
+    box-shadow: 0 0 13px -8px #0085ff inset;
 }
 .templateCard .textarea.Email {
     box-shadow: 0 0 13px -9px red inset;
-    border-radius: 5px;
 }
 #tableColBtns {
     display: flex;
