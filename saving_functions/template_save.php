@@ -19,7 +19,7 @@
     else if ($setting == 'new') {
         $refTyp = addslashes($_POST['refTyp']);
         $contactTyp = addslashes($_POST['contactTyp']);
-        $q = 'INSERT INTO `templates`(`Referral Type`, `type`) VALUES ("'.$refTyp.'","'.$contactTyp.'")';
+        $q = 'INSERT INTO `templates`(`Referral Type`, `type`, `text`) VALUES ("'.$refTyp.'","'.$contactTyp.'", "\r\n")';
     }
     else if ($setting == 'delete') {
         $id = addslashes($_POST['id']);

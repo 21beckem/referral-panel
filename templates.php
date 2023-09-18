@@ -188,6 +188,7 @@ templates.forEach((row, i) => {
     //console.log(newTmpMssg);
 
     // convert rest to HTML
+    console.log(JSON.stringify(newTmpMssg));
     let manMadeHTML = newTmpMssg.split('\n').map(lin => {
         if (lin=='\r') {
             return '<div><br></div>';
