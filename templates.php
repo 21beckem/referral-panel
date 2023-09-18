@@ -188,7 +188,7 @@ templates.forEach((row, i) => {
     //console.log(newTmpMssg);
 
     // convert rest to HTML
-    console.log(JSON.stringify(newTmpMssg));
+    //console.log(JSON.stringify(newTmpMssg));
     let manMadeHTML = newTmpMssg.split('\n').map(lin => {
         if (lin=='\r') {
             return '<div><br></div>';
@@ -246,7 +246,7 @@ function onTextareaEdit(el) {
 
     //console.log(el.innerHTML);
     //console.log(val);
-    console.log(conv);
+    //console.log(conv);
     //console.log('-------------------');
     el.parentElement.querySelector('.hiddenTxt').value = conv;
     el.parentElement.querySelector('.saveBtn').style.display = 'block';

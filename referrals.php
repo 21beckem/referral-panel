@@ -241,8 +241,8 @@
             }
         ?>
     </tr>
-    <tbody id="employee_data"></table>
-</div>
+    <tbody id="employee_data"></tbody>
+</table>
 <button id="manualAddBtn" class="purpleBtn" onclick="addNewRow()"><i class="fa-solid fa-user-plus"></i></button>
 <script>
 function _(x) { return document.getElementById(x); }
