@@ -27,6 +27,7 @@ body {
     border-radius: 10px;
 }
 input[type="text"],
+input[type="email"],
 input[type="password"] {
     border: none;
     background-color: #f1f1f1;
@@ -53,13 +54,23 @@ input[type="submit"] {
         <div class="center">
             <center>
                 <h1>Referral Panel</h1>
-                <h4>Add new Mission</h4>
+                <h4>Create New Account</h4>
             </center>
             <br>
-            <form action="add_account.php" method="POST" onsubmit="return validatePassword()">
+            <form action="add_account.php" method="POST" onsubmit="return validateForm()">
                 <div class="txt_field">
-                    <label>Your Missions Acronym</label><br>
+                    <label>Name / Acronym</label><br>
                     <input type="text" name="username" id="username" pattern="[A-Za-z]{3,}" title="Only letters, no spaces or numbers. At least 3 chars long" required>
+                </div>
+                <br>
+                <div class="txt_field">
+                    <label>Email Address</label><br>
+                    <input type="email" name="email" id="email" title="A valid email address for recovering password and validating login" required>
+                </div>
+                <br>
+                <div class="txt_field">
+                    <label>Confirm Email Address</label><br>
+                    <input type="email" name="doubleEmail" id="doubleEmail" title="A valid email address for recovering password and validating login" required>
                 </div>
                 <br>
                 <div class="txt_field">
@@ -80,17 +91,28 @@ input[type="submit"] {
 let usernameEl = document.getElementById('username');
 let pass1El = document.getElementById('password');
 let pass2El = document.getElementById('doublePassword');
-function validatePassword(){
-    if(pass1El.value != pass2El.value) {
-        pass2El.setCustomValidity("Passwords Don't Match");
+let email1E = document.getElementById('email');
+let email2E = document.getElementById('doubleEmail');
+function validateForm() {
+    pass2El.setCustomValidity('');
+    email2E.setCustomValidity('');
+    return ( validateSameValue(pass1El, pass2El, 'Passwords') && validateSameValue(email1E, email2E, 'Emails') );
+}
+function validateSameValue(el1, el2, typ) {
+    if(el1.value != el2.value) {
+        el2.setCustomValidity(typ + " Don't Match");
+        console.log('false');
         return false;
     } else {
-        pass2El.setCustomValidity('');
+        el2.setCustomValidity('');
+        console.log('true');
         return true;
     }
 }
-pass1El.onchange = validatePassword;
-pass2El.onkeyup = validatePassword;
+pass1El.onchange = validateForm;
+pass2El.onchange = validateForm;
+email1E.onchange = validateForm;
+email2E.onchange = validateForm;
     </script>
 </body>
 </html>

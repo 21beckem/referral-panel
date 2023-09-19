@@ -7,13 +7,13 @@ if ($_SESSION['missionSignedIn']) {
 // handle sign-in attempt
 require_once('sql_tools.php');
 $SignInError = '';
-if ($_POST['username'] && $_POST['password']) {
-    $readRes = readSQL('Referral_Suite_General', 'SELECT * FROM `mission_users` WHERE `name`="'.$_POST['username'].'"');
+if ($_POST['email'] && $_POST['password']) {
+    $readRes = readSQL('Referral_Suite_General', 'SELECT * FROM `mission_users` WHERE `email`="'.strtolower($_POST['email']).'"');
     if (count($readRes) == 0) {
-        $SignInError = "Mission name not recognised";
+        $SignInError = "Email not recognised";
     } else {
         if (!password_verify($_POST['password'], $readRes[0][2])) {
-            $SignInError = "Password does not match mission name";
+            $SignInError = "Password does not match email";
         } else {
             $_SESSION['missionSignedIn'] = true;
             $_SESSION['missionInfo'] = (object) [
@@ -61,6 +61,7 @@ body {
     border-radius: 10px;
 }
 input[type="text"],
+input[type="email"],
 input[type="password"] {
     border: none;
     background-color: #f1f1f1;
@@ -90,8 +91,8 @@ input[type="submit"] {
             <form action="" method="POST">
                 <p style="color: red; font-size: small; display: <?php echo($errorShow); ?>"><?php echo($SignInError); ?></p>
                 <div class="txt_field">
-                    <label>Mission</label><br>
-                    <input type="text" name="username" required>
+                    <label>Email Address</label><br>
+                    <input type="email" name="email" required>
                 </div>
                 <br>
                 <div class="txt_field">
