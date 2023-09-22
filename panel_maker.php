@@ -12,11 +12,6 @@ function makeHTMLtop($name="") {
     if ($name != "" && $name != "Dashboard") {
         $nameStr = ' | '.$name;
     }
-    $tabs = array('Dashboard', 'Referrals', 'Schedule', 'Inboxers', 'Templates', 'Integrate', 'Config');
-    $activeTab = array();
-    for ($i=0; $i < count($tabs); $i++) { 
-        array_push($activeTab, acivateThisTab($name, $tabs[$i]));
-    }
 
     $successToAlert = '';
     if (isset($_SESSION['sucess_status'])) {
@@ -41,6 +36,7 @@ function makeHTMLtop($name="") {
     </head>
     <body>
         <nav style="opacity:1">
+            <script src="admin-template.js"></script>
             <script>
             window.onload = () => { <?php echo($successToAlert); ?> }
             </script>
@@ -74,7 +70,7 @@ function makeHTMLtop($name="") {
                         <i class="fa-solid fa-link"></i>
                         <span class="link-name">Integrate</span>
                     </a></li>
-                    <li class="<?php echo(acivateThisTab($name, 'Settings')); ?>"><a href="#">
+                    <li class="<?php echo(acivateThisTab($name, 'Settings')); ?>"><a href="settings.php">
                         <i class="fa-solid fa-gears"></i>
                         <span class="link-name">Settings</span>
                     </a></li>
@@ -95,8 +91,6 @@ function makeHTMLtop($name="") {
 function makeHTMLbottom() {
     echo(<<<HERA
         </section>
-
-        <script src="admin-template.js"></script>
     </body>
     </html>
     HERA);

@@ -1,7 +1,4 @@
-const body = document.querySelector("body"),
-      sidebar = body.querySelector("nav");
-      sidebarToggle = body.querySelector(".sidebar-toggle");
-
+const sidebar = document.body.querySelector("nav");
 
 let getStatus = localStorage.getItem("sidebar-status");
 if(getStatus && getStatus ==="close") {
@@ -11,15 +8,18 @@ if(getStatus && getStatus ==="close") {
     document.querySelector(':root').style.setProperty('--sidebarSize', '250px');
 }
 
-sidebarToggle.addEventListener("click", () => {
-    sidebar.classList.toggle("close");
-    if(sidebar.classList.contains("close")){
-        localStorage.setItem("sidebar-status", "close");
-        document.querySelector(':root').style.setProperty('--sidebarSize', '73px');
-    }else{
-        localStorage.setItem("sidebar-status", "open");
-        document.querySelector(':root').style.setProperty('--sidebarSize', '250px');
-    }
+window.addEventListener("load", (e) => {
+    document.body.querySelector(".sidebar-toggle").addEventListener("click", () => {
+        sidebar.classList.toggle("close");
+        if(sidebar.classList.contains("close")){
+            localStorage.setItem("sidebar-status", "close");
+            document.querySelector(':root').style.setProperty('--sidebarSize', '73px');
+        }else{
+            localStorage.setItem("sidebar-status", "open");
+            document.querySelector(':root').style.setProperty('--sidebarSize', '250px');
+        }
+    });
+    document.querySelector(':root').style.setProperty('--tran-05', 'all 0.5s ease');
 });
 
 function setDontRefresh(trueOrfalse) {
