@@ -10,6 +10,12 @@
     
     $settings_rows = readSQL($_SESSION['missionInfo']->mykey, 'SELECT * FROM `settings` ORDER BY `settings`.`sort_order` ASC');
 ?>
+<link href="MYbootstrap.css" rel="stylesheet">
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.js"></script>
 <style>
 .settingsSection .openBtn {
     background-color: #eee;
@@ -36,14 +42,14 @@
 .settingsSection.active .openBtn:after {
     content: "\2212";
 }
-.settingsSection .panel {
+.settingsSection .settingsPanel {
     padding: 0px;
     background-color: white;
     max-height: 0;
     overflow: hidden;
     transition: all 0.2s ease-out;
 }
-.settingsSection.active .panel {
+.settingsSection.active .settingsPanel {
     padding: 20px 10px;
 }
 
@@ -56,6 +62,38 @@
     margin: 15px auto 15px auto;
     border: 1px dotted #d2d2d2;
 }
+.jsonTable {
+    width: 100%;
+}
+.jsonTable .name {
+    width: 50%;
+    display: inline-block;
+    text-align: right;
+    padding-right: 10px;
+}
+.jsonTable .name input {
+    font-weight: bold;
+}
+.jsonTable input {
+    min-width: 200px;
+    width: 40%;
+    text-align: center;
+}
+.jsonTable .row {
+    margin: 15px 0px 15px 0px;
+}
+div.input {
+    display: inline-block;
+    padding: 5px;
+    border: 1px solid #d5bbde;
+    cursor: pointer;
+}
+div.input:empty:before {
+    color: #DD1144;
+    font-style: italic;
+    text-decoration: none;
+    content: "Empty";
+}
 </style>
 <div class="top">
     <i class="fa-solid fa-bars sidebar-toggle"></i>
@@ -65,26 +103,6 @@
 
 <div class="dash-content">
     <div id="accordionParent">
-        <div class="settingsSection">
-            <button class="openBtn" onclick="clickOpenAccordion(this)">Section 1</button>
-            <div class="panel">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            </div>
-        </div>
-        
-        <div class="settingsSection">
-            <button class="openBtn" onclick="clickOpenAccordion(this)">Section 2</button>
-            <div class="panel">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            </div>
-        </div>
-        
-        <div class="settingsSection">
-            <button class="openBtn" onclick="clickOpenAccordion(this)">Section 3</button>
-            <div class="panel">
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            </div>
-        </div>
     </div>
 
     <div id="mainParent" style="opacity:<?php if (isset($_GET['refTyp'])) {echo('1');} else {echo('0');} ?>">
@@ -106,7 +124,7 @@ function makeAccordions(this_settings_rows) {
             }
             toReturn += `<div class="settingsSection">
                             <button class="openBtn" onclick="clickOpenAccordion(this)">` + row[2] + `</button>
-                        <div class="panel">`;
+                        <div class="settingsPanel">`;
             lastHeader = row[2];
         }
 
@@ -115,8 +133,29 @@ function makeAccordions(this_settings_rows) {
 
         // make value editor
         let typ = row[3];
-        if (typ=='text' || typ=='number' || typ=='date') {
-            toReturn += `<input type="`+typ+`" disabled value="`+row[6]+`">`;
+        let val = row[6];
+        if (typ=='text' || typ=='number' || typ=='date')
+        {
+            toReturn += `<div disabled value="`+val+`" data-name="`+row[5]+`" class="input textEditable" data-type="text" data-pk="`+row[0]+`">`+val+`</div>`;
+        }
+        else if (typ=='bool' || typ=='boolean')
+        {
+            toReturn += `<input type="`+typ+`" disabled value="`+Boolean(parseInt(val))+`">`;
+        }
+        else if (typ=='json')
+        {
+            toReturn += '<div class="jsonTable">';
+            let json = JSON.parse(val);
+            for (let key in json) {
+                console.log(key);
+                toReturn += '<div class="row">';
+                toReturn += `<div class="name">
+                    <input value="`+key+`" disabled></div>
+                    <input type="`+typ+`" disabled value="`+json[key]+`">
+                    <br>`;
+                toReturn += '</div>';
+            }
+            toReturn += '</div>';
         }
         
         // add break between
@@ -161,6 +200,15 @@ function openAccordion(el, forceState=null) {
         panel.style.maxHeight = '0';
     }
 }
+
+$('#accordionParent').editable({ // textEditable class is now editable
+    container: 'body',
+    selector: '.textEditable',
+    url: "",
+    title: 'Edit Setting',
+    type: "GET",
+    dataType: 'json'
+});
 
 </script>
 
