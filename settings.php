@@ -17,6 +17,11 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.1/bootstrap3-editable/js/bootstrap-editable.js"></script>
 <style>
+#accordionParent {
+    margin: 0 auto 0 auto;
+    max-width: 800px;
+    width: 100%;
+}
 .settingsSection .openBtn {
     background-color: #eee;
     color: #444;
@@ -71,28 +76,57 @@
     text-align: right;
     padding-right: 10px;
 }
-.jsonTable .name input {
+.jsonTable .name .input {
     font-weight: bold;
 }
-.jsonTable input {
+.jsonTable .input {
     min-width: 200px;
     width: 40%;
     text-align: center;
 }
+.jsonTable .input:not(.textEditable) { 
+    cursor: default;
+    background-color: #f0f0f0;
+    padding: 0px;
+    margin: 5px;
+}
 .jsonTable .row {
     margin: 15px 0px 15px 0px;
+    transform: translateY(-10px);
 }
 div.input {
     display: inline-block;
     padding: 5px;
     border: 1px solid #d5bbde;
     cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    background-color: white;
+    transform: translateY(10px);
 }
 div.input:empty:before {
     color: #DD1144;
     font-style: italic;
     text-decoration: none;
     content: "Empty";
+}
+.delBtn {
+    color: #ff000057;
+    border: none;
+    background-color: transparent;
+    transition: 0.15s ease;
+    margin-right: 10px;
+    display: inline-block;
+}
+.delBtn:hover {
+    color: #ff0000b0;
+}
+.newBtn {
+    margin: 0 auto 0 auto;
+    width: 100px;
+    text-align: center;
+    transform: translateY(-10px);
 }
 </style>
 <div class="top">
@@ -129,7 +163,7 @@ function makeAccordions(this_settings_rows) {
         }
 
         // paste name
-        toReturn += '<a class="settingName">' + row[5] +'</a>';
+        toReturn += '<a class="settingName">' + (row[5]).toTitleCase() +'</a>';
 
         // make value editor
         let typ = row[3];
@@ -140,22 +174,31 @@ function makeAccordions(this_settings_rows) {
         }
         else if (typ=='bool' || typ=='boolean')
         {
-            toReturn += `<input type="`+typ+`" disabled value="`+Boolean(parseInt(val))+`">`;
+            toReturn += `<div disabled value="`+val+`" data-name="`+row[5]+`" class="input boolEditable" data-type="select" data-pk="`+row[0]+`">`+String(Boolean(val)).toTitleCase()+`</div>`;
         }
         else if (typ=='json')
         {
+            toReturn += '<a style="opacity:0.5">{</a>';
             toReturn += '<div class="jsonTable">';
             let json = JSON.parse(val);
+            const modifiable = Boolean(parseInt(row[4]));
             for (let key in json) {
                 console.log(key);
                 toReturn += '<div class="row">';
-                toReturn += `<div class="name">
-                    <input value="`+key+`" disabled></div>
-                    <input type="`+typ+`" disabled value="`+json[key]+`">
-                    <br>`;
+                toReturn += `<div class="name">`;
+                if (modifiable) {
+                    toReturn += '<button class="delBtn"><i class="fa-solid fa-trash-can"></i></button>';
+                }
+                toReturn += `<div disabled value="`+key+`" data-name="`+JSON.stringify([row[5], key, 'key'])+`" class="input `+(modifiable ? 'textEditable' : '')+`" data-type="text" data-pk="`+row[0]+`">`+key+`</div></div>`;
+                toReturn += `<div disabled value="`+json[key]+`" data-name="`+JSON.stringify([row[5], key, 'key'])+`" class="input textEditable" data-type="text" data-pk="`+row[0]+`">`+json[key]+`</div>`;
+                toReturn += `<br>`;
                 toReturn += '</div>';
             }
+            if (modifiable) {
+                toReturn += '<div class="newBtn purpleBtn">Add 1 More</div>';
+            }
             toReturn += '</div>';
+            toReturn += '<a style="opacity:0.5">}</a>';
         }
         
         // add break between
@@ -208,6 +251,21 @@ $('#accordionParent').editable({ // textEditable class is now editable
     title: 'Edit Setting',
     type: "GET",
     dataType: 'json'
+});
+$('#accordionParent').editable({ // SentStatus class is now editable with select
+    container: 'body',
+    selector: '.boolEditable',
+    url: "",
+    title: 'Edit Setting',
+    type: "GET",
+    dataType: 'json',
+    source: [
+        {value: 'true', text: 'True'},
+        {value: 'true', text: 'False'}
+    ],
+    validate: function(value) {
+        if($.trim(value) == '') { return 'This field is required' }
+    }
 });
 
 </script>
