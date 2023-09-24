@@ -170,11 +170,11 @@ function makeAccordions(this_settings_rows) {
         let val = row[6];
         if (typ=='text' || typ=='number' || typ=='date')
         {
-            toReturn += `<div disabled value="`+val+`" data-name="`+row[5]+`" class="input textEditable" data-type="text" data-pk="`+row[0]+`">`+val+`</div>`;
+            toReturn += `<div disabled value="`+val+`" data-name="text" class="input textEditable" data-type="text" data-pk="`+row[0]+`">`+val+`</div>`;
         }
         else if (typ=='bool' || typ=='boolean')
         {
-            toReturn += `<div disabled value="`+val+`" data-name="`+row[5]+`" class="input boolEditable" data-type="select" data-pk="`+row[0]+`">`+String(Boolean(val)).toTitleCase()+`</div>`;
+            toReturn += `<div disabled value="`+val+`" data-name="text" class="input boolEditable" data-type="select" data-pk="`+row[0]+`">`+String(Boolean(parseInt(val))).toTitleCase()+`</div>`;
         }
         else if (typ=='json')
         {
@@ -189,13 +189,14 @@ function makeAccordions(this_settings_rows) {
                 if (modifiable) {
                     toReturn += '<button class="delBtn"><i class="fa-solid fa-trash-can"></i></button>';
                 }
-                toReturn += `<div disabled value="`+key+`" data-name="`+JSON.stringify([row[5], key, 'key'])+`" class="input `+(modifiable ? 'textEditable' : '')+`" data-type="text" data-pk="`+row[0]+`">`+key+`</div></div>`;
-                toReturn += `<div disabled value="`+json[key]+`" data-name="`+JSON.stringify([row[5], key, 'key'])+`" class="input textEditable" data-type="text" data-pk="`+row[0]+`">`+json[key]+`</div>`;
+                console.log(JSON.stringify([key, 'key']));
+                toReturn += `<div disabled value="`+key+`" data-name="`+key+`,key" class="input `+(modifiable ? 'textEditable' : '')+`" data-type="text" data-pk="`+row[0]+`">`+key+`</div></div>`;
+                toReturn += `<div disabled value="`+json[key]+`" data-name="`+key+`,value" class="input textEditable" data-type="text" data-pk="`+row[0]+`">`+json[key]+`</div>`;
                 toReturn += `<br>`;
                 toReturn += '</div>';
             }
             if (modifiable) {
-                toReturn += '<div class="newBtn purpleBtn">Add 1 More</div>';
+                toReturn += '<div class="newBtn purpleBtn">+</div>';
             }
             toReturn += '</div>';
             toReturn += '<a style="opacity:0.5">}</a>';
@@ -247,21 +248,21 @@ function openAccordion(el, forceState=null) {
 $('#accordionParent').editable({ // textEditable class is now editable
     container: 'body',
     selector: '.textEditable',
-    url: "",
+    url: "settings_functions/update.php",
     title: 'Edit Setting',
     type: "GET",
     dataType: 'json'
 });
-$('#accordionParent').editable({ // SentStatus class is now editable with select
+$('#accordionParent').editable({ // boolEditable class is now editable with select
     container: 'body',
     selector: '.boolEditable',
-    url: "",
+    url: "settings_functions/update.php",
     title: 'Edit Setting',
     type: "GET",
     dataType: 'json',
     source: [
-        {value: 'true', text: 'True'},
-        {value: 'true', text: 'False'}
+        {value: '1', text: 'True'},
+        {value: '0', text: 'False'}
     ],
     validate: function(value) {
         if($.trim(value) == '') { return 'This field is required' }
