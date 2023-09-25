@@ -26,18 +26,22 @@
     } else { // must be setting a JSON value
         
         $json = json_decode(readSQL($_SESSION['missionInfo']->mykey, "SELECT * FROM `settings` WHERE `id` = '".$pk."'")[0][6], true);
-        $valInfo = (explode(',', $name));
+        $valInfo = (explode(',', $_POST["name"]));
         
         // http_response_code(500);
         // die($valInfo[0]);
 
         if ($valInfo[1]=='key') // change key name
         {
-            $json = replace_key($json, $valInfo[0], $val);
+            $json = replace_key($json, $valInfo[0], $_POST["value"]);
         }
         else // change value
         {
-            $json[$valInfo[0]] = $val;
+            if (!isset($json[$valInfo[0]])) {
+                http_response_code(500);
+                die("Oh no, we couldn't update that item. Refresh and try again");
+            }
+            $json[$valInfo[0]] = $_POST["value"];
         }
 
         if (writeSQL($_SESSION['missionInfo']->mykey, "UPDATE `settings` SET `value` = '".addslashes(json_encode($json))."' WHERE `id` = '".$pk."'")) {
@@ -45,7 +49,6 @@
         } else {
             http_response_code(500);
             echo('Error updating table. Check format');
-            echo("UPDATE `settings` SET `value` = '".addslashes(json_encode($json))."' WHERE `id` = '".$pk."'");
         }
     }
 

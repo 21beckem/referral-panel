@@ -148,6 +148,7 @@ const settings_rows = <?php echo(json_encode( $settings_rows )); ?>;
 
 function makeAccordions(this_settings_rows) {
     let lastHeader = null;
+    let sectionIndex = 0;
     let accordions = this_settings_rows.map((row, i) => {
         let toReturn = '';
         
@@ -156,25 +157,27 @@ function makeAccordions(this_settings_rows) {
             if (lastHeader != null) {
                 toReturn += '</div></div>';
             }
-            toReturn += `<div class="settingsSection">
+            toReturn += `<div id="settingsSection_`+sectionIndex+`" class="settingsSection">
                             <button class="openBtn" onclick="clickOpenAccordion(this)">` + row[2] + `</button>
                         <div class="settingsPanel">`;
             lastHeader = row[2];
+            sectionIndex++;
         }
 
         // paste name
         toReturn += '<a class="settingName">' + (row[5]).toTitleCase() +'</a>';
 
         // make value editor
+        let _pk = row[0];
         let typ = row[3];
         let val = row[6];
         if (typ=='text' || typ=='number' || typ=='date')
         {
-            toReturn += `<div disabled value="`+val+`" data-name="text" class="input textEditable" data-type="text" data-pk="`+row[0]+`">`+val+`</div>`;
+            toReturn += `<div disabled value="`+val+`" data-name="text" class="input textEditable" data-type="text" data-pk="`+_pk+`">`+val+`</div>`;
         }
         else if (typ=='bool' || typ=='boolean')
         {
-            toReturn += `<div disabled value="`+val+`" data-name="text" class="input boolEditable" data-type="select" data-pk="`+row[0]+`">`+String(Boolean(parseInt(val))).toTitleCase()+`</div>`;
+            toReturn += `<div disabled value="`+val+`" data-name="text" class="input boolEditable" data-type="select" data-pk="`+_pk+`">`+String(Boolean(parseInt(val))).toTitleCase()+`</div>`;
         }
         else if (typ=='json')
         {
@@ -183,20 +186,20 @@ function makeAccordions(this_settings_rows) {
             let json = JSON.parse(val);
             const modifiable = Boolean(parseInt(row[4]));
             for (let key in json) {
-                console.log(key);
+                // console.log(key);
                 toReturn += '<div class="row">';
                 toReturn += `<div class="name">`;
                 if (modifiable) {
-                    toReturn += '<button class="delBtn"><i class="fa-solid fa-trash-can"></i></button>';
+                    toReturn += '<button class="delBtn" onclick="deleteInJson('+_pk+', \''+key.addSlashes()+'\')"><i class="fa-solid fa-trash-can"></i></button>';
                 }
-                console.log(JSON.stringify([key, 'key']));
-                toReturn += `<div disabled value="`+key+`" data-name="`+key+`,key" class="input `+(modifiable ? 'textEditable' : '')+`" data-type="text" data-pk="`+row[0]+`">`+key+`</div></div>`;
-                toReturn += `<div disabled value="`+json[key]+`" data-name="`+key+`,value" class="input textEditable" data-type="text" data-pk="`+row[0]+`">`+json[key]+`</div>`;
+                // console.log(JSON.stringify([key, 'key']));
+                toReturn += `<div disabled value="`+key+`" data-name="`+key+`,key" class="input `+(modifiable ? 'textEditable' : '')+`" data-type="text" data-pk="`+_pk+`">`+key+`</div></div>`;
+                toReturn += `<div disabled value="`+json[key]+`" data-name="`+key+`,value" class="input textEditable" data-type="text" data-pk="`+_pk+`">`+json[key]+`</div>`;
                 toReturn += `<br>`;
                 toReturn += '</div>';
             }
             if (modifiable) {
-                toReturn += '<div class="newBtn purpleBtn">+</div>';
+                toReturn += '<div class="newBtn purpleBtn" onclick="addNewInJson('+_pk+')">+</div>';
             }
             toReturn += '</div>';
             toReturn += '<a style="opacity:0.5">}</a>';
@@ -213,8 +216,39 @@ function makeAccordions(this_settings_rows) {
     }
 
     _('accordionParent').innerHTML = accordions;
+    if (localStorage.getItem("settings-tabOpen") != null) {
+        _(localStorage.getItem("settings-tabOpen")).querySelector('.openBtn').click();
+    }
 }
 makeAccordions( settings_rows );
+
+function addNewInJson(pk) {
+    const data = new URLSearchParams();
+    data.append('typ', 'add');
+    data.append('pk', pk);
+    saveJsonChanges(data);
+}
+function deleteInJson(pk, key) {
+    JSAlert.confirm('Are you sure you want to delete this item? This <strong>Cannot be undone!</strong>', '', JSAlert.Icons.Warning)
+    .then(res => {
+        if (res) {
+            const data = new URLSearchParams();
+            data.append('typ', 'del');
+            data.append('pk', pk);
+            data.append('key', key);
+            saveJsonChanges(data);
+        }
+    });
+}
+async function saveJsonChanges(formData) {
+    const res = await fetch('settings_functions/json_modify.php', {
+        method: 'post',
+        body: formData,
+    });
+    const resTxt = await res.text();
+    
+    window.location.reload();
+}
 
 function clickOpenAccordion(el) {
     // close all others
@@ -243,6 +277,13 @@ function openAccordion(el, forceState=null) {
     } else {
         panel.style.maxHeight = '0';
     }
+    setTimeout(() => {
+        if (document.querySelector('.settingsSection.active')==null) {
+            localStorage.removeItem("settings-tabOpen");
+        } else {
+            localStorage.setItem("settings-tabOpen", el.parentElement.id);
+        }
+    }, 5);
 }
 
 $('#accordionParent').editable({ // textEditable class is now editable
