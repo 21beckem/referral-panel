@@ -85,12 +85,37 @@ PRIMARY KEY (`id`)
 HEREA;
 carefulWriteSQL($mykey, $makeLargeTableSQL);
 
-// create config table
-carefulWriteSQL($mykey, 'CREATE TABLE `'.$mykey.'`.`config` (`json` TEXT NULL DEFAULT NULL ) ENGINE = InnoDB;');
-$json_template = file_get_contents('config-template.json');
-$json_str = json_encode(json_decode($json_template));
-echo('<br>'.'INSERT INTO `config`(`json`) VALUES ("'.addslashes($json_str).'")');
-carefulWriteSQL($mykey, 'INSERT INTO `config`(`json`) VALUES ("'.addslashes($json_str).'")');
+// create settings table
+$settingsTableQ = <<<HERA
+CREATE TABLE `settings` (
+    `id` int(11) NOT NULL,
+    `sort_order` float NOT NULL,
+    `header` text NOT NULL,
+    `data_type` text NOT NULL DEFAULT 'text',
+    `modifiable` tinyint(1) NOT NULL DEFAULT 0,
+    `name` text NOT NULL,
+    `value` text NOT NULL DEFAULT '',
+    `help_comment` text NOT NULL DEFAULT '\'\''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `settings` (`id`, `sort_order`, `header`, `data_type`, `modifiable`, `name`, `value`, `help_comment`) VALUES
+(1, 9.01, 'Stop Contacting', 'json', 1, 'stop contacting reasons', '{\"doesn\'t remember\":\"\\ud83e\\udd14 Doesn\'t remember the ad\",\"not interested anymore\":\"\\ud83d\\ude45 Not interested anymore\",\"wrong person\":\"\\ud83e\\udd78 Wasn\'t the person we thought\",\"pranked\":\"\\ud83d\\ude21 It was a prank\",\"sent. want no contact\":\"\\ud83d\\udce8 Item sent. They don\'t want contact\",\"can\'t contact\":\"\\ud83d\\udcf5 Can\'t get in contact with them\"}', 'List of possible reasons for why to stop contacting people. Left column is what would be placed in the referrals table, and right column is the text for the dropdown option that the team member clicks on'),
+(2, 3.02, 'Home Page', 'text', 0, 'book of mormon delivery form link', '', 'Link to a form to have a Book of Mormon delivered to a person if applicable'),
+(3, 3.03, 'Home Page', 'text', 0, 'ad deck link', '', 'Link to a presentation you\'ve made with all of your ads so the teams know what people clicked on'),
+(4, 3.04, 'Home Page', 'text', 0, 'business suite guidance link', '', 'Link to a presentation you\'ve made on helping your teams with Business Suite'),
+(5, 1.01, 'General', 'text', 0, 'login pin', '1234', 'Password that teams will use to login to your mission\'s Referral Suite'),
+(6, 1.02, 'General', 'text', 0, 'most common language in mission', 'English', 'Most commonly spoken language in the mission'),
+(7, 3.01, 'Home Page', 'json', 1, 'tutorial videos', '{\"Welcome to Referral Suite\":\"https:\\/\\/google.com\\/link_to_video\"}', 'Tutorial videos on how to use Referral Suite/be part of the team'),
+(8, 2.01, 'Inbox Fox', 'bool', 0, 'enable', '1', 'Enable the InboxFox and all of his functions'),
+(9, 2.02, 'Inbox Fox', 'json', 0, 'bucks per success', '{\"referral claimed\":\"10\",\"referral sent\":\"15\",\"referral deceased\":\"-1\",\"follow-up reported\":\"5\"}', 'The amount of InBucks this team should receive when each of the following occurs');
+
+ALTER TABLE `settings`
+ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `settings`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+HERA;
+carefulWriteSQL($mykey, $settingsTableQ);
 
 // create teams
 carefulWriteSQL($mykey, "CREATE TABLE `".$mykey."`.`teams` (`id` INT NOT NULL AUTO_INCREMENT , `name` TEXT NOT NULL DEFAULT '' , `email` TEXT NOT NULL DEFAULT '' , `color` TEXT NOT NULL DEFAULT '' , `role` TEXT NOT NULL DEFAULT '' , `fox_streak` TEXT DEFAULT '', `fox_inbucks` INT NOT NULL DEFAULT '0' , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
