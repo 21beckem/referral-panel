@@ -86,7 +86,7 @@ HEREA;
 carefulWriteSQL($mykey, $makeLargeTableSQL);
 
 // create settings table
-$settingsTableQ = <<<HERA
+$settingsTableQ1 = <<<HERA
 CREATE TABLE `settings` (
     `id` int(11) NOT NULL,
     `sort_order` float NOT NULL,
@@ -97,7 +97,8 @@ CREATE TABLE `settings` (
     `value` text NOT NULL DEFAULT '',
     `help_comment` text NOT NULL DEFAULT '\'\''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
+HERA;
+$settingsTableQ2 = <<<HERA
 INSERT INTO `settings` (`id`, `sort_order`, `header`, `data_type`, `modifiable`, `name`, `value`, `help_comment`) VALUES
 (1, 9.01, 'Stop Contacting', 'json', 1, 'stop contacting reasons', '{\"doesn\'t remember\":\"\\ud83e\\udd14 Doesn\'t remember the ad\",\"not interested anymore\":\"\\ud83d\\ude45 Not interested anymore\",\"wrong person\":\"\\ud83e\\udd78 Wasn\'t the person we thought\",\"pranked\":\"\\ud83d\\ude21 It was a prank\",\"sent. want no contact\":\"\\ud83d\\udce8 Item sent. They don\'t want contact\",\"can\'t contact\":\"\\ud83d\\udcf5 Can\'t get in contact with them\"}', 'List of possible reasons for why to stop contacting people. Left column is what would be placed in the referrals table, and right column is the text for the dropdown option that the team member clicks on'),
 (2, 3.02, 'Home Page', 'text', 0, 'book of mormon delivery form link', '', 'Link to a form to have a Book of Mormon delivered to a person if applicable'),
@@ -108,14 +109,14 @@ INSERT INTO `settings` (`id`, `sort_order`, `header`, `data_type`, `modifiable`,
 (7, 3.01, 'Home Page', 'json', 1, 'tutorial videos', '{\"Welcome to Referral Suite\":\"https:\\/\\/google.com\\/link_to_video\"}', 'Tutorial videos on how to use Referral Suite/be part of the team'),
 (8, 2.01, 'Inbox Fox', 'bool', 0, 'enable', '1', 'Enable the InboxFox and all of his functions'),
 (9, 2.02, 'Inbox Fox', 'json', 0, 'bucks per success', '{\"referral claimed\":\"10\",\"referral sent\":\"15\",\"referral deceased\":\"-1\",\"follow-up reported\":\"5\"}', 'The amount of InBucks this team should receive when each of the following occurs');
-
-ALTER TABLE `settings`
-ADD PRIMARY KEY (`id`);
-
-ALTER TABLE `settings`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 HERA;
-carefulWriteSQL($mykey, $settingsTableQ);
+$settingsTableQ3 = 'ALTER TABLE `settings` ADD PRIMARY KEY (`id`);';
+$settingsTableQ4 = 'ALTER TABLE `settings` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;';
+
+carefulWriteSQL($mykey, $settingsTableQ1);
+carefulWriteSQL($mykey, $settingsTableQ2);
+carefulWriteSQL($mykey, $settingsTableQ3);
+carefulWriteSQL($mykey, $settingsTableQ4);
 
 // create teams
 carefulWriteSQL($mykey, "CREATE TABLE `".$mykey."`.`teams` (`id` INT NOT NULL AUTO_INCREMENT , `name` TEXT NOT NULL DEFAULT '' , `email` TEXT NOT NULL DEFAULT '' , `color` TEXT NOT NULL DEFAULT '' , `role` TEXT NOT NULL DEFAULT '' , `fox_streak` TEXT DEFAULT '', `fox_inbucks` INT NOT NULL DEFAULT '0' , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
