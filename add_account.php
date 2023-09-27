@@ -100,17 +100,17 @@ CREATE TABLE `settings` (
 HERA;
 $settingsTableQ2 = <<<HERA
 INSERT INTO `settings` (`id`, `sort_order`, `header`, `data_type`, `modifiable`, `name`, `value`, `help_comment`) VALUES
-(1, 9.01, 'Stop Contacting', 'json', 1, 'stop contacting reasons', '{\"doesn\'t remember\":\"\\ud83e\\udd14 Doesn\'t remember the ad\",\"not interested anymore\":\"\\ud83d\\ude45 Not interested anymore\",\"wrong person\":\"\\ud83e\\udd78 Wasn\'t the person we thought\",\"pranked\":\"\\ud83d\\ude21 It was a prank\",\"sent. want no contact\":\"\\ud83d\\udce8 Item sent. They don\'t want contact\",\"can\'t contact\":\"\\ud83d\\udcf5 Can\'t get in contact with them\"}', 'List of possible reasons for why to stop contacting people. Left column is what would be placed in the referrals table, and right column is the text for the dropdown option that the team member clicks on'),
+(1, 9.01, 'Stop Contacting', 'json', 1, 'reasons', '{\"doesn\'t remember\":\"\\ud83e\\udd14 Doesn\'t remember the ad\",\"not interested anymore\":\"\\ud83d\\ude45 Not interested anymore\",\"wrong person\":\"\\ud83e\\udd78 Wasn\'t the person we thought\",\"pranked\":\"\\ud83d\\ude21 It was a prank\",\"sent. want no contact\":\"\\ud83d\\udce8 Item sent. They don\'t want contact\",\"can\'t contact\":\"\\ud83d\\udcf5 Can\'t get in contact with them\"}', 'List of possible reasons for why to stop contacting people. Left column is what would be placed in the referrals table, and right column is the text for the dropdown option that the team member clicks on'),
 (2, 3.02, 'Home Page', 'text', 0, 'book of mormon delivery form link', '', 'Link to a form to have a Book of Mormon delivered to a person if applicable'),
 (3, 3.03, 'Home Page', 'text', 0, 'ad deck link', '', 'Link to a presentation you\'ve made with all of your ads so the teams know what people clicked on'),
 (4, 3.04, 'Home Page', 'text', 0, 'business suite guidance link', '', 'Link to a presentation you\'ve made on helping your teams with Business Suite'),
 (5, 1.01, 'General', 'text', 0, 'login password', '1234', 'Password that teams will use to login to your mission\'s Referral Suite'),
 (6, 1.02, 'General', 'text', 0, 'most common language in mission', 'English', 'Most commonly spoken language in the mission'),
 (7, 3.01, 'Home Page', 'json', 1, 'tutorial videos', '{\"Welcome to Referral Suite\":\"https:\\/\\/google.com\\/link_to_video\"}', 'Tutorial videos on how to use Referral Suite/be part of the team'),
-(8, 2.01, 'Inbox Fox', 'bool', 0, 'enable inbox fox', '1', 'Enable the InboxFox and all of his functions'),
+(8, 2.01, 'Inbox Fox', 'bool', 0, 'enable', '1', 'Enable the InboxFox and all of his functions'),
 (9, 2.02, 'Inbox Fox', 'json', 0, 'bucks per success', '{\"referral claimed\":\"10\",\"referral sent\":\"15\",\"referral deceased\":\"-1\",\"follow-up reported\":\"5\"}', 'The amount of InBucks this team should receive when each of the following occurs'),
 (10, 4.02, 'Follow Ups', 'number', 0, 'initial delay after sent', '7', 'The number of days after a referral is sent before it appears again as a Follow-Up'),
-(11, 4.01, 'Follow Ups', 'bool', 0, 'enable follow ups', '1', 'Enable the functionality of having referrals show up again after sent for the referral team to follow up with the teaching area missionaries on how the referral is doing'),
+(11, 4.01, 'Follow Ups', 'bool', 0, 'enable', '1', 'Enable the functionality of having referrals show up again after sent for the referral team to follow up with the teaching area missionaries on how the referral is doing'),
 (12, 4.03, 'Follow Ups', 'json', 1, 'status delays', '{\"Can\'t get in contact\":\"Grey\",\"Not interested in contact\":\"Grey\",\"Hasn\'t been contacted\":3,\"Hasn\'t responded\":5,\"Currently in contact\":7,\"Appointment is set up!\":\"Green\"}', 'Right column is the text that will show up for the referral team to click on. Right column is the amount of days before the referral will show up again.\n\nIf the right column is not a number, that value will be saved to the referrals Area Book Status. Refer to help videos and defualt values.');
 HERA;
 $settingsTableQ3 = 'ALTER TABLE `settings` ADD PRIMARY KEY (`id`);';
