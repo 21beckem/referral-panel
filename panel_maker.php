@@ -70,6 +70,10 @@ function makeHTMLtop($name="") {
                         <i class="fa-solid fa-link"></i>
                         <span class="link-name">Integrate</span>
                     </a></li>
+                    <li class="<?php echo(acivateThisTab($name, 'Install')); ?>"><a href="install.php">
+                        <i class="fa-solid fa-download"></i>
+                        <span class="link-name">Install</span>
+                    </a></li>
                     <li class="<?php echo(acivateThisTab($name, 'Settings')); ?>"><a href="settings.php">
                         <i class="fa-solid fa-gears"></i>
                         <span class="link-name">Settings</span>
