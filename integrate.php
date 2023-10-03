@@ -187,7 +187,7 @@ p {
     </div>
     <hr>
     <div class="card">
-        <h3><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-webhook" width="40" height="40" viewBox="0 0 24 24" stroke-width="2" stroke="#fc8c03" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M4.876 13.61a4 4 0 1 0 6.124 3.39h6" /> <path d="M15.066 20.502a4 4 0 1 0 1.934 -7.502c-.706 0 -1.424 .179 -2 .5l-3 -5.5" /> <path d="M16 8a4 4 0 1 0 -8 0c0 1.506 .77 2.818 2 3.5l-3 5.5" /> </svg> Webhooks</h3>
+        <h3><svg class="icon icon-tabler icon-tabler-webhook" width="40" height="40" viewBox="0 0 24 24" stroke-width="2" stroke="#fc8c03" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M4.876 13.61a4 4 0 1 0 6.124 3.39h6" /> <path d="M15.066 20.502a4 4 0 1 0 1.934 -7.502c-.706 0 -1.424 .179 -2 .5l-3 -5.5" /> <path d="M16 8a4 4 0 1 0 -8 0c0 1.506 .77 2.818 2 3.5l-3 5.5" /> </svg> Webhooks</h3>
         <br>
         <p>Connect Referral Panel to <strong>any</strong> platform using Webhooks</p>
         <br>
@@ -199,7 +199,7 @@ p {
         <br>
         <h4>Step 2: URL / Action</h4>
         <p>Use this Url:</p>
-        <input type="text" disabled value="http://185.77.96.63/Elder_Becker_Workspace/code_workspaces/referral-panel/API/new_referral.php    // CHANGE THIS LATER ! ! ! !" class="pasteMe"><br>
+        <input type="text" disabled value="https://panel.ssmission.cloud/API/new_referral.php" class="pasteMe"><br>
         <br>
         <p>Then select under <strong>Payload Type</strong>:</p>
         <input type="text" disabled value="form" class="pasteMe"><br>
