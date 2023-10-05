@@ -66,6 +66,7 @@ let pstBtnsDisabled = ' disabled';
 
 let schedArr = <?php echo(json_encode($schedArr)); ?>;
 let teamInfos = <?php echo(json_encode($teamInfos)); ?>;
+teamInfos.unshift(['-2', '~ Other ~', '', 'white', '', '', '0']);
 
 // make team color lookup
 let teamColorLookup = {};
