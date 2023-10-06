@@ -6,17 +6,20 @@ $dieMsg = "Nice try. Why are you bad? WHY?\n<br>\n<br>\nError: ";
 
 // if there is no data provided, just die
 if (empty($_POST)) {
+    http_response_code(500);
 	echo($dieMsg);
     die('POST');
 }
 
 // also if the mykey doesn't exist or is bad, just die
 if (!isset($_POST['mykey'])) {
+    http_response_code(500);
     echo($dieMsg);
     die('MISSING POST KEY');
 }
 $mykey = $_POST['mykey'];
 if (count(readSQL('Referral_Suite_General', 'SELECT `name` FROM `mission_users` WHERE `mykey`="'.$mykey.'"')) == 0) {
+    http_response_code(500);
     echo($dieMsg);
     die('BAD KEY');
 }
@@ -43,6 +46,7 @@ $q = "INSERT INTO `all_referrals` (`Referral Type`, `Date and Time`, `First Name
 if (writeSQL($mykey, $q)) {
     echo('success');
 } else {
+    http_response_code(500);
     echo("Something went wrong with creating this person in Referral Suite :/\n<br>\nAttempted Query: ");
     die($q);
 }
