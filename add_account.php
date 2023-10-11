@@ -121,6 +121,10 @@ carefulWriteSQL($mykey, $settingsTableQ2);
 carefulWriteSQL($mykey, $settingsTableQ3);
 carefulWriteSQL($mykey, $settingsTableQ4);
 
+// create subscription tokens table
+carefulWriteSQL($mykey, "CREATE TABLE `".$mykey."`.`tokens` (`id` INT NOT NULL AUTO_INCREMENT , `teamId` INT NOT NULL , `token` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
+
+
 // create teams
 carefulWriteSQL($mykey, "CREATE TABLE `".$mykey."`.`teams` (`id` INT NOT NULL AUTO_INCREMENT , `name` TEXT NOT NULL DEFAULT '' , `email` TEXT NOT NULL DEFAULT '' , `color` TEXT NOT NULL DEFAULT '' , `role` TEXT NOT NULL DEFAULT '' , `fox_streak` TEXT DEFAULT '', `fox_inbucks` INT NOT NULL DEFAULT '0' , PRIMARY KEY (`id`)) ENGINE = InnoDB;");
 
