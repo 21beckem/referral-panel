@@ -1,6 +1,7 @@
 <?php
 
 require_once('../sql_tools.php');
+require_once('../notif_tools.php');
 
 $dieMsg = "Nice try. Why are you bad? WHY?\n<br>\n<br>\nError: ";
 
@@ -50,10 +51,8 @@ if (writeSQL($mykey, $q)) {
     echo("Something went wrong with creating this person in Referral Suite :/\n<br>\nAttempted Query: ");
     die($q);
 }
-sendNotificationEmail($fullname);
 
-function sendNotificationEmail($name) {
-	//send a notification to whoever's inboxing
-}
+$currentTeam = getCurrentReferralTeam($mykey);
+notifyTeam($mykey, $currentTeam);
 
 ?>
