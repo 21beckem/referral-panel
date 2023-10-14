@@ -2,14 +2,14 @@
 
 require_once('sql_tools.php');
 
-function sendFCMNotification($deviceToken) {
+function sendFCMNotification($deviceToken, $title, $body, $image) {
     $url = 'https://fcm.googleapis.com/fcm/send';
     $data = [
         'to' => $deviceToken,
         'notification' => [
-            'body' => 'Yo! New Referral!',
-            'title' => 'Referral Received',
-            'image' => 'img/fox_profile_pics/red.svg'
+            'body' => $body,
+            'title' => $title,
+            'image' => $image
         ]
     ];
     $options = array(
@@ -57,19 +57,41 @@ function getCurrentReferralTeam($mykey) {
 
 
 function notifyTeam($mykey, $tmId) {
+    // get all device tokens for this team
     $tmId = strval($tmId);
     $rowsWithId = readSQL($mykey, 'SELECT * FROM `tokens` WHERE `teamId`="'.$tmId.'"');
+
+    // get team info
+    $teamInfo = readSQL($mykey, 'SELECT * FROM `teams` WHERE `id`="'.$tmId.'"')[0];
 
     for ($i=0; $i < count($rowsWithId); $i++) { 
         $row = $rowsWithId[$i];
 
         // send notification
-        $result = sendFCMNotification($row[2]);
+        $result = sendFCMNotification($row[2],
+            'Referral Received',
+            getFoxSaying(),
+            'img/fox_profile_pics/'.$teamInfo[3].'.svg'
+        );
         if (!$result->success) {
             // delete token if fail
             writeSQL($mykey, 'DELETE FROM `tokens` WHERE `id`='.$row[0]);
         }
     }
+}
+function getFoxSaying() {
+    $ops = array(
+        "You have a new referral! You can claim it and get to contacting!",
+        "Quick, we have a new referral! Get it claimed and get it contacted!",
+        "Oh look, a new referral! Time to claim and contact them!",
+        "That's the new referral alarm! Quick, claim them and start contacting!",
+        "AAH! NEW REFERRAL! DON'T PANIC! Just claim and contact!",
+        "A new referral came in! Don't worry, claim and contact!",
+        "New referral! Remember your training! Get to contacting!",
+        "What are you doing?!? We have a new referral here! Hurry and contact them!",
+        "Oh cool, a new referral! Be sure to claim and contact them quick!"
+    );
+    return $ops[ array_rand($ops) ];
 }
 
 
