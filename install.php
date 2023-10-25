@@ -110,7 +110,7 @@ p {
         <br>
         <p>This process is <strong>very simple</strong>. Simply open this link on the device and click <strong>Install</strong></p>
         <br>
-        <input type="text" disabled value="https://ssmission.cloud/referral-suite-manager/install/installApp.html" class="pasteMe"><br>
+        <input type="text" disabled value="https://ssmission.cloud/referral-suite/install/installApp.html" class="pasteMe"><br>
     </div>
     <hr>
     <div class="card">
@@ -119,13 +119,13 @@ p {
         <p>For <strong>Missionary Phones</strong>, follow instructions below</p>
         <br>
         <br>
-        <p>This process is also <strong>quite simple</strong>.</p>
+        <p>This process is also <strong>fairly simple</strong>. It still takes a few minutes but believe me, this is <strong>as simple as possible</strong> on a MASS360 device.</p>
         <br>
-        <p><strong>Send</strong> this link to everyone who wants to install the app. Have them <strong>download</strong> this file to their phone and <strong>open it with google chrome</strong>.</p>
+        <p><strong>Send</strong> this link to everyone who wants to install the app. Have them open it in Google Chrome.</p>
         <br>
         <p>After that, it will tell you everything else you need to do.</p>
         <br>
-        <input type="text" disabled value="https://drive.google.com/file/d/1RTS-hXQNBf7Nco59upvgBVYIkFYM8de-/view?usp=sharing" class="pasteMe"><br>
+        <input type="text" disabled value="https://forms.gle/JbfM8Scg2R7uaU4o8" class="pasteMe"><br>
     </div>
     <div style="width: 5px; height: 150px;"></div>
 </div>
