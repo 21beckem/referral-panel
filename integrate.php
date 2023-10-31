@@ -8,7 +8,7 @@
     require_once('overall_vars.php');
     makeHTMLtop('Integrate');
 
-    $referral_types = readSQL($_SESSION['missionInfo']->mykey, 'SELECT * FROM `referral_types` WHERE 1');
+    //$referral_types = readSQL($_SESSION['missionInfo']->mykey, 'SELECT * FROM `referral_types` WHERE 1');
 ?>
 <style>
 .sidenav {
@@ -144,36 +144,24 @@ p {
         <br>
         <p>Welcome to the <strong>Integrate</strong> page!</p>
         <br>
-        <p>First things first, you need to add a <strong>Referral Type</strong>. Integration isn't possible until you have at least one Referral Type</p>
-        <br>
         <p>This is where you'll connect your ads, forms, etc. to Referral Panel so that you can use Referral Suite to manage all your referrals. The steps below are generalized for everyone. <strong>You can't simply copy and paste everything without reading the instructions.</strong> But as long as you read all the instructions you'll have no problem at all!</p>
     </div>
     <hr>
+    <?php if (!count($referral_types) != 0) { ?>
     <div class="card">
-        <h2>Referral Types</h2>
-        <?php
-        foreach ($referral_types as $i => $row) {
-            echo(<<<HERRA
-            <form action="saving_functions/referral_types_save.php" method="POST" class="refTypCard" id="refTypId_{$row[0]}">
-                <input type="hidden" name="id" value="{$row[0]}">
-                <input type="text" name="value" value="{$row[1]}" data-original-val="{$row[1]}">
-                <i class="editBtn fa-solid fa-pencil" onclick="enableRefTypEditing({$row[0]})"></i>
-                <i class="saveBtn fa-solid fa-floppy-disk" onclick="this.parentElement.submit()"></i>
-                <i class="undoBtn fa-solid fa-rotate-left" onclick="enableRefTypEditing()"></i>
-                <i class="deleBtn fa-solid fa-trash-can" style="color: #cb0101;" onclick="deleteThisReferralType(this)"></i>
-                <input type="hidden" name="delete" value="0">
-            </form>
-            HERRA);
-        }
-        ?>
-        <button class="purpleBtn" style="padding:6px 8px; margin-top: 10px;" onclick="addNewReferralType()">Add New Referral Type</button>
-        <form action="saving_functions/referral_types_save.php" method="POST" id="addNewTypeForm">
-            <input type="hidden" name="id" value="new">
-            <input type="hidden" name="value" value="" id="addNewTypeValue">
-            <input type="hidden" name="delete" value="0">
-        </form>
+        <h2>Add a Referral Type</h2>
+        <br>
+        <p>First things first, you need to add a <strong>Referral Type</strong>. Integration isn't possible until you have at least one Referral Type</p>
+        <br>
+        <p>Click <u style="color:#910095; cursor:pointer"><a onclick="goToRefTypesSettings()">here</a></u> to go to settings. From there, click on <strong>Referral Types</strong>, then <strong>Add Referral Type</strong></p>
+        <script>
+            function goToRefTypesSettings() {
+                localStorage.setItem("settings-tabOpen", 'settingsSection_-1');
+                window.location.href = 'settings.php';
+            }
+        </script>
     </div>
-    <?php if (count($referral_types) != 0) { ?>
+    <?php } else { ?>
     <hr>
 
     <div class="card">
@@ -295,36 +283,5 @@ p {
     <div style="width: 5px; height: 150px;"></div>
     <?php } ?>
 </div>
-<script>
-function _(x) { return document.getElementById(x); }
-HTMLCollection.prototype.forEach = function (x) { return Array.from(this).forEach(x); }
-
-function addNewReferralType() {
-    JSAlert.prompt('Make sure this is right. This will be tedious <br> for you to change later after referrals <br> start coming in using under this type', '', '', 'Add New Referral Type').then(res => {
-        if (res == null) { return; }
-        _('addNewTypeValue').value = res;
-        _('addNewTypeForm').submit();
-    });
-}
-function deleteThisReferralType(el) {
-    JSAlert.confirm('Are you sure you want to delete this referral type? <br><br> Even if you\'re not using it anymore I\'d suggest not removing <br> it so you can still filter search for these referrals', '', JSAlert.Icons.Warning).then(res => {
-        if (res) {
-            el.nextElementSibling.value = '1';
-            el.parentElement.submit()
-        }
-    });
-}
-function enableRefTypEditing(id) {
-    document.querySelectorAll('.refTypCard.editing').forEach(el => {
-        el.classList.remove('editing');
-        let inp = el.querySelector('input[type=text]');
-        inp.value = inp.getAttribute('data-original-val');
-    });
-    if (id != undefined) {
-        _('refTypId_'+id).classList.add('editing');
-    }
-}
-
-</script>
 
 <?php makeHTMLbottom() ?>

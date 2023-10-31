@@ -23,12 +23,16 @@
 
 .sidenav div {
     cursor: pointer;
-    width: 100%;
+    width: calc(100% - 10px);
     padding: 6px 8px;
     margin-bottom: 5px;
     text-decoration: none;
     font-size: 23px;
     display: block;
+}
+.sidenav div.active {
+    width: 100%;
+    border-radius: 0 10px 10px 0;
 }
 .sidenav button {
     border: none;
@@ -47,14 +51,14 @@
 #topHalfPage {
     box-shadow: 1px 2px 12px -7px rgba(0, 0, 0, 0.5);
     display: flex;
+    flex-direction: column;
+    max-width: 550px;
+    width: 70%;
+    margin: 0 auto 0 auto;
 }
 #infoForm {
-    width: 70%;
+    width: 100%;
     padding: 15px;
-}
-#foxDataParent {
-    position: relative;
-    width: 30%;
 }
 #profilePic {
     position: relative;
@@ -103,58 +107,15 @@
     border-radius: 50%;
 }
 #infoForm .niceInput {
-    width: 70%;
+    width: 100%;
     padding: 3px;
     border-radius: 5px;
     border: 1px solid gray;
     margin-top: 3px;
     margin-bottom: 20px;
 }
-#streakNum {
-    position: absolute;
-    top: 10px;
-    width: 100%;
-    font-size: 50px;
-    color: #f203ff;
-    font-weight: bold;
-    text-align: center;
-}
-#inbucksNum {
-    width: 100%;
-    font-size: 50px;
-    color: #156f2b;
-    font-weight: bold;
-    text-align: center;
-}
-#inbucksNum::before {
-    font-size: 20px;
-    content: "$";
-    color: #508d009c;
-}
-#inbucksNum::after {
-    font-size: 20px;
-    content: "$";
-    color: transparent;
-}
-#streakImg {
-    width: 100%;
-    height: 70px;
-    margin-top: 80px;
-    background-repeat: no-repeat;
-    background-position: center;
-    transform: TranslateY(-40px);
-    background-size: contain;
-    background-image: url('https://21beckem.github.io/referral-suite/img/streak1.png')
-}
-#inbucksImg {
-    width: 100%;
-    height: 70px;
-    margin-top: 30px;
-    background-repeat: no-repeat;
-    background-position: center;
-    transform: TranslateY(-40px);
-    background-size: contain;
-    background-image: url('https://21beckem.github.io/referral-suite/img/inbucks1.png')
+#statsBoxes {
+    filter: opacity(0.2);
 }
 .box {
     margin-bottom: 20px !important;
@@ -163,11 +124,17 @@
     float: right;
     margin: 10px;
     padding: 5px 20px;
-    color: white;
-    border: none;
     border-radius: 5px;
-    background-color: #ff4c4c;
     cursor: pointer;
+    color: #ff4c4c;
+    border: solid 2px #ff4c4c;
+    background-color: white;
+    transition: all 0.5s ease
+}
+#delBtn:hover {
+    color: white;
+    border: solid 2px transparent;
+    background-color: #ff4c4c;
 }
 </style>
 <div class="top">
@@ -180,7 +147,9 @@
     <div id="teamBtns" class="sidenav">
         <?php
         foreach ($teamInfos as $i => $row) {
-            echo('<div id="teamSelectBtn_'.$row[0].'" href="inboxers.php?id='.$row[0].'" onclick="location.href=this.getAttribute(\'href\')" style="background-color: '.$InboxColors[$row[3]].'">'.$row[1].'</div>');
+            $act = '';
+            if ($row[0]==$_GET['id']) { $act = 'class="active"'; }
+            echo('<div id="teamSelectBtn_'.$row[0].'" '.$act.' href="inboxers.php?id='.$row[0].'" onclick="location.href=this.getAttribute(\'href\')" style="background-color: '.$InboxColors[$row[3]].'">'.$row[1].'</div>');
         }
         ?>
         <button onclick="openThisTeam('new')" class="purpleBtn">Add Team</button>
@@ -209,23 +178,12 @@
             <label for="email">Email:</label><br>
             <input class="niceInput" type="email" name="email" id="emailIn">
             <br>
-            <label for="role">Role:</label><br>
-            <select class="niceInput" name="role" id="roleIn">
-                <?php echo('<option>'.join('</option><option>',$TeamRoles).'</option>'); ?>
-            </select>
-            <br>
             <input type="submit" class="purpleBtn" style="padding: 5px 15px; font-size: 17px" value="Save">
         </form>
-        <div id="foxDataParent">
-            <div id="streakNum">43</div>
-            <div id="streakImg"></div>
-
-            <div id="inbucksNum">926</div>
-            <div id="inbucksImg"></div>
-            <center>
-                <button class="purpleBtn" style="padding: 5px 15px; font-size: 17px; margin: auto">Clear Fox Data</button>
-            </center>
-        </div>
+        <form action="saving_functions/inboxers_delete.php" method="POST" onsubmit="return deleteThisTeam(event)" id="hiddenDeleteForm">
+            <input type="hidden" name="id" id="deleteIdEl">
+            <input type="submit" id="delBtn" value="Delete Team">
+        </form>
     </div>
 
     <div id="statsBoxes" class="boxes" style="padding-top: 30px;">
@@ -254,10 +212,6 @@
             <span class="number">0%</span>
         </div>
     </div>
-    <form action="saving_functions/inboxers_delete.php" method="POST" onsubmit="return deleteThisTeam(event)" id="hiddenDeleteForm">
-        <input type="hidden" name="id" id="deleteIdEl">
-        <input type="submit" id="delBtn" value="Delete Team"><br>
-    </form>
 </div>
 <script>
 function _(x) { return document.getElementById(x); }
@@ -294,7 +248,6 @@ function openThisTeam(tmId) {
     updateProfileColor();
     nameIn.value = thisTeam[1];
     emailIn.value = thisTeam[2];
-    roleIn.value = (thisTeam[4]=='') ? TeamRoles[0] : thisTeam[4];
 
     _('deleteIdEl').value = thisTeam[0];
 }

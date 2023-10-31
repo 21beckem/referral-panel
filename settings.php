@@ -9,6 +9,7 @@
     makeHTMLtop('Settings');
     
     $settings_rows = readSQL($_SESSION['missionInfo']->mykey, 'SELECT * FROM `settings` ORDER BY `settings`.`sort_order` ASC');
+    $referral_types = readSQL($_SESSION['missionInfo']->mykey, 'SELECT * FROM `referral_types` WHERE 1');
 ?>
 <link href="MYbootstrap.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
@@ -104,6 +105,7 @@ div.input {
     text-overflow: ellipsis;
     background-color: white;
     transform: translateY(10px);
+    max-width: 275px;
 }
 div.input:empty:before {
     color: #DD1144;
@@ -128,6 +130,45 @@ div.input:empty:before {
     text-align: center;
     transform: translateY(-10px);
 }
+
+/* Referral Types */
+.refTypCard {
+    padding: 5px;
+    background-color: #f6f6f6;
+    width: fit-content;
+    margin: 5px;
+}
+.refTypCard * {
+    margin: 0px 5px;
+}
+.refTypCard input {
+    background-color: transparent;
+    border: none;
+    pointer-events: none;
+    border-radius: 3px;
+    padding: 2px;
+}
+.refTypCard.editing input {
+    background-color: white;
+    border: auto;
+    pointer-events: auto;
+}
+.refTypCard i {
+    cursor: pointer;
+    width: 15px;
+}
+.refTypCard.editing .editBtn {
+    display: none;
+}
+.refTypCard:not(.editing) .saveBtn {
+    display: none;
+}
+.refTypCard.editing .deleBtn {
+    display: none;
+}
+.refTypCard:not(.editing) .undoBtn {
+    display: none;
+}
 </style>
 <div class="top">
     <i class="fa-solid fa-bars sidebar-toggle"></i>
@@ -137,6 +178,32 @@ div.input:empty:before {
 
 <div class="dash-content">
     <div id="accordionParent">
+        <div id="settingsSection_-1" class="settingsSection">
+            <button class="openBtn" onclick="clickOpenAccordion(this)">Referral Types</button>
+            <div class="settingsPanel">
+                <?php
+                    foreach ($referral_types as $i => $row) {
+                        echo(<<<HERRA
+                        <form action="saving_functions/referral_types_save.php" method="POST" class="refTypCard" id="refTypId_{$row[0]}">
+                            <input type="hidden" name="id" value="{$row[0]}">
+                            <input type="text" name="value" value="{$row[1]}" data-original-val="{$row[1]}">
+                            <i class="editBtn fa-solid fa-pencil" onclick="enableRefTypEditing({$row[0]})"></i>
+                            <i class="saveBtn fa-solid fa-floppy-disk" onclick="this.parentElement.submit()"></i>
+                            <i class="undoBtn fa-solid fa-rotate-left" onclick="enableRefTypEditing()"></i>
+                            <i class="deleBtn fa-solid fa-trash-can" style="color: #cb0101;" onclick="deleteThisReferralType(this)"></i>
+                            <input type="hidden" name="delete" value="0">
+                        </form>
+                        HERRA);
+                    }
+                ?>
+                <button class="purpleBtn" style="padding:6px 8px; margin-top: 10px;" onclick="addNewReferralType()">Add New Referral Type</button>
+                <form action="saving_functions/referral_types_save.php" method="POST" id="addNewTypeForm">
+                    <input type="hidden" name="id" value="new">
+                    <input type="hidden" name="value" value="" id="addNewTypeValue">
+                    <input type="hidden" name="delete" value="0">
+                </form>
+            </div>
+        </div>
     </div>
 
     <div id="mainParent" style="opacity:<?php if (isset($_GET['refTyp'])) {echo('1');} else {echo('0');} ?>">
@@ -215,7 +282,7 @@ function makeAccordions(this_settings_rows) {
         accordions += '</div></div>';
     }
 
-    _('accordionParent').innerHTML = accordions;
+    _('accordionParent').innerHTML += accordions;
     if (localStorage.getItem("settings-tabOpen") != null) {
         _(localStorage.getItem("settings-tabOpen")).querySelector('.openBtn').click();
     }
@@ -309,6 +376,33 @@ $('#accordionParent').editable({ // boolEditable class is now editable with sele
         if($.trim(value) == '') { return 'This field is required' }
     }
 });
+
+// Referral Types
+function addNewReferralType() {
+    JSAlert.prompt('Make sure this is right. This will be tedious <br> for you to change later after referrals <br> start coming in using under this type', '', '', 'Add New Referral Type').then(res => {
+        if (res == null) { return; }
+        _('addNewTypeValue').value = res;
+        _('addNewTypeForm').submit();
+    });
+}
+function deleteThisReferralType(el) {
+    JSAlert.confirm('Are you sure you want to delete this referral type? <br><br> Even if you\'re not using it anymore I\'d suggest not removing <br> it so you can still filter search for these referrals', '', JSAlert.Icons.Warning).then(res => {
+        if (res) {
+            el.nextElementSibling.value = '1';
+            el.parentElement.submit()
+        }
+    });
+}
+function enableRefTypEditing(id) {
+    document.querySelectorAll('.refTypCard.editing').forEach(el => {
+        el.classList.remove('editing');
+        let inp = el.querySelector('input[type=text]');
+        inp.value = inp.getAttribute('data-original-val');
+    });
+    if (id != undefined) {
+        _('refTypId_'+id).classList.add('editing');
+    }
+}
 
 </script>
 
