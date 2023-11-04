@@ -132,41 +132,44 @@ div.input:empty:before {
 }
 
 /* Referral Types */
-.refTypCard {
+#refTypesTableHeader td {
+    padding: 5px 10px;
+}
+.refTypCard td {
     padding: 5px;
     background-color: #f6f6f6;
     width: fit-content;
     margin: 5px;
 }
-.refTypCard * {
+.refTypCard td * {
     margin: 0px 5px;
 }
-.refTypCard input {
+tr.refTypCard input {
     background-color: transparent;
     border: none;
     pointer-events: none;
     border-radius: 3px;
     padding: 2px;
 }
-.refTypCard.editing input {
+tr.refTypCard.editing input {
     background-color: white;
     border: auto;
     pointer-events: auto;
 }
-.refTypCard i {
+tr.refTypCard i {
     cursor: pointer;
     width: 15px;
 }
-.refTypCard.editing .editBtn {
+tr.refTypCard.editing .editBtn {
     display: none;
 }
-.refTypCard:not(.editing) .saveBtn {
+tr.refTypCard:not(.editing) .saveBtn {
     display: none;
 }
-.refTypCard.editing .deleBtn {
+tr.refTypCard.editing .deleBtn {
     display: none;
 }
-.refTypCard:not(.editing) .undoBtn {
+tr.refTypCard:not(.editing) .undoBtn {
     display: none;
 }
 </style>
@@ -181,21 +184,36 @@ div.input:empty:before {
         <div id="settingsSection_-1" class="settingsSection">
             <button class="openBtn" onclick="clickOpenAccordion(this)">Referral Types</button>
             <div class="settingsPanel">
-                <?php
-                    foreach ($referral_types as $i => $row) {
-                        echo(<<<HERRA
-                        <form action="saving_functions/referral_types_save.php" method="POST" class="refTypCard" id="refTypId_{$row[0]}">
-                            <input type="hidden" name="id" value="{$row[0]}">
-                            <input type="text" name="value" value="{$row[1]}" data-original-val="{$row[1]}">
-                            <i class="editBtn fa-solid fa-pencil" onclick="enableRefTypEditing({$row[0]})"></i>
-                            <i class="saveBtn fa-solid fa-floppy-disk" onclick="this.parentElement.submit()"></i>
-                            <i class="undoBtn fa-solid fa-rotate-left" onclick="enableRefTypEditing()"></i>
-                            <i class="deleBtn fa-solid fa-trash-can" style="color: #cb0101;" onclick="deleteThisReferralType(this)"></i>
-                            <input type="hidden" name="delete" value="0">
-                        </form>
-                        HERRA);
-                    }
-                ?>
+                <table id="refTypesTable" cellspacing="0">
+                    <tr id="refTypesTableHeader">
+                        <td>Name</td>
+                        <td>PMG App Connection</td>
+                    </tr>
+                    <?php
+                        foreach ($referral_types as $i => $row) {
+                            echo(<<<HERRA
+                            <tr class="refTypCard" id="refTypRow_{$row[0]}">
+                                <form id="refTypId_{$row[0]}" action="saving_functions/referral_types_save.php" method="POST"></form>
+                                <input form="refTypId_{$i}" type="hidden" name="id" value="{$row[0]}">
+                                <td>
+                                    <input form="refTypId_{$i}" type="text" name="value" value="{$row[1]}" data-original-val="{$row[1]}">
+                                </td>
+                                <td>
+                                    <select form="refTypId_{$i}" name="PMGappConnection">
+                                        <option>Dot created automatically</option>
+                                        <option>Team must create dot</option>
+                                    </select>
+                                    <i class="editBtn fa-solid fa-pencil" onclick="enableRefTypEditing({$row[0]})"></i>
+                                    <i class="saveBtn fa-solid fa-floppy-disk" onclick="_('refTypId_{$row[0]}').submit()"></i>
+                                    <i class="undoBtn fa-solid fa-rotate-left" onclick="enableRefTypEditing()"></i>
+                                    <i class="deleBtn fa-solid fa-trash-can" style="color: #cb0101;" onclick="deleteThisReferralType(this)"></i>
+                                    <input form="refTypId_{$i}" type="hidden" name="delete" value="0">
+                                </td>
+                            </tr>
+                            HERRA);
+                        }
+                    ?>
+                </table>
                 <button class="purpleBtn" style="padding:6px 8px; margin-top: 10px;" onclick="addNewReferralType()">Add New Referral Type</button>
                 <form action="saving_functions/referral_types_save.php" method="POST" id="addNewTypeForm">
                     <input type="hidden" name="id" value="new">
@@ -389,18 +407,18 @@ function deleteThisReferralType(el) {
     JSAlert.confirm('Are you sure you want to delete this referral type? <br><br> Even if you\'re not using it anymore I\'d suggest not removing <br> it so you can still filter search for these referrals', '', JSAlert.Icons.Warning).then(res => {
         if (res) {
             el.nextElementSibling.value = '1';
-            el.parentElement.submit()
+            el.nextElementSibling.form.submit();
         }
     });
 }
 function enableRefTypEditing(id) {
-    document.querySelectorAll('.refTypCard.editing').forEach(el => {
+    document.querySelectorAll('tr.refTypCard.editing').forEach(el => {
         el.classList.remove('editing');
         let inp = el.querySelector('input[type=text]');
         inp.value = inp.getAttribute('data-original-val');
     });
     if (id != undefined) {
-        _('refTypId_'+id).classList.add('editing');
+        _('refTypRow_'+id).classList.add('editing');
     }
 }
 

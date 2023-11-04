@@ -105,8 +105,9 @@ INSERT INTO `settings` (`id`, `sort_order`, `header`, `data_type`, `modifiable`,
 (3, 3.03, 'Home Page', 'text', 0, 'ad deck link', '', 'Link to a presentation you\'ve made with all of your ads so the teams know what people clicked on'),
 (4, 3.04, 'Home Page', 'text', 0, 'business suite guidance link', '', 'Link to a presentation you\'ve made on helping your teams with Business Suite'),
 (5, 1.01, 'General', 'text', 0, 'login password', '1234', 'Password that teams will use to login to your mission\'s Referral Suite'),
-(6, 1.02, 'General', 'text', 0, 'most common language in mission', 'English', 'Most commonly spoken language in the mission'),
-(7, 3.01, 'Home Page', 'json', 1, 'tutorial videos', '{\"Welcome to Referral Suite\":\"https:\\/\\/google.com\\/link_to_video\"}', 'Tutorial videos on how to use Referral Suite/be part of the team'),
+(6, 2.01, 'Dot Creation', 'textarea', 0, 'message', 'This is a new referral! Go contact them :)', 'Message that will teams can copy and paste while sending referrals'),
+(7, 2.02, 'Dot Creation', 'text', 0, 'most common language in mission', 'English', 'Most commonly spoken language in the mission'),
+(9, 3.01, 'Home Page', 'json', 1, 'tutorials', '{\"Welcome to Referral Suite\":\"https:\\/\\/google.com\\/link_to_video\"}', 'Tutorials on how to use Referral Suite/be part of the team'),
 (10, 4.02, 'Follow Ups', 'number', 0, 'initial delay after sent', '7', 'The number of days after a referral is sent before it appears again as a Follow-Up'),
 (11, 4.01, 'Follow Ups', 'bool', 0, 'enable', '1', 'Enable the functionality of having referrals show up again after sent for the referral team to follow up with the teaching area missionaries on how the referral is doing'),
 (12, 4.03, 'Follow Ups', 'json', 1, 'status delays', '{\"😭 Can\'t get in contact\":\"Grey\",\"😥 Not interested in contact\":\"Grey\",\"😫 Hasn\'t been contacted\":3,\"🤔 Hasn\'t responded\":5,\"😀 Currently in contact\":7,\"🤩 Appointment is set up!\":\"Green\"}', 'Right column is the text that will show up for the referral team to click on. Right column is the amount of days before the referral will show up again.\n\nIf the right column is not a number, that value will be saved to the referrals Area Book Status. Refer to help videos and defualt values. This will also turn off the follow-up process on this referral. AKA, this referral won\'t show up again for a follow-up');
@@ -131,7 +132,7 @@ carefulWriteSQL($mykey, 'CREATE TABLE `'.$mykey.'`.`schedule` (`json` TEXT NULL 
 carefulWriteSQL($mykey, 'INSERT INTO `schedule`(`json`) VALUES (\'[["", "", "2002-10-22"], ["10:00", "11:00", ""]]\')');
 
 // create list of referral types
-carefulWriteSQL($mykey, 'CREATE TABLE `'.$mykey.'`.`referral_types` (`id` INT NOT NULL AUTO_INCREMENT , `name` TEXT NOT NULL DEFAULT \'\' , PRIMARY KEY (`id`)) ENGINE = InnoDB;');
+carefulWriteSQL($mykey, 'CREATE TABLE `'.$mykey.'`.`referral_types` (`id` INT NOT NULL AUTO_INCREMENT , `name` TEXT NOT NULL DEFAULT \'\' , `PMG app connection` TEXT NOT NULL DEFAULT \'Dot created automatically\' , PRIMARY KEY (`id`)) ENGINE = InnoDB;');
 
 // create table for template messages
 carefulWriteSQL($mykey, "CREATE TABLE `".$mykey."`.`templates` (`id` INT NOT NULL AUTO_INCREMENT , `type` TEXT NOT NULL , `text` TEXT NOT NULL DEFAULT '' , PRIMARY KEY (`id`)) ENGINE = InnoDB;");

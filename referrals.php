@@ -124,6 +124,9 @@
 }
 #data_table td {
     text-wrap: nowrap;
+    max-width: 300px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 #data_table tr:nth-child(even) {
     background-color: #feecff;

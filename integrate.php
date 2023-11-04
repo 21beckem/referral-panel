@@ -8,7 +8,7 @@
     require_once('overall_vars.php');
     makeHTMLtop('Integrate');
 
-    //$referral_types = readSQL($_SESSION['missionInfo']->mykey, 'SELECT * FROM `referral_types` WHERE 1');
+    $referral_types = readSQL($_SESSION['missionInfo']->mykey, 'SELECT * FROM `referral_types` WHERE 1');
 ?>
 <style>
 .sidenav {
@@ -147,7 +147,7 @@ p {
         <p>This is where you'll connect your ads, forms, etc. to Referral Panel so that you can use Referral Suite to manage all your referrals. The steps below are generalized for everyone. <strong>You can't simply copy and paste everything without reading the instructions.</strong> But as long as you read all the instructions you'll have no problem at all!</p>
     </div>
     <hr>
-    <?php if (!count($referral_types) != 0) { ?>
+    <?php if (count($referral_types) == 0) { ?>
     <div class="card">
         <h2>Add a Referral Type</h2>
         <br>
@@ -162,10 +162,10 @@ p {
         </script>
     </div>
     <?php } else { ?>
-    <hr>
 
     <div class="card">
         <h3><i class="fa-brands fa-facebook" style="color: #3396ff; font-size: 40px"></i> Facebook</h3>
+        <p style="opacity:0.6; font-size:small;">Option 1</p>
         <br>
         <p>Connect Referral Panel <strong>directly</strong> to Facebook Ads Manager</p>
         <br>
@@ -176,6 +176,7 @@ p {
     <hr>
     <div class="card">
         <h3><svg class="icon icon-tabler icon-tabler-webhook" width="40" height="40" viewBox="0 0 24 24" stroke-width="2" stroke="#fc8c03" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M4.876 13.61a4 4 0 1 0 6.124 3.39h6" /> <path d="M15.066 20.502a4 4 0 1 0 1.934 -7.502c-.706 0 -1.424 .179 -2 .5l-3 -5.5" /> <path d="M16 8a4 4 0 1 0 -8 0c0 1.506 .77 2.818 2 3.5l-3 5.5" /> </svg> Webhooks</h3>
+        <p style="opacity:0.6; font-size:small;">Option 2</p>
         <br>
         <p>Connect Referral Panel to <strong>any</strong> platform using Webhooks</p>
         <br>
