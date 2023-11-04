@@ -144,17 +144,22 @@ div.input:empty:before {
 .refTypCard td * {
     margin: 0px 5px;
 }
-tr.refTypCard input {
+tr.refTypCard input, tr.refTypCard select {
     background-color: transparent;
     border: none;
     pointer-events: none;
     border-radius: 3px;
-    padding: 2px;
+    border: 1px solid transparent;
+    padding: 2px 25px 2px 2px;
+    -webkit-appearance: none;
 }
-tr.refTypCard.editing input {
+tr.refTypCard.editing input, tr.refTypCard.editing select {
     background-color: white;
     border: auto;
+    padding: 2px;
     pointer-events: auto;
+    border: 1px solid black;
+    -webkit-appearance: auto;
 }
 tr.refTypCard i {
     cursor: pointer;
@@ -194,12 +199,12 @@ tr.refTypCard:not(.editing) .undoBtn {
                             echo(<<<HERRA
                             <tr class="refTypCard" id="refTypRow_{$row[0]}">
                                 <form id="refTypId_{$row[0]}" action="saving_functions/referral_types_save.php" method="POST"></form>
-                                <input form="refTypId_{$i}" type="hidden" name="id" value="{$row[0]}">
+                                <input form="refTypId_{$row[0]}" type="hidden" name="id" value="{$row[0]}">
                                 <td>
-                                    <input form="refTypId_{$i}" type="text" name="value" value="{$row[1]}" data-original-val="{$row[1]}">
+                                    <input form="refTypId_{$row[0]}" type="text" name="value" value="{$row[1]}" data-original-val="{$row[1]}">
                                 </td>
                                 <td>
-                                    <select form="refTypId_{$i}" name="PMGappConnection">
+                                    <select form="refTypId_{$row[0]}" name="PMGappConnection">
                                         <option>Dot created automatically</option>
                                         <option>Team must create dot</option>
                                     </select>
@@ -207,7 +212,7 @@ tr.refTypCard:not(.editing) .undoBtn {
                                     <i class="saveBtn fa-solid fa-floppy-disk" onclick="_('refTypId_{$row[0]}').submit()"></i>
                                     <i class="undoBtn fa-solid fa-rotate-left" onclick="enableRefTypEditing()"></i>
                                     <i class="deleBtn fa-solid fa-trash-can" style="color: #cb0101;" onclick="deleteThisReferralType(this)"></i>
-                                    <input form="refTypId_{$i}" type="hidden" name="delete" value="0">
+                                    <input form="refTypId_{$row[0]}" type="hidden" name="delete" value="0">
                                 </td>
                             </tr>
                             HERRA);
