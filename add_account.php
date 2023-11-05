@@ -132,7 +132,7 @@ carefulWriteSQL($mykey, 'CREATE TABLE `'.$mykey.'`.`schedule` (`json` TEXT NULL 
 carefulWriteSQL($mykey, 'INSERT INTO `schedule`(`json`) VALUES (\'[["", "", "2002-10-22"], ["10:00", "11:00", ""]]\')');
 
 // create list of referral types
-carefulWriteSQL($mykey, 'CREATE TABLE `'.$mykey.'`.`referral_types` (`id` INT NOT NULL AUTO_INCREMENT , `name` TEXT NOT NULL DEFAULT \'\' , `PMG app connection` TEXT NOT NULL DEFAULT \'Dot created automatically\' , PRIMARY KEY (`id`)) ENGINE = InnoDB;');
+carefulWriteSQL($mykey, 'CREATE TABLE `'.$mykey.'`.`referral_types` (`id` INT NOT NULL AUTO_INCREMENT , `name` TEXT NOT NULL DEFAULT \'\' , `PMG app connection` TEXT NOT NULL DEFAULT \'automatic\' , PRIMARY KEY (`id`)) ENGINE = InnoDB;');
 
 // create table for template messages
 carefulWriteSQL($mykey, "CREATE TABLE `".$mykey."`.`templates` (`id` INT NOT NULL AUTO_INCREMENT , `type` TEXT NOT NULL , `text` TEXT NOT NULL DEFAULT '' , PRIMARY KEY (`id`)) ENGINE = InnoDB;");

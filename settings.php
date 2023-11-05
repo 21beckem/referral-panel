@@ -196,6 +196,10 @@ tr.refTypCard:not(.editing) .undoBtn {
                     </tr>
                     <?php
                         foreach ($referral_types as $i => $row) {
+                            $PMGConnSelect = array(
+                                ($row[2]=='automatic') ? ' selected':'',
+                                ($row[2]=='manual') ? ' selected':''
+                            );
                             echo(<<<HERRA
                             <tr class="refTypCard" id="refTypRow_{$row[0]}">
                                 <form id="refTypId_{$row[0]}" action="saving_functions/referral_types_save.php" method="POST"></form>
@@ -205,8 +209,8 @@ tr.refTypCard:not(.editing) .undoBtn {
                                 </td>
                                 <td>
                                     <select form="refTypId_{$row[0]}" name="PMGappConnection">
-                                        <option>Dot created automatically</option>
-                                        <option>Team must create dot</option>
+                                        <option value="automatic"{$PMGConnSelect[0]}>Dot created automatically</option>
+                                        <option value="manual"{$PMGConnSelect[1]}>Team must create dot</option>
                                     </select>
                                     <i class="editBtn fa-solid fa-pencil" onclick="enableRefTypEditing({$row[0]})"></i>
                                     <i class="saveBtn fa-solid fa-floppy-disk" onclick="_('refTypId_{$row[0]}').submit()"></i>

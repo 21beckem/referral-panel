@@ -2,24 +2,6 @@
 
     session_start();
     if (!$_SESSION['missionSignedIn']) {
-        header("HTTP/1.1 500 Internal Server Error");
-        die('[[error]]');
-    }
-    require_once('../sql_tools.php');
-
-    if (writeSQL($_SESSION['missionInfo']->mykey, "UPDATE `all_referrals` SET `".$_POST["name"]."` = '".$_POST["value"]."' WHERE `id` = '".$_POST["pk"]."'")) {
-        echo('Saved!');
-    } else {
-        header("HTTP/1.1 500 Internal Server Error");
-        echo('Error updating table.');
-    }
-    
-?>
-
-<?php
-
-    session_start();
-    if (!$_SESSION['missionSignedIn']) {
         header('location: ../login.php');
     }
     if (!isset($_POST)) {
@@ -27,15 +9,16 @@
     }
     require_once('../sql_tools.php');
 
-    $id = $_POST['id'];
-    $value = $_POST['value'];
-    $delete = $_POST['delete'];
+    $id = addslashes($_POST['id']);
+    $value = addslashes($_POST['value']);
+    $PMGappConnection = addslashes($_POST['PMGappConnection']);
+    $delete = addslashes($_POST['delete']);
     if ($id == 'new') {
         $q = 'INSERT INTO `referral_types`(`name`) VALUES ("'.$value.'")';
     } else if (intval($delete) == 1) {
         $q = 'DELETE FROM `referral_types` WHERE `id`='.$id;
     } else {
-        $q = 'UPDATE `referral_types` SET `name`="'.$value.'" WHERE `id`='.$id; //MONKEY
+        $q = 'UPDATE `referral_types` SET `name`="'.$value.'", `PMG app connection`="'.$PMGappConnection.'" WHERE `id`='.$id;
     }
     echo($q);
 
