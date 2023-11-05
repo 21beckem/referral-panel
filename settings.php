@@ -130,6 +130,11 @@ div.input:empty:before {
     text-align: center;
     transform: translateY(-10px);
 }
+.input.textareaEditable {
+    margin: auto;
+    display: block; 
+    white-space: pre-wrap;
+}
 
 /* Referral Types */
 #refTypesTableHeader td {
@@ -269,6 +274,10 @@ function makeAccordions(this_settings_rows) {
         {
             toReturn += `<div disabled value="`+val+`" data-name="text" class="input textEditable" data-type="text" data-pk="`+_pk+`">`+val+`</div>`;
         }
+        else if (typ=='textarea')
+        {
+            toReturn += `<br><div disabled value="`+val+`" data-name="text" class="input textareaEditable" data-type="textarea" data-pk="`+_pk+`">`+val+`</div>`;
+        }
         else if (typ=='bool' || typ=='boolean')
         {
             toReturn += `<div disabled value="`+val+`" data-name="text" class="input boolEditable" data-type="select" data-pk="`+_pk+`">`+String(Boolean(parseInt(val))).toTitleCase()+`</div>`;
@@ -387,6 +396,17 @@ $('#accordionParent').editable({ // textEditable class is now editable
     title: 'Edit Setting',
     type: "GET",
     dataType: 'json'
+});
+$('#accordionParent').editable({ // textareaEditable class is now editable
+    container: 'body',
+    selector: '.textareaEditable',
+    url: "settings_functions/update.php",
+    title: 'Edit Setting',
+    type: "GET",
+    dataType: 'json',
+    validate: function(value) {
+        if(value.length > 500) { return '500 character limit. You used: ' + value.length; }
+    }
 });
 $('#accordionParent').editable({ // boolEditable class is now editable with select
     container: 'body',
