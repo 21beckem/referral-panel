@@ -242,16 +242,20 @@ function onTextareaEdit(el) {
         m = m.replaceAll('&nbsp;', ' ');
         return m.replace(/<dataCard contenteditable="false">(.*?)\n*<\/dataCard>/gmi, function(x, m) { return m; }) + '\n';
     });
-    conv = conv.replace(/\n\Z/gmi, '');
+    conv = stripHTML( conv.replace(/(\r\n|\n|\r)\Z/gm,"") );
 
-    //console.log(el.innerHTML);
-    //console.log(val);
-    //console.log(conv);
-    //console.log('-------------------');
+    // console.log(el.innerHTML);
+    // console.log(val);
+    console.log(JSON.stringify(conv));
+    console.log('-------------------');
     el.parentElement.querySelector('.hiddenTxt').value = conv;
     el.parentElement.querySelector('.saveBtn').style.display = 'block';
 
-    return true;
+    return false;
+}
+function stripHTML(str) {
+    let doc = new DOMParser().parseFromString(str, 'text/html');
+    return doc.body.textContent || "";
 }
 
 let currentInput = {
