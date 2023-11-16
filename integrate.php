@@ -144,40 +144,28 @@ p {
         <br>
         <p>Welcome to the <strong>Integrate</strong> page!</p>
         <br>
-        <p>First things first, you need to add a <strong>Referral Type</strong>. Integration isn't possible until you have at least one Referral Type</p>
-        <br>
         <p>This is where you'll connect your ads, forms, etc. to Referral Panel so that you can use Referral Suite to manage all your referrals. The steps below are generalized for everyone. <strong>You can't simply copy and paste everything without reading the instructions.</strong> But as long as you read all the instructions you'll have no problem at all!</p>
     </div>
     <hr>
+    <?php if (count($referral_types) == 0) { ?>
     <div class="card">
-        <h2>Referral Types</h2>
-        <?php
-        foreach ($referral_types as $i => $row) {
-            echo(<<<HERRA
-            <form action="saving_functions/referral_types_save.php" method="POST" class="refTypCard" id="refTypId_{$row[0]}">
-                <input type="hidden" name="id" value="{$row[0]}">
-                <input type="text" name="value" value="{$row[1]}" data-original-val="{$row[1]}">
-                <i class="editBtn fa-solid fa-pencil" onclick="enableRefTypEditing({$row[0]})"></i>
-                <i class="saveBtn fa-solid fa-floppy-disk" onclick="this.parentElement.submit()"></i>
-                <i class="undoBtn fa-solid fa-rotate-left" onclick="enableRefTypEditing()"></i>
-                <i class="deleBtn fa-solid fa-trash-can" style="color: #cb0101;" onclick="deleteThisReferralType(this)"></i>
-                <input type="hidden" name="delete" value="0">
-            </form>
-            HERRA);
-        }
-        ?>
-        <button class="purpleBtn" style="padding:6px 8px; margin-top: 10px;" onclick="addNewReferralType()">Add New Referral Type</button>
-        <form action="saving_functions/referral_types_save.php" method="POST" id="addNewTypeForm">
-            <input type="hidden" name="id" value="new">
-            <input type="hidden" name="value" value="" id="addNewTypeValue">
-            <input type="hidden" name="delete" value="0">
-        </form>
+        <h2>Add a Referral Type</h2>
+        <br>
+        <p>First things first, you need to add a <strong>Referral Type</strong>. Integration isn't possible until you have at least one Referral Type</p>
+        <br>
+        <p>Click <u style="color:#910095; cursor:pointer"><a onclick="goToRefTypesSettings()">here</a></u> to go to settings. From there, click on <strong>Referral Types</strong>, then <strong>Add Referral Type</strong></p>
+        <script>
+            function goToRefTypesSettings() {
+                localStorage.setItem("settings-tabOpen", 'settingsSection_-1');
+                window.location.href = 'settings.php';
+            }
+        </script>
     </div>
-    <?php if (count($referral_types) != 0) { ?>
-    <hr>
+    <?php } else { ?>
 
     <div class="card">
         <h3><i class="fa-brands fa-facebook" style="color: #3396ff; font-size: 40px"></i> Facebook</h3>
+        <p style="opacity:0.6; font-size:small;">Option 1</p>
         <br>
         <p>Connect Referral Panel <strong>directly</strong> to Facebook Ads Manager</p>
         <br>
@@ -188,6 +176,7 @@ p {
     <hr>
     <div class="card">
         <h3><svg class="icon icon-tabler icon-tabler-webhook" width="40" height="40" viewBox="0 0 24 24" stroke-width="2" stroke="#fc8c03" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M4.876 13.61a4 4 0 1 0 6.124 3.39h6" /> <path d="M15.066 20.502a4 4 0 1 0 1.934 -7.502c-.706 0 -1.424 .179 -2 .5l-3 -5.5" /> <path d="M16 8a4 4 0 1 0 -8 0c0 1.506 .77 2.818 2 3.5l-3 5.5" /> </svg> Webhooks</h3>
+        <p style="opacity:0.6; font-size:small;">Option 2</p>
         <br>
         <p>Connect Referral Panel to <strong>any</strong> platform using Webhooks</p>
         <br>
@@ -295,36 +284,5 @@ p {
     <div style="width: 5px; height: 150px;"></div>
     <?php } ?>
 </div>
-<script>
-function _(x) { return document.getElementById(x); }
-HTMLCollection.prototype.forEach = function (x) { return Array.from(this).forEach(x); }
-
-function addNewReferralType() {
-    JSAlert.prompt('Make sure this is right. This will be tedious <br> for you to change later after referrals <br> start coming in using under this type', '', '', 'Add New Referral Type').then(res => {
-        if (res == null) { return; }
-        _('addNewTypeValue').value = res;
-        _('addNewTypeForm').submit();
-    });
-}
-function deleteThisReferralType(el) {
-    JSAlert.confirm('Are you sure you want to delete this referral type? <br><br> Even if you\'re not using it anymore I\'d suggest not removing <br> it so you can still filter search for these referrals', '', JSAlert.Icons.Warning).then(res => {
-        if (res) {
-            el.nextElementSibling.value = '1';
-            el.parentElement.submit()
-        }
-    });
-}
-function enableRefTypEditing(id) {
-    document.querySelectorAll('.refTypCard.editing').forEach(el => {
-        el.classList.remove('editing');
-        let inp = el.querySelector('input[type=text]');
-        inp.value = inp.getAttribute('data-original-val');
-    });
-    if (id != undefined) {
-        _('refTypId_'+id).classList.add('editing');
-    }
-}
-
-</script>
 
 <?php makeHTMLbottom() ?>

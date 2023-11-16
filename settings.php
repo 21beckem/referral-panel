@@ -9,6 +9,7 @@
     makeHTMLtop('Settings');
     
     $settings_rows = readSQL($_SESSION['missionInfo']->mykey, 'SELECT * FROM `settings` ORDER BY `settings`.`sort_order` ASC');
+    $referral_types = readSQL($_SESSION['missionInfo']->mykey, 'SELECT * FROM `referral_types` WHERE 1');
 ?>
 <link href="MYbootstrap.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-2.0.3.min.js"></script>
@@ -104,6 +105,7 @@ div.input {
     text-overflow: ellipsis;
     background-color: white;
     transform: translateY(10px);
+    max-width: 275px;
 }
 div.input:empty:before {
     color: #DD1144;
@@ -128,6 +130,58 @@ div.input:empty:before {
     text-align: center;
     transform: translateY(-10px);
 }
+.input.textareaEditable {
+    margin: auto;
+    display: block; 
+    white-space: pre-wrap;
+}
+
+/* Referral Types */
+#refTypesTableHeader td {
+    padding: 5px 10px;
+}
+.refTypCard td {
+    padding: 5px;
+    background-color: #f6f6f6;
+    width: fit-content;
+    margin: 5px;
+}
+.refTypCard td * {
+    margin: 0px 5px;
+}
+tr.refTypCard input, tr.refTypCard select {
+    background-color: transparent;
+    border: none;
+    pointer-events: none;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    padding: 2px 25px 2px 2px;
+    -webkit-appearance: none;
+}
+tr.refTypCard.editing input, tr.refTypCard.editing select {
+    background-color: white;
+    border: auto;
+    padding: 2px;
+    pointer-events: auto;
+    border: 1px solid black;
+    -webkit-appearance: auto;
+}
+tr.refTypCard i {
+    cursor: pointer;
+    width: 15px;
+}
+tr.refTypCard.editing .editBtn {
+    display: none;
+}
+tr.refTypCard:not(.editing) .saveBtn {
+    display: none;
+}
+tr.refTypCard.editing .deleBtn {
+    display: none;
+}
+tr.refTypCard:not(.editing) .undoBtn {
+    display: none;
+}
 </style>
 <div class="top">
     <i class="fa-solid fa-bars sidebar-toggle"></i>
@@ -137,6 +191,51 @@ div.input:empty:before {
 
 <div class="dash-content">
     <div id="accordionParent">
+        <div id="settingsSection_-1" class="settingsSection">
+            <button class="openBtn" onclick="clickOpenAccordion(this)">Referral Types</button>
+            <div class="settingsPanel">
+                <table id="refTypesTable" cellspacing="0">
+                    <tr id="refTypesTableHeader">
+                        <td>Name</td>
+                        <td>PMG App Connection</td>
+                    </tr>
+                    <?php
+                        foreach ($referral_types as $i => $row) {
+                            $PMGConnSelect = array(
+                                ($row[2]=='automatic') ? ' selected':'',
+                                ($row[2]=='manual') ? ' selected':''
+                            );
+                            echo(<<<HERRA
+                            <tr class="refTypCard" id="refTypRow_{$row[0]}">
+                                <form id="refTypId_{$row[0]}" action="saving_functions/referral_types_save.php" method="POST"></form>
+                                <input form="refTypId_{$row[0]}" type="hidden" name="id" value="{$row[0]}">
+                                <td>
+                                    <input form="refTypId_{$row[0]}" type="text" name="value" value="{$row[1]}" data-original-val="{$row[1]}">
+                                </td>
+                                <td>
+                                    <select form="refTypId_{$row[0]}" name="PMGappConnection">
+                                        <option value="automatic"{$PMGConnSelect[0]}>Dot created automatically</option>
+                                        <option value="manual"{$PMGConnSelect[1]}>Team must create dot</option>
+                                    </select>
+                                    <i class="editBtn fa-solid fa-pencil" onclick="enableRefTypEditing({$row[0]})"></i>
+                                    <i class="saveBtn fa-solid fa-floppy-disk" onclick="_('refTypId_{$row[0]}').submit()"></i>
+                                    <i class="undoBtn fa-solid fa-rotate-left" onclick="enableRefTypEditing()"></i>
+                                    <i class="deleBtn fa-solid fa-trash-can" style="color: #cb0101;" onclick="deleteThisReferralType(this)"></i>
+                                    <input form="refTypId_{$row[0]}" type="hidden" name="delete" value="0">
+                                </td>
+                            </tr>
+                            HERRA);
+                        }
+                    ?>
+                </table>
+                <button class="purpleBtn" style="padding:6px 8px; margin-top: 10px;" onclick="addNewReferralType()">Add New Referral Type</button>
+                <form action="saving_functions/referral_types_save.php" method="POST" id="addNewTypeForm">
+                    <input type="hidden" name="id" value="new">
+                    <input type="hidden" name="value" value="" id="addNewTypeValue">
+                    <input type="hidden" name="delete" value="0">
+                </form>
+            </div>
+        </div>
     </div>
 
     <div id="mainParent" style="opacity:<?php if (isset($_GET['refTyp'])) {echo('1');} else {echo('0');} ?>">
@@ -174,6 +273,10 @@ function makeAccordions(this_settings_rows) {
         if (typ=='text' || typ=='number' || typ=='date')
         {
             toReturn += `<div disabled value="`+val+`" data-name="text" class="input textEditable" data-type="text" data-pk="`+_pk+`">`+val+`</div>`;
+        }
+        else if (typ=='textarea')
+        {
+            toReturn += `<br><div disabled value="`+val+`" data-name="text" class="input textareaEditable" data-type="textarea" data-pk="`+_pk+`">`+val+`</div>`;
         }
         else if (typ=='bool' || typ=='boolean')
         {
@@ -215,7 +318,7 @@ function makeAccordions(this_settings_rows) {
         accordions += '</div></div>';
     }
 
-    _('accordionParent').innerHTML = accordions;
+    _('accordionParent').innerHTML += accordions;
     if (localStorage.getItem("settings-tabOpen") != null) {
         _(localStorage.getItem("settings-tabOpen")).querySelector('.openBtn').click();
     }
@@ -294,6 +397,17 @@ $('#accordionParent').editable({ // textEditable class is now editable
     type: "GET",
     dataType: 'json'
 });
+$('#accordionParent').editable({ // textareaEditable class is now editable
+    container: 'body',
+    selector: '.textareaEditable',
+    url: "settings_functions/update.php",
+    title: 'Edit Setting',
+    type: "GET",
+    dataType: 'json',
+    validate: function(value) {
+        if(value.length > 500) { return '500 character limit. You used: ' + value.length; }
+    }
+});
 $('#accordionParent').editable({ // boolEditable class is now editable with select
     container: 'body',
     selector: '.boolEditable',
@@ -309,6 +423,33 @@ $('#accordionParent').editable({ // boolEditable class is now editable with sele
         if($.trim(value) == '') { return 'This field is required' }
     }
 });
+
+// Referral Types
+function addNewReferralType() {
+    JSAlert.prompt('Make sure this is right. This will be tedious <br> for you to change later after referrals <br> start coming in using under this type', '', '', 'Add New Referral Type').then(res => {
+        if (res == null) { return; }
+        _('addNewTypeValue').value = res;
+        _('addNewTypeForm').submit();
+    });
+}
+function deleteThisReferralType(el) {
+    JSAlert.confirm('Are you sure you want to delete this referral type? <br><br> Even if you\'re not using it anymore I\'d suggest not removing <br> it so you can still filter search for these referrals', '', JSAlert.Icons.Warning).then(res => {
+        if (res) {
+            el.nextElementSibling.value = '1';
+            el.nextElementSibling.form.submit();
+        }
+    });
+}
+function enableRefTypEditing(id) {
+    document.querySelectorAll('tr.refTypCard.editing').forEach(el => {
+        el.classList.remove('editing');
+        let inp = el.querySelector('input[type=text]');
+        inp.value = inp.getAttribute('data-original-val');
+    });
+    if (id != undefined) {
+        _('refTypRow_'+id).classList.add('editing');
+    }
+}
 
 </script>
 
