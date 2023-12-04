@@ -270,9 +270,13 @@ function makeAccordions(this_settings_rows) {
         let _pk = row[0];
         let typ = row[3];
         let val = row[6];
-        if (typ=='text' || typ=='number' || typ=='date')
+        if (typ=='text' || typ=='date')
         {
             toReturn += `<div disabled value="`+val+`" data-name="text" class="input textEditable" data-type="text" data-pk="`+_pk+`">`+val+`</div>`;
+        }
+        else if (typ=='number')
+        {
+            toReturn += `<div disabled value="`+val+`" data-name="text" class="input numEditable" data-type="text" data-pk="`+_pk+`">`+val+`</div>`;
         }
         else if (typ=='textarea')
         {
@@ -396,6 +400,17 @@ $('#accordionParent').editable({ // textEditable class is now editable
     title: 'Edit Setting',
     type: "GET",
     dataType: 'json'
+});
+$('#accordionParent').editable({ // numEditable class is now editable
+    container: 'body',
+    selector: '.numEditable',
+    url: "settings_functions/update.php",
+    title: 'Edit Setting',
+    type: "GET",
+    dataType: 'json',
+    validate: function(value) {
+        if(!/^\d+$/.test(value)) { return 'Only number digits allowed.'}
+    }
 });
 $('#accordionParent').editable({ // textareaEditable class is now editable
     container: 'body',
