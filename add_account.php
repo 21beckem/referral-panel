@@ -78,6 +78,7 @@ CREATE TABLE `all_referrals` (
 `Attempt Log` text NOT NULL DEFAULT '',
 `Help Request` text NOT NULL DEFAULT '',
 `Level of Knowledge` text NOT NULL DEFAULT '',
+`timeline` JSON NOT NULL DEFAULT '[]',
 `Ad ID` text NOT NULL DEFAULT '',
 `Form ID` text NOT NULL DEFAULT '',
 PRIMARY KEY (`id`)

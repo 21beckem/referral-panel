@@ -27,6 +27,7 @@ if (count(readSQL('Referral_Suite_General', 'SELECT `name` FROM `mission_users` 
 
 // Get all the input data from zapier
 $date_and_time = date('Y-m-d H:i:s', strtotime( $_POST['date'] ));
+$timelineStart = addslashes('[{"date":"'.$date_and_time.'","title":"System Created Date"}]');
 $type = addslashes($_POST['type']);
 $fname = addslashes($_POST['fname']);
 $lname = addslashes($_POST['lname']);
@@ -43,7 +44,7 @@ $knowledgeLevel = addslashes($_POST['knowledgeLevel']);
 $ad_id = addslashes($_POST['ad_id']);
 $form_id = addslashes($_POST['form_id']);
 
-$q = "INSERT INTO `all_referrals` (`Referral Type`, `Date and Time`, `First Name`, `Last Name`, `Phonenumber`, `Email`, `Street`, `City`, `Zip`, `Lang`, `Platform`, `Ad Name`, `Help Request`, `Level of Knowledge`, `Ad ID`, `Form ID`) VALUES ('$type', '$date_and_time', '$fname', '$lname', '$phone', '$email', '$street', '$city', '$zip', '$lang', '$platform', '$ad_name', '$helpRequest', '$knowledgeLevel', '$ad_id', '$form_id')";
+$q = "INSERT INTO `all_referrals` (`Referral Type`, `Date and Time`, `First Name`, `Last Name`, `Phonenumber`, `Email`, `Street`, `City`, `Zip`, `Lang`, `Platform`, `Ad Name`, `Help Request`, `Level of Knowledge`, `timeline`, `Ad ID`, `Form ID`) VALUES ('$type', '$date_and_time', '$fname', '$lname', '$phone', '$email', '$street', '$city', '$zip', '$lang', '$platform', '$ad_name', '$helpRequest', '$knowledgeLevel', '$timelineStart', '$ad_id', '$form_id')";
 if (writeSQL($mykey, $q)) {
     echo('success');
 } else {
