@@ -27,7 +27,7 @@ if (count(readSQL('Referral_Suite_General', 'SELECT `name` FROM `mission_users` 
 
 // Get all the input data from zapier
 $date_and_time = date('Y-m-d H:i:s', strtotime( $_POST['date'] ));
-$timelineStart = addslashes('[{"date":"'.$date_and_time.'","title":"System Created Date"}]');
+$timelineStart = addslashes('[{"date":"'.$date_and_time.'","type":"created"}]');
 $type = addslashes($_POST['type']);
 $fname = addslashes($_POST['fname']);
 $lname = addslashes($_POST['lname']);
